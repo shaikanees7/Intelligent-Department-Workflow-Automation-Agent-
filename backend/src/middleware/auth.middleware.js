@@ -14,7 +14,7 @@ const verifyToken = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    return ApiResponse.error(res, 'Invalid or expired session token.', null, 403);
+    return ApiResponse.error(res, 'Invalid or expired session token.', null, 401);
   }
 };
 

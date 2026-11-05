@@ -62,10 +62,10 @@ CREATE TABLE IF NOT EXISTS mentor_assignments (
   FOREIGN KEY (mentor_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- 6. Approval Workflows Definition (e.g. OD, Leave, Event Participation)
+-- 6. Approval Workflows Definition (e.g. OD, Leave, Event, Exam Permission)
 CREATE TABLE IF NOT EXISTS approval_workflows (
   workflow_id INT AUTO_INCREMENT PRIMARY KEY,
-  request_type ENUM('OD', 'LEAVE', 'EVENT') NOT NULL UNIQUE,
+  request_type ENUM('OD', 'LEAVE', 'EVENT', 'EXAM') NOT NULL UNIQUE,
   workflow_name VARCHAR(100) NOT NULL,
   description TEXT,
   is_active BOOLEAN DEFAULT TRUE,
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS permission_requests (
   request_id INT AUTO_INCREMENT PRIMARY KEY,
   request_code VARCHAR(30) NOT NULL UNIQUE,
   student_user_id INT NOT NULL,
-  request_type ENUM('OD', 'LEAVE', 'EVENT') NOT NULL,
+  request_type ENUM('OD', 'LEAVE', 'EVENT', 'EXAM') NOT NULL,
   reason TEXT NOT NULL,
   start_date DATE NOT NULL,
   end_date DATE NOT NULL,

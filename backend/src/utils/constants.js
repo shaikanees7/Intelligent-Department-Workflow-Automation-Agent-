@@ -9,7 +9,8 @@ module.exports = {
   REQUEST_TYPES: {
     OD: 'OD',
     LEAVE: 'LEAVE',
-    EVENT: 'EVENT'
+    EVENT: 'EVENT',
+    EXAM: 'EXAM'
   },
   REQUEST_STATUS: {
     SUBMITTED: 'SUBMITTED',
