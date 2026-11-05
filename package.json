@@ -1,0 +1,17 @@
+{
+  "name": "intelligent-department-workflow-automation-agent",
+  "version": "1.0.0",
+  "description": "A digital permission and approval platform that automates student requests and institutional approval workflows.",
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "db:setup": "cd backend && node database/seed.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "author": "Shaik Anees",
+  "license": "MIT"
+}
