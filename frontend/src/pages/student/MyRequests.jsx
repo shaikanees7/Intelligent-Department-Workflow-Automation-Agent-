@@ -2,18 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
+import BlueprintWatermark from '../../components/common/BlueprintWatermark';
 import StatusBadge from '../../components/common/StatusBadge';
 import api from '../../services/api';
 import {
   Files,
   Search,
-  Filter,
   Activity,
   Download,
-  Calendar,
-  AlertCircle,
   FilePlus,
-  ArrowUpDown
+  ArrowRight
 } from 'lucide-react';
 
 const MyRequests = () => {
@@ -111,155 +109,158 @@ const MyRequests = () => {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F3F5F7] text-slate-800 font-sans relative selection:bg-teal-500 selection:text-white overflow-x-hidden">
+      <BlueprintWatermark />
       <Navbar />
-      <div className="flex flex-1">
+
+      <div className="flex flex-col md:flex-row relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role="STUDENT" />
 
-        <main className="flex-1 p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                My Permission Applications
-              </h1>
-              <p className="text-xs text-slate-500 mt-1">
-                Full history of On-Duty, Leave, and Event permission requests
-              </p>
-            </div>
-            <Link
-              to="/student/new-request"
-              className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-sm transition"
-            >
-              <FilePlus className="w-4 h-4" />
-              New Application
-            </Link>
-          </div>
-
-          {/* Search & Filter Toolbar */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="relative w-full sm:w-72">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search by code or reason..."
-                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
-              />
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-              <select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                className="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-700 font-semibold focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="ALL">All Categories</option>
-                <option value="OD">On-Duty (OD)</option>
-                <option value="LEAVE">Student Leave</option>
-                <option value="EVENT">Event Participation</option>
-                <option value="EXAM">Exam Permission</option>
-              </select>
-
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-700 font-semibold focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="ALL">All Statuses</option>
-                <option value="PENDING">Pending / Review</option>
-                <option value="APPROVED">Approved</option>
-                <option value="REJECTED">Rejected</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Requests Table */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-            {loading ? (
-              <div className="p-12 text-center text-xs text-slate-400">Loading requests...</div>
-            ) : filteredRequests.length === 0 ? (
-              <div className="p-12 text-center space-y-3">
-                <Files className="w-10 h-10 text-slate-300 mx-auto" />
-                <p className="text-sm font-bold text-slate-700">No applications match your criteria</p>
-                <p className="text-xs text-slate-500">Try adjusting your search terms or filters.</p>
+        <main className="flex-1 w-full space-y-6">
+          <div className="bg-white/95 rounded-[24px] border border-slate-200/90 shadow-card-soft p-6 sm:p-8 space-y-6 backdrop-blur-xs">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-4">
+              <div>
+                <h1 className="font-serif text-2xl font-bold text-slate-900 tracking-tight">
+                  My Permission Applications
+                </h1>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Full history of On-Duty, Leave, and Event permission requests with live verification tracking
+                </p>
               </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 uppercase tracking-wider text-[11px]">
-                    <tr>
-                      <th className="py-3.5 px-6">Request ID</th>
-                      <th className="py-3.5 px-6">Category</th>
-                      <th className="py-3.5 px-6">Subject / Reason</th>
-                      <th className="py-3.5 px-6">Date Span</th>
-                      <th className="py-3.5 px-6">Current Step</th>
-                      <th className="py-3.5 px-6">Decision</th>
-                      <th className="py-3.5 px-6 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 text-slate-700">
-                    {filteredRequests.map((req) => (
-                      <tr key={req.request_id} className="hover:bg-slate-50/70 transition">
-                        <td className="py-4 px-6 font-bold text-slate-900">
-                          {req.request_code}
-                          {Boolean(req.is_urgent) && (
-                            <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-bold bg-red-100 text-red-700 rounded border border-red-200">
-                              Urgent
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className="font-bold px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-800">
-                            {req.ai_category || req.request_type}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 max-w-sm">
-                          <p className="truncate" title={req.reason}>
-                            {req.reason}
-                          </p>
-                        </td>
-                        <td className="py-4 px-6 text-slate-500 whitespace-nowrap">
-                          {new Date(req.start_date).toLocaleDateString()} to {new Date(req.end_date).toLocaleDateString()}
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className="font-semibold text-slate-800">
-                            {req.overall_status === 'APPROVED'
-                              ? 'Fully Sanctioned'
-                              : req.overall_status === 'REJECTED'
-                              ? 'Rejected'
-                              : `${req.current_reviewer_role || 'Mentor'} Review`}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 whitespace-nowrap">
-                          <StatusBadge status={req.overall_status} size="sm" />
-                        </td>
-                        <td className="py-4 px-6 text-right whitespace-nowrap space-x-2">
-                          <Link
-                            to={`/student/track/${req.request_id}`}
-                            className="inline-flex items-center gap-1 font-bold text-xs text-primary-600 hover:text-primary-800"
-                          >
-                            <Activity className="w-3.5 h-3.5" />
-                            Track
-                          </Link>
-                          {req.overall_status === 'APPROVED' && req.pdf_letter_url && (
-                            <a
-                              href={`http://localhost:5000${req.pdf_letter_url}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 font-bold text-xs text-emerald-600 hover:text-emerald-800"
-                            >
-                              <Download className="w-3.5 h-3.5" />
-                              Pass
-                            </a>
-                          )}
-                        </td>
+              <Link
+                to="/student/new-request"
+                className="inline-flex items-center gap-2 bg-[#5E9CA0] hover:bg-[#4D868A] text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition"
+              >
+                <FilePlus className="w-4 h-4" />
+                New Application
+              </Link>
+            </div>
+
+            {/* Search & Filter Toolbar */}
+            <div className="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="relative w-full sm:w-80">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search by code or reason..."
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-teal-500/20 focus:border-[#5E9CA0] text-slate-800"
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                <select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value)}
+                  className="px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 font-semibold focus:ring-2 focus:ring-teal-500/20 focus:border-[#5E9CA0]"
+                >
+                  <option value="ALL">All Categories</option>
+                  <option value="OD">On-Duty (OD)</option>
+                  <option value="LEAVE">Student Leave</option>
+                  <option value="EVENT">Event Participation</option>
+                  <option value="EXAM">Exam Permission</option>
+                </select>
+
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 font-semibold focus:ring-2 focus:ring-teal-500/20 focus:border-[#5E9CA0]"
+                >
+                  <option value="ALL">All Statuses</option>
+                  <option value="PENDING">Pending / Review</option>
+                  <option value="APPROVED">Approved</option>
+                  <option value="REJECTED">Rejected</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Requests Table */}
+            <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+              {loading ? (
+                <div className="p-12 text-center text-xs text-slate-400">Loading requests...</div>
+              ) : filteredRequests.length === 0 ? (
+                <div className="p-12 text-center space-y-3">
+                  <Files className="w-10 h-10 text-slate-300 mx-auto" />
+                  <p className="font-semibold text-sm text-slate-800">No applications match your criteria</p>
+                  <p className="text-xs text-slate-500">Try adjusting your search terms or filters.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 uppercase tracking-wider text-[11px]">
+                      <tr>
+                        <th className="py-3.5 px-6">Request ID</th>
+                        <th className="py-3.5 px-6">Category</th>
+                        <th className="py-3.5 px-6">Subject / Reason</th>
+                        <th className="py-3.5 px-6">Date Span</th>
+                        <th className="py-3.5 px-6">Current Step</th>
+                        <th className="py-3.5 px-6">Decision</th>
+                        <th className="py-3.5 px-6 text-right">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 text-slate-700">
+                      {filteredRequests.map((req) => (
+                        <tr key={req.request_id} className="hover:bg-slate-50/70 transition">
+                          <td className="py-4 px-6 font-mono font-bold text-slate-900">
+                            {req.request_code}
+                            {Boolean(req.is_urgent) && (
+                              <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-bold bg-rose-100 text-rose-700 rounded border border-rose-200">
+                                Urgent
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-4 px-6">
+                            <span className="font-semibold px-2.5 py-1 rounded-full text-[11px] bg-slate-100 text-slate-700">
+                              {req.ai_category || req.request_type}
+                            </span>
+                          </td>
+                          <td className="py-4 px-6 max-w-sm truncate text-slate-600" title={req.reason}>
+                            {req.reason}
+                          </td>
+                          <td className="py-4 px-6 text-slate-500 whitespace-nowrap">
+                            {new Date(req.start_date).toLocaleDateString()} to {new Date(req.end_date).toLocaleDateString()}
+                          </td>
+                          <td className="py-4 px-6">
+                            <span className="font-semibold text-slate-800">
+                              {req.overall_status === 'APPROVED'
+                                ? 'Fully Sanctioned'
+                                : req.overall_status === 'REJECTED'
+                                ? 'Rejected'
+                                : `${req.current_reviewer_role || 'Mentor'} Review`}
+                            </span>
+                          </td>
+                          <td className="py-4 px-6 whitespace-nowrap">
+                            <StatusBadge status={req.overall_status} size="sm" />
+                          </td>
+                          <td className="py-4 px-6 text-right whitespace-nowrap space-x-2">
+                            <Link
+                              to={`/student/track/${req.request_id}`}
+                              className="inline-flex items-center gap-1 font-bold text-xs text-teal-700 hover:text-teal-900 transition"
+                            >
+                              <Activity className="w-3.5 h-3.5" />
+                              Track
+                            </Link>
+                            {req.overall_status === 'APPROVED' && req.pdf_letter_url && (
+                              <a
+                                href={`http://localhost:5000${req.pdf_letter_url}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 font-bold text-xs text-emerald-600 hover:text-emerald-800 transition ml-2"
+                              >
+                                <Download className="w-3.5 h-3.5" />
+                                Pass
+                              </a>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
         </main>
       </div>
@@ -268,4 +269,3 @@ const MyRequests = () => {
 };
 
 export default MyRequests;
-

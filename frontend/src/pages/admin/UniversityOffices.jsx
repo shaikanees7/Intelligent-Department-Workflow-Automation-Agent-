@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
+import BlueprintWatermark from '../../components/common/BlueprintWatermark';
 import api from '../../services/api';
 import {
   Building2,
@@ -214,9 +215,10 @@ const UniversityOffices = () => {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F3F5F7] relative flex flex-col font-sans overflow-x-hidden">
+      <BlueprintWatermark />
       <Navbar />
-      <div className="flex flex-1">
+      <div className="flex flex-1 relative z-10">
         <Sidebar role="ADMIN" />
 
         <main className="flex-1 p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
