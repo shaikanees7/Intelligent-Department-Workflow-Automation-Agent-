@@ -7,7 +7,7 @@ A centralized, enterprise-grade digital permission and workflow automation platf
 ## 🏛️ System Features & Functionalities
 
 - **Intelligent Multi-Level Workflows**: Configurable sequential approval chains (Student → Mentor → Faculty Coordinator → HOD).
-- **Google Gemini AI Routing Agent**: Integrates Google Gemini API to analyze submitted student requests, understand natural language intents, classify permission categories, and match against active registered university offices.
+- **Groq AI Ultra-Fast LPU Routing Agent**: Integrates Groq API with the flagship `openai/gpt-oss-120b` high-efficiency model to analyze submitted student requests, understand natural language intents, classify permission categories, and match against active registered university offices.
 - **University Office Registration Module**: Centralized administration portal allowing dynamic registration, editing, and activation of university administrative sections (Examination Cell, Finance Office, Hostel Office, Academic Office, Sports Department, Library, Transportation Office, etc.).
 - **Interactive AI Clarification Engine**: Flags ambiguous requests, asks targeted clarification questions to students, receives answers, and re-classifies applications automatically with historical audit trails.
 - **Dedicated Office Administrator Portals (`/office`)**: Custom workflow desk for university office administrators to review incoming requests, accept assignments, forward between offices, approve, or reject.

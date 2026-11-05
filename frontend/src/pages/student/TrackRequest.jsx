@@ -278,7 +278,7 @@ const TrackRequest = () => {
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-400">
-                          Classified using Google Gemini AI • Matched against registered university offices
+                          Classified using Groq AI (openai/gpt-oss-120b) • Matched against registered university offices
                         </p>
                       </div>
                     </div>

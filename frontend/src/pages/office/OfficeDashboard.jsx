@@ -255,7 +255,7 @@ const OfficeDashboard = () => {
                   Routed Applications Queue ({filteredApplications.length})
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Applications categorized and routed to this university office by Gemini AI
+                  Applications categorized and routed to this university office by Groq AI (openai/gpt-oss-120b)
                 </p>
               </div>
             </div>
@@ -266,7 +266,7 @@ const OfficeDashboard = () => {
               <div className="p-12 text-center text-xs text-slate-400 space-y-2">
                 <Building2 className="w-10 h-10 text-slate-300 mx-auto" />
                 <p className="font-bold text-slate-600">No applications found in this queue</p>
-                <p>New applications routed by Gemini will automatically appear here.</p>
+                <p>New applications routed by Groq AI will automatically appear here.</p>
               </div>
             ) : (
               <div className="overflow-x-auto">

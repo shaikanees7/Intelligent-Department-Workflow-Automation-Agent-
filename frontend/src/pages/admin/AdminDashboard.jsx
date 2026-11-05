@@ -377,7 +377,7 @@ const AdminDashboard = () => {
               <div className="bg-gradient-to-r from-slate-900 via-primary-950 to-slate-900 rounded-2xl p-6 sm:p-8 text-white border border-slate-800 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-2">
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary-500/20 text-sky-300 border border-primary-500/30 rounded-full text-xs font-semibold">
-                    <Sparkles className="w-3.5 h-3.5" /> Google Gemini AI Powered Routing Engine
+                    <Sparkles className="w-3.5 h-3.5" /> Groq AI Ultra-Fast LPU Routing Engine (openai/gpt-oss-120b)
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
                     University Office Registration & Intelligent Routing
@@ -431,7 +431,7 @@ const AdminDashboard = () => {
                     <h4 className="text-2xl font-black text-primary-600">{aiStats.total_ai_classified || 0}</h4>
                     <span className="text-xs font-semibold text-sky-600">Total</span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1">Gemini neural classification</p>
+                  <p className="text-[11px] text-slate-400 mt-1">Groq AI LPU neural classification</p>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">

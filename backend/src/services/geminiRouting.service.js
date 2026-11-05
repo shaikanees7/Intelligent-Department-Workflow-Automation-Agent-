@@ -3,9 +3,9 @@ const Notification = require('../models/Notification');
 const { sendNotificationEmail } = require('./email.service');
 const logger = require('../utils/logger');
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const PRIMARY_MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
-const FALLBACK_MODEL = 'gemini-3.8-flash';
+const GROQ_API_KEY = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY || '';
+const PRIMARY_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
+const FALLBACK_MODEL = 'openai/gpt-oss-20b';
 
 class GeminiRoutingService {
   /**
@@ -22,37 +22,62 @@ class GeminiRoutingService {
   }
 
   /**
-   * Calls Google Gemini REST API using structured JSON output
+   * Calls Groq REST API using ultra-fast LPU inference and structured JSON output
    */
-  static async callGeminiAPI(prompt, model = PRIMARY_MODEL) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
-    const payload = {
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        responseMimeType: 'application/json',
-        temperature: 0.1
-      }
-    };
+  static async callGroqAPI(prompt, model = PRIMARY_MODEL) {
+    if (!GROQ_API_KEY) {
+      throw new Error('Groq API Key not configured.');
+    }
 
-    const res = await fetch(url, {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      headers: {
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: model,
+        messages: [
+          {
+            role: 'system',
+            content: 'You are the AI University Department and Office Routing Agent. Always output valid JSON conforming strictly to the requested schema.'
+          },
+          { role: 'user', content: prompt }
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.1
+      }),
       signal: AbortSignal.timeout(6000)
     });
 
     if (!res.ok) {
       const errBody = await res.text();
-      throw new Error(`Gemini API HTTP ${res.status}: ${errBody.slice(0, 200)}`);
+      throw new Error(`Groq API HTTP ${res.status}: ${errBody.slice(0, 200)}`);
     }
 
     const data = await res.json();
-    const candidate = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!candidate) {
-      throw new Error('Gemini API returned empty candidate response.');
+    let content = data.choices?.[0]?.message?.content;
+    if (!content) {
+      throw new Error('Groq API returned empty response content.');
     }
 
-    return JSON.parse(candidate);
+    content = content.trim();
+    if (content.startsWith('```')) {
+      content = content.replace(/^```(json)?\s*/i, '').replace(/```\s*$/, '').trim();
+    }
+
+    return JSON.parse(content);
+  }
+
+  /**
+   * Alias for backward compatibility
+   */
+  static async callGeminiAPI(prompt, model = PRIMARY_MODEL) {
+    return this.callGroqAPI(prompt, model);
+  }
+
+  static async callAI(prompt, model = PRIMARY_MODEL) {
+    return this.callGroqAPI(prompt, model);
   }
 
   /**
@@ -180,16 +205,16 @@ Return ONLY a JSON object matching this schema:
     let aiResult = null;
     let modelUsed = PRIMARY_MODEL;
 
-    // Try Gemini Primary Model
+    // Try Groq Primary Model (openai/gpt-oss-120b)
     try {
-      aiResult = await this.callGeminiAPI(promptText, PRIMARY_MODEL);
+      aiResult = await this.callGroqAPI(promptText, PRIMARY_MODEL);
     } catch (err1) {
-      logger.warn(`[GeminiRouting] Primary model (${PRIMARY_MODEL}) failed: ${err1.message}. Trying fallback ${FALLBACK_MODEL}...`);
+      logger.warn(`[GroqRouting] Primary Groq model (${PRIMARY_MODEL}) failed: ${err1.message}. Trying fallback ${FALLBACK_MODEL}...`);
       try {
         modelUsed = FALLBACK_MODEL;
-        aiResult = await this.callGeminiAPI(promptText, FALLBACK_MODEL);
+        aiResult = await this.callGroqAPI(promptText, FALLBACK_MODEL);
       } catch (err2) {
-        logger.error(`[GeminiRouting] Gemini API unavailable (${err2.message}). Activating intelligent heuristic fallback.`);
+        logger.error(`[GroqRouting] Groq API unavailable (${err2.message}). Activating intelligent heuristic fallback.`);
         modelUsed = 'heuristic-engine';
         aiResult = this.heuristicClassification(requestData.reason, activeOffices);
       }
@@ -344,7 +369,7 @@ Return ONLY a JSON object matching this schema:
       user_id: studentUserId,
       request_id: requestId,
       title: `Clarification Received (${originalReq.request_code})`,
-      message: `Your clarification was analyzed by Gemini. Application has been routed to ${result.assignedOffice.name}.`,
+      message: `Your clarification was analyzed by AI. Application has been routed to ${result.assignedOffice.name}.`,
       type: 'FORWARDED'
     });
 
