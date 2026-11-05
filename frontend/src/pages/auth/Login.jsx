@@ -159,23 +159,31 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col justify-center py-10 sm:px-6 lg:px-8 font-sans">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+    <div className="relative min-h-screen bg-slate-900 flex flex-col justify-center py-10 sm:px-6 lg:px-8 font-sans overflow-hidden">
+      {/* Low Intensity Campus Aerial Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25 filter blur-[0.5px] scale-105 transition-all duration-700 pointer-events-none"
+        style={{ backgroundImage: "url('/campus-bg.jpg')" }}
+      />
+      {/* Soft gradient overlay for high contrast & readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-900/60 to-slate-950/80 pointer-events-none" />
+
+      <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md">
         <Link to="/" className="flex items-center justify-center space-x-3 mb-6 group">
-          <div className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center font-black shadow-lg group-hover:bg-primary-700 transition">
-            <Building2 className="w-6 h-6 text-sky-400" />
+          <div className="w-12 h-12 bg-white/10 backdrop-blur-md text-white rounded-2xl flex items-center justify-center font-black shadow-lg border border-white/20 group-hover:bg-primary-600 transition">
+            <Building2 className="w-6 h-6 text-sky-400 group-hover:text-white transition" />
           </div>
           <div>
-            <span className="text-xl font-black text-slate-900 tracking-tight block">IDWAA</span>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">
+            <span className="text-xl font-black text-white tracking-tight block drop-shadow-xs">IDWAA</span>
+            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
               Workflow Automation Agent
             </span>
           </div>
         </Link>
       </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-white py-8 px-6 sm:px-10 rounded-2xl shadow-xl border border-slate-200 space-y-6">
+      <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md px-4">
+        <div className="bg-white/95 backdrop-blur-md py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/40 space-y-6">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Institutional Login</h2>
             <p className="text-xs text-slate-500 mt-1">Sign in to test demo or department account</p>
