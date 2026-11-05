@@ -165,38 +165,38 @@ const Login = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50 scale-100 transition-all duration-700 pointer-events-none"
         style={{ backgroundImage: "url('/campus-bg.jpg')" }}
       />
-      {/* Ambient dark overlay for maximum contrast and transparency depth */}
-      <div className="absolute inset-0 bg-slate-950/45 pointer-events-none" />
+      {/* Light ambient tint to keep university building vibrant & visible */}
+      <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
       {/* Brand Header */}
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md">
         <Link to="/" className="flex items-center justify-center space-x-3 mb-6 group">
-          <div className="w-12 h-12 bg-white/15 backdrop-blur-md text-white rounded-2xl flex items-center justify-center font-black shadow-xl border border-white/25 group-hover:bg-primary-600 transition">
+          <div className="w-12 h-12 bg-black/20 backdrop-blur-sm text-white rounded-2xl flex items-center justify-center font-black shadow-xl border border-white/20 group-hover:bg-primary-600 transition">
             <Building2 className="w-6 h-6 text-sky-400 group-hover:text-white transition" />
           </div>
           <div>
-            <span className="text-xl font-black text-white tracking-tight block drop-shadow-md">IDWAA</span>
-            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider block drop-shadow-sm">
+            <span className="text-xl font-black text-white tracking-tight block drop-shadow-lg">IDWAA</span>
+            <span className="text-xs font-semibold text-slate-200 uppercase tracking-wider block drop-shadow-md">
               Workflow Automation Agent
             </span>
           </div>
         </Link>
       </div>
 
-      {/* Very Low Intensity Transparent Glass Login Box */}
+      {/* Ultra Low Intensity See-Through Login Box */}
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-slate-950/20 backdrop-blur-xs py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/10 space-y-6 text-white">
+        <div className="bg-black/15 backdrop-blur-[2px] py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/10 space-y-6 text-white">
           <div className="text-center">
-            <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-md">Institutional Login</h2>
-            <p className="text-xs text-slate-200 mt-1 drop-shadow-sm">Sign in to test demo or department account</p>
+            <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-lg">Institutional Login</h2>
+            <p className="text-xs text-slate-200 mt-1 drop-shadow-md">Sign in to test demo or department account</p>
           </div>
 
-          {/* Very Low Intensity Notice Banner */}
-          <div className="p-3 bg-sky-500/15 border border-sky-400/25 rounded-2xl flex items-start gap-2.5 text-xs text-sky-200 backdrop-blur-xs">
+          {/* Ultra Low Intensity Notice Banner */}
+          <div className="p-3 bg-sky-500/10 border border-sky-400/20 rounded-2xl flex items-start gap-2.5 text-xs text-sky-100 backdrop-blur-xs">
             <Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
             <div>
-              <span className="font-bold text-white">Instant Demo Login Ready:</span>
-              <p className="text-[11px] text-sky-200 mt-0.5">
+              <span className="font-bold text-white drop-shadow-sm">Instant Demo Login Ready:</span>
+              <p className="text-[11px] text-slate-200 mt-0.5 drop-shadow-xs">
                 Click any role card below or sign in with your email to launch the dashboard.
               </p>
             </div>
@@ -204,7 +204,7 @@ const Login = () => {
 
           {/* 1-Click Role Login Cards */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-200 uppercase tracking-wider mb-2 text-center drop-shadow-xs">
+            <label className="block text-[11px] font-bold text-slate-200 uppercase tracking-wider mb-2 text-center drop-shadow-sm">
               1-Click Demo Login (Select Role)
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -215,11 +215,11 @@ const Login = () => {
                     key={r.role}
                     type="button"
                     onClick={() => handleQuickDemoClick(r.role)}
-                    className={`p-2.5 border border-white/10 rounded-2xl flex flex-col items-center justify-center text-center transition hover:scale-[1.02] shadow-sm bg-black/20 hover:bg-black/40 backdrop-blur-xs ${r.color}`}
+                    className={`p-2.5 border border-white/10 rounded-2xl flex flex-col items-center justify-center text-center transition hover:scale-[1.02] shadow-sm bg-black/25 hover:bg-black/45 backdrop-blur-xs ${r.color}`}
                   >
                     <Icon className="w-4 h-4 text-white mb-1" />
-                    <span className="text-xs font-bold text-white drop-shadow-xs">{r.label}</span>
-                    <span className="text-[10px] text-sky-300 font-semibold mt-0.5">Log In →</span>
+                    <span className="text-xs font-bold text-white drop-shadow-sm">{r.label}</span>
+                    <span className="text-[10px] text-sky-300 font-semibold mt-0.5 drop-shadow-xs">Log In →</span>
                   </button>
                 );
               })}
@@ -228,13 +228,13 @@ const Login = () => {
 
           <div className="relative flex py-1 items-center">
             <div className="flex-grow border-t border-white/10"></div>
-            <span className="shrink-0 mx-3 text-slate-300 text-xs uppercase font-semibold drop-shadow-xs">Or enter credentials</span>
+            <span className="shrink-0 mx-3 text-slate-200 text-xs uppercase font-semibold drop-shadow-sm">Or enter credentials</span>
             <div className="flex-grow border-t border-white/10"></div>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-200 mb-1 drop-shadow-xs">Email Address</label>
+              <label className="block text-xs font-bold text-slate-200 mb-1 drop-shadow-sm">Email Address</label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-300 absolute left-3 top-3" />
                 <input
@@ -243,15 +243,15 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="e.g. your_email@gmail.com"
-                  className="w-full pl-9 pr-3 py-2.5 bg-black/25 hover:bg-black/35 focus:bg-black/45 border border-white/15 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                  className="w-full pl-9 pr-3 py-2.5 bg-black/30 hover:bg-black/40 focus:bg-black/50 border border-white/15 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-bold text-slate-200 drop-shadow-xs">Password</label>
-                <Link to="/forgot-password" className="text-xs text-sky-300 hover:text-sky-200 hover:underline drop-shadow-xs">
+                <label className="block text-xs font-bold text-slate-200 drop-shadow-sm">Password</label>
+                <Link to="/forgot-password" className="text-xs text-sky-300 hover:text-sky-200 hover:underline drop-shadow-sm">
                   Forgot password?
                 </Link>
               </div>
@@ -263,17 +263,17 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-3 py-2.5 bg-black/25 hover:bg-black/35 focus:bg-black/45 border border-white/15 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                  className="w-full pl-9 pr-3 py-2.5 bg-black/30 hover:bg-black/40 focus:bg-black/50 border border-white/15 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-200 mb-1 drop-shadow-xs">Log In As Role</label>
+              <label className="block text-xs font-bold text-slate-200 mb-1 drop-shadow-sm">Log In As Role</label>
               <select
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-xs font-semibold text-white focus:ring-2 focus:ring-sky-400 focus:outline-none"
+                className="w-full px-3 py-2.5 bg-slate-950/80 border border-white/15 rounded-xl text-xs font-semibold text-white focus:ring-2 focus:ring-sky-400 focus:outline-none"
               >
                 <option value="STUDENT" className="bg-slate-900 text-white">Student Dashboard</option>
                 <option value="MENTOR" className="bg-slate-900 text-white">Academic Mentor Dashboard</option>
@@ -286,16 +286,16 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-primary-600/90 hover:bg-primary-600 text-white font-bold rounded-xl text-sm shadow-lg shadow-black/40 transition disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+              className="w-full py-3 px-4 bg-primary-600/90 hover:bg-primary-600 text-white font-bold rounded-xl text-sm shadow-xl shadow-black/50 transition disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
             >
               {loading ? 'Authenticating...' : 'Sign In Now'}
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
-          <div className="text-center text-xs text-slate-300 pt-2 border-t border-white/10">
+          <div className="text-center text-xs text-slate-200 pt-2 border-t border-white/10">
             Need a student account?{' '}
-            <Link to="/register" className="font-bold text-sky-400 hover:text-sky-300 hover:underline drop-shadow-xs">
+            <Link to="/register" className="font-bold text-sky-400 hover:text-sky-300 hover:underline drop-shadow-sm">
               Register here
             </Link>
           </div>
