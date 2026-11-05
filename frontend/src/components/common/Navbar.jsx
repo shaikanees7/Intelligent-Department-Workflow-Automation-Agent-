@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { NotificationContext } from '../../context/NotificationContext';
 import api from '../../services/api';
-import StateCollegeCrest from './StateCollegeCrest';
+import idwaaLogo from '../../assets/images/idwaa-logo.jpg';
 import {
   Bell,
   LogOut,
@@ -108,11 +108,32 @@ const Navbar = () => {
 
   return (
     <header className="bg-[#F3F5F7]/95 backdrop-blur-md px-6 lg:px-8 py-3.5 flex items-center justify-between sticky top-0 z-40 border-b border-slate-200/80">
-      {/* Brand: State College Crest & Portal Identity (As in screenshot) */}
+      {/* Brand: IDWAA Logo & State College Identity */}
       <div className="flex items-center space-x-3.5">
-        <Link to="/student" className="flex items-center space-x-3 group">
-          <StateCollegeCrest className="w-11 h-11" />
-          <div className="space-y-0.5">
+        <Link
+          to={
+            user?.role === 'STUDENT'
+              ? '/student'
+              : user?.role === 'OFFICE_ADMIN'
+              ? '/office'
+              : user?.role === 'FACULTY'
+              ? '/faculty'
+              : user?.role === 'MENTOR'
+              ? '/mentor'
+              : user?.role === 'HOD'
+              ? '/hod'
+              : '/admin'
+          }
+          className="flex items-center space-x-3 group"
+        >
+          <div className="relative overflow-hidden rounded-xl border border-slate-200/90 shadow-xs bg-white/90 p-1 group-hover:border-teal-500 group-hover:shadow-sm transition-all duration-200 flex items-center justify-center">
+            <img
+              src={idwaaLogo}
+              alt="IDWAA - State College Workflow Portal Logo"
+              className="h-10 sm:h-11 w-auto max-w-[90px] sm:max-w-[110px] object-contain rounded-lg"
+            />
+          </div>
+          <div className="space-y-0.5 hidden sm:block">
             <div className="font-serif text-base sm:text-lg font-bold text-slate-900 tracking-wider leading-none group-hover:text-teal-700 transition">
               STATE COLLEGE
             </div>
