@@ -24,7 +24,6 @@ import {
   RefreshCw,
   X
 } from 'lucide-react';
-import DukeButton from '../../components/duke/DukeButton';
 
 const TrackRequest = () => {
   const { id } = useParams();
@@ -170,26 +169,25 @@ const TrackRequest = () => {
     Boolean(aiRouting?.requires_clarification);
 
   return (
-    <div className="min-h-screen bg-black text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <Navbar />
       <div className="flex flex-1">
         <Sidebar role={user?.role || 'STUDENT'} />
 
         <main className="flex-1 p-6 lg:p-8 max-w-4xl mx-auto w-full space-y-6">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-900">
-            <div className="flex items-center gap-3.5">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+            <div className="flex items-center gap-3">
               <Link
                 to={user?.role === 'STUDENT' ? '/student/requests' : user?.role === 'OFFICE_ADMIN' ? '/office' : '/admin'}
-                className="p-2.5 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white rounded-2xl border border-white/15 transition backdrop-blur-md"
+                className="p-2 bg-white hover:bg-slate-100 rounded-xl border border-slate-200 text-slate-600 transition"
               >
                 <ArrowLeft className="w-4 h-4" />
               </Link>
               <div>
-                <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
                   Application Journey Tracker
                 </h1>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-500 mt-0.5">
                   Real-time multi-level workflow verification & AI routing audit trail
                 </p>
               </div>
@@ -199,7 +197,7 @@ const TrackRequest = () => {
               {id && (
                 <button
                   onClick={fetchTracking}
-                  className="p-2.5 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/15 rounded-2xl transition backdrop-blur-md"
+                  className="p-2 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-xl transition"
                   title="Refresh Audit Data"
                 >
                   <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -208,7 +206,7 @@ const TrackRequest = () => {
               {user?.role === 'STUDENT' ? (
                 <Link
                   to="/student/requests"
-                  className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                  className="text-xs font-bold text-primary-600 hover:text-primary-800"
                 >
                   All Applications →
                 </Link>
@@ -218,55 +216,53 @@ const TrackRequest = () => {
 
           {/* If no ID in URL, show search / picker */}
           {!id && (
-            <div className="bg-zinc-950/85 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl space-y-6 text-center">
-              <div className="w-14 h-14 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-blue-600/20">
-                <Activity className="w-7 h-7" />
+            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6 text-center">
+              <div className="w-12 h-12 bg-sky-100 text-primary-600 rounded-full flex items-center justify-center mx-auto">
+                <Activity className="w-6 h-6" />
               </div>
-              <div className="space-y-1">
-                <h3 className="font-serif text-xl font-bold text-white">Track an Application</h3>
-                <p className="text-xs text-slate-400">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900">Track an Application</h3>
+                <p className="text-xs text-slate-500 mt-1">
                   Select an application from your recent list below to inspect its approval stage.
                 </p>
               </div>
 
               {recentList.length > 0 ? (
-                <div className="max-w-md mx-auto divide-y divide-white/5 border border-white/10 rounded-2xl overflow-hidden text-left text-xs bg-black/40">
+                <div className="max-w-md mx-auto divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden text-left text-xs">
                   {recentList.map((r) => (
                     <button
                       key={r.request_id}
                       onClick={() => navigate(`/student/track/${r.request_id}`)}
-                      className="w-full p-4 hover:bg-white/[0.04] flex items-center justify-between transition-colors"
+                      className="w-full p-3.5 hover:bg-slate-50 flex items-center justify-between transition"
                     >
                       <div>
-                        <div className="font-mono font-bold text-white">{r.request_code} ({r.request_type})</div>
-                        <div className="text-[11px] text-slate-400 truncate max-w-xs mt-0.5">{r.reason}</div>
+                        <div className="font-bold text-slate-900">{r.request_code} ({r.request_type})</div>
+                        <div className="text-[11px] text-slate-400 truncate max-w-xs">{r.reason}</div>
                       </div>
-                      <span className="font-bold text-blue-400 flex items-center gap-1">
-                        Track <ArrowRight className="w-3.5 h-3.5" />
-                      </span>
+                      <span className="font-bold text-primary-600">Track →</span>
                     </button>
                   ))}
                 </div>
               ) : (
-                <div className="text-xs text-slate-500">No applications to track.</div>
+                <div className="text-xs text-slate-400">No applications to track.</div>
               )}
             </div>
           )}
 
           {/* Loading State */}
           {loading && (
-            <div className="bg-zinc-950/80 backdrop-blur-xl p-12 rounded-3xl border border-white/10 text-center text-xs text-slate-400">
+            <div className="bg-white p-12 rounded-2xl border border-slate-200 text-center text-xs text-slate-400">
               Fetching tracking audit trail...
             </div>
           )}
 
           {/* Error Alert */}
           {error && (
-            <div className="bg-rose-950/50 border border-rose-500/40 rounded-3xl p-6 flex items-start gap-3.5 text-rose-200 text-xs shadow-2xl">
-              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+            <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 flex items-start gap-3 text-rose-800 text-xs">
+              <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
               <div>
-                <span className="font-serif font-bold text-sm block text-white">Tracking Unavailable</span>
-                <span className="text-rose-200/90">{error}</span>
+                <span className="font-bold text-sm block">Tracking Unavailable</span>
+                <span>{error}</span>
               </div>
             </div>
           )}
@@ -275,22 +271,22 @@ const TrackRequest = () => {
             <div className="space-y-6">
               {/* 1. AI Routing & Assigned Office Intelligence Card */}
               {aiRouting && (
-                <div className="bg-zinc-950/90 backdrop-blur-xl text-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/10 space-y-5">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-5">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 bg-blue-600/20 text-blue-400 rounded-2xl border border-blue-500/30 shadow-md">
+                <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-primary-950 text-white rounded-2xl p-6 shadow-md border border-slate-700 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700/80 pb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 bg-primary-500/20 text-sky-400 rounded-xl border border-primary-500/30">
                         <Sparkles className="w-5 h-5" />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2.5">
-                          <h3 className="font-serif font-bold text-base sm:text-lg text-white">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-sm sm:text-base text-white">
                             AI Permission Classification & Office Routing
                           </h3>
-                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-600/20 text-blue-300 border border-blue-400/30">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-400/30">
                             {aiRouting.confidence_score ? `${Math.round(aiRouting.confidence_score * 100)}% Match` : 'Neural'}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-0.5">
+                        <p className="text-[11px] text-slate-400">
                           Classified using Groq AI (openai/gpt-oss-120b) • Matched against registered university offices
                         </p>
                       </div>
@@ -300,9 +296,9 @@ const TrackRequest = () => {
                     {(user?.role === 'ADMIN' || user?.role === 'OFFICE_ADMIN') && (
                       <button
                         onClick={() => setIsReRouteModalOpen(true)}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white text-xs font-semibold border border-white/15 transition self-start sm:self-auto active:scale-95"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/20 transition self-start sm:self-auto"
                       >
-                        <Building2 className="w-3.5 h-3.5 text-blue-400" />
+                        <Building2 className="w-3.5 h-3.5" />
                         Re-Route Office
                       </button>
                     )}
@@ -310,30 +306,30 @@ const TrackRequest = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Assigned Office Box */}
-                    <div className="bg-black/60 rounded-2xl p-4 sm:p-5 border border-white/10 space-y-2.5">
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/10 space-y-2">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
                         Assigned University Office:
                       </span>
-                      <div className="flex items-center gap-2.5">
-                        <Building2 className="w-5 h-5 text-blue-400 shrink-0" />
+                      <div className="flex items-center gap-2">
+                        <Building2 className="w-5 h-5 text-sky-400 shrink-0" />
                         <div>
-                          <div className="font-serif font-bold text-white text-base">
+                          <div className="font-bold text-white text-sm">
                             {assignedOffice?.office_name || aiRouting.primary_office || 'University Office'}
                           </div>
                           {assignedOffice?.office_code && (
-                            <span className="text-[10px] font-mono text-blue-300">[{assignedOffice.office_code}]</span>
+                            <span className="text-[10px] font-mono text-sky-300">[{assignedOffice.office_code}]</span>
                           )}
                         </div>
                       </div>
 
                       {assignedOffice && (
-                        <div className="text-[11px] text-slate-300 space-y-1.5 pt-2 border-t border-white/10">
-                          <div className="flex items-center gap-2">
-                            <User className="w-3.5 h-3.5 text-slate-500" />
+                        <div className="text-[11px] text-slate-300 space-y-1 pt-1 border-t border-white/10">
+                          <div className="flex items-center gap-1.5">
+                            <User className="w-3 h-3 text-slate-400" />
                             <span>{assignedOffice.responsible_officer}</span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <MapPin className="w-3.5 h-3.5 text-slate-500" />
+                          <div className="flex items-center gap-1.5">
+                            <MapPin className="w-3 h-3 text-slate-400" />
                             <span>{assignedOffice.location}</span>
                           </div>
                         </div>
@@ -341,7 +337,7 @@ const TrackRequest = () => {
                     </div>
 
                     {/* Classification & Reason Box */}
-                    <div className="bg-black/60 rounded-2xl p-4 sm:p-5 border border-white/10 space-y-2.5">
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/10 space-y-2">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
                         AI Routing Reasoning & Justification:
                       </span>
@@ -360,21 +356,21 @@ const TrackRequest = () => {
 
               {/* 2. Interactive Clarification Widget */}
               {needsClarification && (
-                <div className="bg-amber-950/40 border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4">
-                  <div className="flex items-start gap-3.5">
-                    <div className="p-2.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-2xl shrink-0 mt-0.5">
+                <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-6 shadow-sm space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-amber-200 text-amber-900 rounded-xl shrink-0 mt-0.5">
                       <HelpCircle className="w-5 h-5" />
                     </div>
                     <div className="space-y-1 flex-1">
-                      <div className="flex items-center gap-2.5">
-                        <h4 className="font-serif font-bold text-white text-base sm:text-lg">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-bold text-amber-950 text-sm sm:text-base">
                           AI Agent Clarification Required
                         </h4>
-                        <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-200 text-amber-900">
                           Awaiting Student Input
                         </span>
                       </div>
-                      <p className="text-xs text-amber-200/90 leading-relaxed">
+                      <p className="text-xs text-amber-800 leading-relaxed">
                         The AI routing engine detected ambiguous or incomplete information in your submission. Please
                         answer the question below to route your application to the correct university desk:
                       </p>
@@ -382,27 +378,27 @@ const TrackRequest = () => {
                   </div>
 
                   {/* Clarification Question Prompt */}
-                  <div className="bg-black/60 p-4 rounded-2xl border border-amber-500/30 text-xs font-medium text-amber-100 shadow-inner">
-                    <span className="font-bold block text-[11px] text-amber-400 uppercase tracking-wider mb-1">
+                  <div className="bg-white p-4 rounded-xl border border-amber-200 text-xs font-medium text-amber-950 shadow-xs">
+                    <span className="font-bold block text-[11px] text-amber-700 uppercase tracking-wider mb-1">
                       Clarification Question:
                     </span>
-                    <p className="text-xs sm:text-sm font-semibold leading-relaxed">
+                    <p className="text-sm font-semibold">
                       "{aiRouting?.clarification_question || 'Could you please specify the purpose of your permission? Is it related to academics, examinations, hostel outing, or another university activity?'}"
                     </p>
                   </div>
 
                   {clarifySuccessMsg ? (
-                    <div className="bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 p-4 rounded-2xl text-xs font-semibold flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <div className="bg-emerald-100 border border-emerald-300 text-emerald-900 p-3.5 rounded-xl text-xs font-semibold flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                       <span>{clarifySuccessMsg}</span>
                     </div>
                   ) : (
                     <form onSubmit={handleClarificationSubmit} className="space-y-3">
                       {clarifyError && (
-                        <div className="bg-rose-950/60 border border-rose-500/40 text-rose-200 p-3 rounded-xl text-xs">{clarifyError}</div>
+                        <div className="bg-rose-100 text-rose-800 p-3 rounded-lg text-xs">{clarifyError}</div>
                       )}
                       <div>
-                        <label className="block text-xs font-semibold text-amber-200 mb-1.5">
+                        <label className="block text-xs font-bold text-amber-950 mb-1">
                           Your Explanation & Response:
                         </label>
                         <textarea
@@ -411,13 +407,13 @@ const TrackRequest = () => {
                           value={clarificationResponse}
                           onChange={(e) => setClarificationResponse(e.target.value)}
                           placeholder="Provide the requested details here (e.g., mention whether this is for exam fee clearance, semester lab practical, hostel night out, sports tournament, etc.)..."
-                          className="w-full px-4 py-2.5 bg-black/60 border border-amber-500/30 rounded-2xl text-xs text-white placeholder-slate-500 focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 focus:outline-none leading-relaxed"
+                          className="w-full px-3.5 py-2.5 bg-white border border-amber-300 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:outline-none"
                         />
                       </div>
                       <button
                         type="submit"
                         disabled={clarifying || !clarificationResponse.trim()}
-                        className="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs px-6 py-2.5 rounded-full shadow-lg shadow-amber-600/30 transition active:scale-95 disabled:opacity-50"
+                        className="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition disabled:opacity-50"
                       >
                         <Send className="w-3.5 h-3.5" />
                         {clarifying ? 'Submitting & Re-routing with AI...' : 'Submit Clarification'}
@@ -429,22 +425,22 @@ const TrackRequest = () => {
 
               {/* 3. Clarification History Log */}
               {clarifications.length > 0 && (
-                <div className="bg-zinc-950/85 backdrop-blur-xl rounded-3xl border border-white/10 p-6 shadow-2xl space-y-3">
-                  <div className="flex items-center gap-2 text-white font-serif font-bold text-sm">
-                    <MessageSquare className="w-4 h-4 text-blue-400" />
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
+                  <div className="flex items-center gap-2 text-slate-900 font-bold text-xs">
+                    <MessageSquare className="w-4 h-4 text-primary-600" />
                     <span>Clarification History ({clarifications.length})</span>
                   </div>
-                  <div className="divide-y divide-white/5 text-xs">
+                  <div className="divide-y divide-slate-100 text-xs">
                     {clarifications.map((c) => (
-                      <div key={c.clarification_id} className="py-3.5 space-y-1.5">
-                        <div className="flex items-center justify-between text-slate-500 text-[10px]">
-                          <span className="font-semibold text-amber-400">Question Asked</span>
+                      <div key={c.clarification_id} className="py-3 space-y-1.5">
+                        <div className="flex items-center justify-between text-slate-400 text-[10px]">
+                          <span className="font-semibold text-amber-700">Question Asked</span>
                           <span>{new Date(c.created_at).toLocaleString()}</span>
                         </div>
-                        <p className="font-semibold text-slate-200 text-xs">"{c.question_text}"</p>
+                        <p className="font-semibold text-slate-800 text-xs">"{c.question_text}"</p>
                         {c.student_response && (
-                          <div className="mt-2 pl-3 border-l-2 border-blue-500 bg-black/40 p-3 rounded-xl text-slate-300">
-                            <span className="text-[10px] font-bold text-blue-400 block mb-0.5">
+                          <div className="mt-1.5 pl-3 border-l-2 border-primary-500 bg-slate-50 p-2.5 rounded text-slate-700">
+                            <span className="text-[10px] font-bold text-primary-600 block mb-0.5">
                               Student Answer:
                             </span>
                             {c.student_response}
@@ -468,16 +464,16 @@ const TrackRequest = () => {
 
           {/* Manual Re-Route Modal */}
           {isReRouteModalOpen && (
-            <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-              <div className="bg-zinc-950 rounded-3xl shadow-2xl border border-white/15 w-full max-w-md p-6 sm:p-8 space-y-5 text-white animate-in fade-in zoom-in-95 duration-200">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                  <div className="flex items-center gap-2.5">
-                    <Building2 className="w-5 h-5 text-blue-400" />
-                    <h3 className="font-serif font-bold text-white text-base">Manual Office Re-Route</h3>
+            <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-5 h-5 text-primary-600" />
+                    <h3 className="font-bold text-slate-900 text-sm">Manual Office Re-Route</h3>
                   </div>
                   <button
                     onClick={() => setIsReRouteModalOpen(false)}
-                    className="p-1.5 text-slate-400 hover:text-white rounded-lg transition"
+                    className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -485,14 +481,14 @@ const TrackRequest = () => {
 
                 <form onSubmit={handleManualRouteSubmit} className="space-y-4 text-xs">
                   <div>
-                    <label className="block font-semibold text-slate-300 mb-1.5">Select Target University Office:</label>
+                    <label className="block font-bold text-slate-700 mb-1">Select Target University Office:</label>
                     <select
                       value={targetOfficeId}
                       onChange={(e) => setTargetOfficeId(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-zinc-900 border border-white/15 rounded-2xl text-white focus:ring-2 focus:ring-blue-500/25 focus:border-blue-500 focus:outline-none transition"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-primary-500 focus:outline-none"
                     >
                       {allOffices.map((off) => (
-                        <option key={off.office_id} value={off.office_id} className="bg-zinc-900 text-white">
+                        <option key={off.office_id} value={off.office_id}>
                           {off.name} [{off.code}] - {off.category}
                         </option>
                       ))}
@@ -500,32 +496,31 @@ const TrackRequest = () => {
                   </div>
 
                   <div>
-                    <label className="block font-semibold text-slate-300 mb-1.5">Reason for Re-Routing:</label>
+                    <label className="block font-bold text-slate-700 mb-1">Reason for Re-Routing:</label>
                     <textarea
-                      rows="3"
+                      rows="2"
                       placeholder="e.g. Request requires examination clearance rather than academic waiver."
                       value={reRouteReason}
                       onChange={(e) => setReRouteReason(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-zinc-900 border border-white/15 rounded-2xl text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500/25 focus:border-blue-500 focus:outline-none transition leading-relaxed"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-none"
                     />
                   </div>
 
-                  <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                     <button
                       type="button"
                       onClick={() => setIsReRouteModalOpen(false)}
-                      className="px-5 py-2.5 border border-white/15 rounded-full font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition"
+                      className="px-4 py-2 border border-slate-300 rounded-xl font-semibold text-slate-600 hover:bg-slate-100"
                     >
                       Cancel
                     </button>
-                    <DukeButton
+                    <button
                       type="submit"
                       disabled={reRouting}
-                      loading={reRouting}
-                      size="sm"
+                      className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl disabled:opacity-50"
                     >
                       {reRouting ? 'Re-routing...' : 'Confirm Re-Route'}
-                    </DukeButton>
+                    </button>
                   </div>
                 </form>
               </div>
