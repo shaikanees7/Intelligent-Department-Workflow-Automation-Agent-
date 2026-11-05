@@ -14,12 +14,12 @@ import {
   Activity,
   Download,
   AlertCircle,
-  Calendar,
   Sparkles,
   ArrowRight,
-  ShieldCheck,
   Send,
-  BookOpen
+  PieChart,
+  TrendingUp,
+  BarChart3
 } from 'lucide-react';
 
 const StudentDashboard = () => {
@@ -106,6 +106,13 @@ const StudentDashboard = () => {
   const rejected = requests.filter((r) => r.overall_status === 'REJECTED').length;
   const pending = requests.filter((r) => ['SUBMITTED', 'PENDING', 'UNDER_REVIEW'].includes(r.overall_status)).length;
 
+  const approvedPct = total > 0 ? Math.round((approved / total) * 100) : 0;
+  const pendingPct = total > 0 ? Math.round((pending / total) * 100) : 0;
+  const rejectedPct = total > 0 ? Math.round((rejected / total) * 100) : 0;
+
+  // Donut circumference for r=72
+  const circumference = 2 * Math.PI * 72; // ~452.39
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <Navbar />
@@ -183,83 +190,283 @@ const StudentDashboard = () => {
             </div>
           </div>
 
-          {/* Quick Submission Cards for 4 Types */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
-              Request Types & Permissions
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <Link
-                to="/student/new-request"
-                className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-primary-400 hover:shadow-md transition group space-y-3"
-              >
-                <div className="w-10 h-10 rounded-xl bg-sky-100 text-primary-700 flex items-center justify-center font-bold">
-                  <Activity className="w-5 h-5" />
+          {/* Graphical Analytics & Status Distribution Diagram */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 lg:p-8 space-y-6">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center font-bold">
+                  <PieChart className="w-5 h-5" />
                 </div>
-                <h4 className="font-bold text-base text-slate-900 group-hover:text-primary-700 transition">
-                  On-Duty (OD) Request
-                </h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Academic competitions, external hackathons, industrial visits, and conference attendance.
-                </p>
-                <div className="text-xs font-bold text-primary-600 flex items-center gap-1">
-                  Apply Now <ArrowRight className="w-3.5 h-3.5" />
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 tracking-tight">
+                    Application Workflow Distribution & Status Analytics
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Real-time visual diagram of applications across submission, review, sanction, and decision stages
+                  </p>
                 </div>
-              </Link>
+              </div>
 
-              <Link
-                to="/student/new-request"
-                className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-primary-400 hover:shadow-md transition group space-y-3"
-              >
-                <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
-                  <Calendar className="w-5 h-5" />
-                </div>
-                <h4 className="font-bold text-base text-slate-900 group-hover:text-indigo-700 transition">
-                  Student Leave Request
-                </h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Personal emergencies, family obligations, and medical leave with doctor certificate.
-                </p>
-                <div className="text-xs font-bold text-indigo-600 flex items-center gap-1">
-                  Apply Now <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </Link>
+              <div className="flex items-center gap-2 self-start sm:self-auto">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  Live Workflow Sync
+                </span>
+                <Link
+                  to="/student/requests"
+                  className="text-xs font-bold text-primary-600 hover:text-primary-700 transition flex items-center gap-1 ml-2"
+                >
+                  View Details <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
 
-              <Link
-                to="/student/new-request"
-                className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-primary-400 hover:shadow-md transition group space-y-3"
-              >
-                <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <h4 className="font-bold text-base text-slate-900 group-hover:text-purple-700 transition">
-                  Event Participation
-                </h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  College fest coordination, sports tournaments, technical workshops, and club activities.
-                </p>
-                <div className="text-xs font-bold text-purple-600 flex items-center gap-1">
-                  Apply Now <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </Link>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              {/* Left Column: Interactive SVG Donut Diagram */}
+              <div className="lg:col-span-5 flex flex-col items-center justify-center p-4">
+                <div className="relative w-56 h-56 flex items-center justify-center">
+                  <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 200 200">
+                    {/* Background Circle */}
+                    <circle
+                      cx="100"
+                      cy="100"
+                      r="72"
+                      fill="transparent"
+                      stroke="#f1f5f9"
+                      strokeWidth="20"
+                    />
 
-              <Link
-                to="/student/new-request"
-                className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-emerald-400 hover:shadow-md transition group space-y-3"
-              >
-                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
-                  <BookOpen className="w-5 h-5" />
+                    {total === 0 ? (
+                      <circle
+                        cx="100"
+                        cy="100"
+                        r="72"
+                        fill="transparent"
+                        stroke="#e2e8f0"
+                        strokeWidth="20"
+                        strokeDasharray={circumference}
+                        strokeDashoffset="0"
+                      />
+                    ) : (
+                      <>
+                        {/* 1. Approved / Sanctioned Segment (Emerald) */}
+                        <circle
+                          cx="100"
+                          cy="100"
+                          r="72"
+                          fill="transparent"
+                          stroke="#10b981"
+                          strokeWidth="20"
+                          strokeDasharray={`${(approved / total) * circumference} ${circumference}`}
+                          strokeDashoffset="0"
+                          className="transition-all duration-1000 ease-out"
+                        />
+
+                        {/* 2. Under Review Segment (Amber) */}
+                        <circle
+                          cx="100"
+                          cy="100"
+                          r="72"
+                          fill="transparent"
+                          stroke="#f59e0b"
+                          strokeWidth="20"
+                          strokeDasharray={`${(pending / total) * circumference} ${circumference}`}
+                          strokeDashoffset={`-${(approved / total) * circumference}`}
+                          className="transition-all duration-1000 ease-out"
+                        />
+
+                        {/* 3. Rejected Segment (Rose) */}
+                        <circle
+                          cx="100"
+                          cy="100"
+                          r="72"
+                          fill="transparent"
+                          stroke="#f43f5e"
+                          strokeWidth="20"
+                          strokeDasharray={`${(rejected / total) * circumference} ${circumference}`}
+                          strokeDashoffset={`-${((approved + pending) / total) * circumference}`}
+                          className="transition-all duration-1000 ease-out"
+                        />
+                      </>
+                    )}
+                  </svg>
+
+                  {/* Center Donut Metrics */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                    <span className="text-3xl font-black text-slate-900 tracking-tight leading-none">
+                      {total}
+                    </span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">
+                      Total Requests
+                    </span>
+                    {total > 0 && (
+                      <span className="text-[11px] font-semibold text-emerald-600 mt-1 flex items-center gap-0.5">
+                        <TrendingUp className="w-3 h-3" />
+                        {approvedPct}% Sanctioned
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <h4 className="font-bold text-base text-slate-900 group-hover:text-emerald-700 transition">
-                  Exam Permission Request
-                </h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Lab practical reschedule, supplementary examination clearance, re-sits, and hall ticket exemptions.
+
+                <p className="text-[11px] text-slate-400 text-center mt-3 font-medium">
+                  Outcome ratio of submitted permission applications
                 </p>
-                <div className="text-xs font-bold text-emerald-600 flex items-center gap-1">
-                  Apply Now <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+
+              {/* Right Column: Comparative Graph Bars & Breakdown Cards */}
+              <div className="lg:col-span-7 space-y-5">
+                {/* Segmented Distribution Bar */}
+                <div>
+                  <div className="flex items-center justify-between text-xs font-semibold text-slate-700 mb-2">
+                    <span className="flex items-center gap-1.5 font-bold">
+                      <BarChart3 className="w-3.5 h-3.5 text-primary-600" />
+                      Status Distribution Ratio
+                    </span>
+                    <span className="text-slate-400 text-[11px] font-normal">
+                      {approved} Sanctioned • {pending} In Review • {rejected} Rejected
+                    </span>
+                  </div>
+                  <div className="w-full h-3.5 bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
+                    {total > 0 ? (
+                      <>
+                        <div
+                          style={{ width: `${approvedPct}%` }}
+                          className="bg-emerald-500 h-full transition-all duration-700"
+                          title={`Sanctioned: ${approved} (${approvedPct}%)`}
+                        />
+                        <div
+                          style={{ width: `${pendingPct}%` }}
+                          className="bg-amber-500 h-full transition-all duration-700"
+                          title={`Under Review: ${pending} (${pendingPct}%)`}
+                        />
+                        <div
+                          style={{ width: `${rejectedPct}%` }}
+                          className="bg-rose-500 h-full transition-all duration-700"
+                          title={`Rejected: ${rejected} (${rejectedPct}%)`}
+                        />
+                      </>
+                    ) : (
+                      <div className="w-full h-full bg-slate-200" />
+                    )}
+                  </div>
                 </div>
-              </Link>
+
+                {/* 3 Status Detail Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                  {/* Sanctioned Card */}
+                  <div className="bg-emerald-50/70 border border-emerald-200/90 rounded-2xl p-4 space-y-2 hover:bg-emerald-50 transition">
+                    <div className="flex items-center justify-between">
+                      <span className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4" />
+                      </span>
+                      <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                        {approvedPct}%
+                      </span>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-black text-emerald-800">{approved}</div>
+                      <div className="text-xs font-bold text-emerald-950 mt-0.5">Sanctioned</div>
+                      <p className="text-[11px] text-emerald-700 mt-1 leading-snug">
+                        Full authorization granted & digital pass active.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Under Review Card */}
+                  <div className="bg-amber-50/70 border border-amber-200/90 rounded-2xl p-4 space-y-2 hover:bg-amber-50 transition">
+                    <div className="flex items-center justify-between">
+                      <span className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                        <Clock className="w-4 h-4" />
+                      </span>
+                      <span className="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
+                        {pendingPct}%
+                      </span>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-black text-amber-800">{pending}</div>
+                      <div className="text-xs font-bold text-amber-950 mt-0.5">Under Review</div>
+                      <p className="text-[11px] text-amber-700 mt-1 leading-snug">
+                        In progress with Mentor, Faculty, or Office.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Rejected Card */}
+                  <div className="bg-rose-50/70 border border-rose-200/90 rounded-2xl p-4 space-y-2 hover:bg-rose-50 transition">
+                    <div className="flex items-center justify-between">
+                      <span className="w-8 h-8 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center">
+                        <XCircle className="w-4 h-4" />
+                      </span>
+                      <span className="text-xs font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full">
+                        {rejectedPct}%
+                      </span>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-black text-rose-800">{rejected}</div>
+                      <div className="text-xs font-bold text-rose-950 mt-0.5">Rejected</div>
+                      <p className="text-[11px] text-rose-700 mt-1 leading-snug">
+                        Declined or requires additional justification.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Comparative Volume Bars */}
+                <div className="p-4 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-3">
+                  <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+                    Volume Comparison by Category Outcome
+                  </div>
+
+                  {/* Bar 1: Sanctioned */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Sanctioned / Approved
+                      </span>
+                      <span className="font-bold text-slate-900">{approved}</span>
+                    </div>
+                    <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                      <div
+                        style={{ width: `${total > 0 ? (approved / total) * 100 : 0}%` }}
+                        className="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Bar 2: Under Review */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Under Review (In Progress)
+                      </span>
+                      <span className="font-bold text-slate-900">{pending}</span>
+                    </div>
+                    <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                      <div
+                        style={{ width: `${total > 0 ? (pending / total) * 100 : 0}%` }}
+                        className="bg-amber-500 h-full rounded-full transition-all duration-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Bar 3: Rejected */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Rejected / Incomplete
+                      </span>
+                      <span className="font-bold text-slate-900">{rejected}</span>
+                    </div>
+                    <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                      <div
+                        style={{ width: `${total > 0 ? (rejected / total) * 100 : 0}%` }}
+                        className="bg-rose-500 h-full rounded-full transition-all duration-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -287,7 +494,7 @@ const StudentDashboard = () => {
                 </div>
                 <p className="text-sm font-bold text-slate-700">No applications submitted yet</p>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                  Submit an On-Duty, Leave, Event, or Exam permission request to initiate the automated approval workflow.
+                  Submit an application to initiate the automated approval workflow.
                 </p>
                 <Link
                   to="/student/new-request"
