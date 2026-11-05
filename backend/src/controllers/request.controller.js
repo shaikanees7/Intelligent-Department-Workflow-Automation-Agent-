@@ -36,25 +36,11 @@ const submitRequest = async (req, res, next) => {
       current_reviewer_user_id: assignedMentorId
     });
 
-    // Handle document upload(s) if present (permission letter and supporting documents)
-    const filesToProcess = [];
-    if (req.files) {
-      if (Array.isArray(req.files)) {
-        filesToProcess.push(...req.files);
-      } else {
-        for (const k of Object.keys(req.files)) {
-          filesToProcess.push(...req.files[k]);
-        }
-      }
-    } else if (req.file) {
-      filesToProcess.push(req.file);
-    }
-
-    for (const f of filesToProcess) {
-      const docType = f.fieldname === 'permission_letter' ? 'PERMISSION_LETTER' : (f.mimetype || 'DOCUMENT');
+    // Handle document upload if present
+    if (req.file) {
       await db.query(
         'INSERT INTO uploaded_documents (request_id, file_name, file_path, file_type, file_size) VALUES (?, ?, ?, ?, ?)',
-        [requestId, f.originalname, `/uploads/${f.filename}`, docType, f.size]
+        [requestId, req.file.originalname, `/uploads/${req.file.filename}`, req.file.mimetype, req.file.size]
       );
     }
 
@@ -256,18 +242,12 @@ const getRequestTracking = async (req, res, next) => {
       [currentReq.request_id]
     );
 
-    const [documents] = await db.query(
-      `SELECT * FROM uploaded_documents WHERE request_id = ? ORDER BY document_id ASC`,
-      [currentReq.request_id]
-    );
-
     return ApiResponse.success(res, 'Tracking details', {
       request: currentReq,
       history: historyRows,
       ai_routing: aiLogs[0] || null,
       assigned_office: assignedOffice[0] || null,
-      clarifications: clarifications || [],
-      documents: documents || []
+      clarifications: clarifications || []
     });
   } catch (err) {
     next(err);

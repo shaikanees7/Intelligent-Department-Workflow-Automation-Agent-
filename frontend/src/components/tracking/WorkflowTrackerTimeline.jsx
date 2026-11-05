@@ -10,14 +10,11 @@ import {
   Calendar,
   AlertTriangle,
   Download,
-  FileText,
-  FileCheck,
-  Paperclip,
-  ExternalLink
+  FileText
 } from 'lucide-react';
 import StatusBadge from '../common/StatusBadge';
 
-const WorkflowTrackerTimeline = ({ request, history = [], documents = [] }) => {
+const WorkflowTrackerTimeline = ({ request, history = [] }) => {
   if (!request) return null;
 
   // Standard 4-step workflow sequence:
@@ -219,45 +216,6 @@ const WorkflowTrackerTimeline = ({ request, history = [], documents = [] }) => {
         <p className="text-slate-700 leading-relaxed bg-white p-3.5 rounded-lg border border-slate-200">
           "{request.reason}"
         </p>
-
-        {/* Uploaded Documents List */}
-        {documents && documents.length > 0 && (
-          <div className="pt-3 border-t border-slate-200 space-y-2">
-            <span className="font-bold text-slate-700 block text-[11px] uppercase tracking-wider">
-              Attached Student Documents ({documents.length})
-            </span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {documents.map((doc) => {
-                const isLetter = doc.file_type === 'PERMISSION_LETTER';
-                return (
-                  <a
-                    key={doc.document_id}
-                    href={`http://localhost:5000${doc.file_path}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 bg-white rounded-lg border border-slate-200 hover:border-primary-400 hover:shadow-xs transition flex items-center justify-between group"
-                  >
-                    <div className="flex items-center gap-2.5 truncate">
-                      <div className={`p-2 rounded-lg shrink-0 ${isLetter ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-primary-700'}`}>
-                        {isLetter ? <FileCheck className="w-4 h-4" /> : <Paperclip className="w-4 h-4" />}
-                      </div>
-                      <div className="truncate text-left">
-                        <span className="font-bold text-slate-900 block truncate text-xs group-hover:text-primary-700 transition">
-                          {doc.file_name}
-                        </span>
-                        <span className="text-[10px] text-slate-400">
-                          {isLetter ? 'Official Permission Letter' : 'Supporting Attachment'}
-                          {doc.file_size ? ` • ${(doc.file_size / 1024).toFixed(1)} KB` : ''}
-                        </span>
-                      </div>
-                    </div>
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-primary-600 shrink-0 ml-2" />
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

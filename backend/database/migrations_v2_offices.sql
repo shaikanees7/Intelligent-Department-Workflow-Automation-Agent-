@@ -86,4 +86,3 @@ CREATE INDEX idx_office_active ON university_offices(is_active);
 CREATE INDEX idx_ai_req ON ai_classification_logs(request_id);
 CREATE INDEX idx_app_office ON application_office_assignments(office_id, status);
 CREATE INDEX idx_clarify_req ON clarification_history(request_id);
-

@@ -698,4 +698,3 @@ const UniversityOffices = () => {
 };
 
 export default UniversityOffices;
-
