@@ -108,7 +108,7 @@ const Navbar = () => {
 
   return (
     <header className="bg-[#F3F5F7]/95 backdrop-blur-md px-6 lg:px-8 py-3.5 flex items-center justify-between sticky top-0 z-40 border-b border-slate-200/80">
-      {/* Brand: IDWAA Logo & State College Identity */}
+      {/* Brand: IDWAA Logo & Identity */}
       <div className="flex items-center space-x-3.5">
         <Link
           to={
@@ -129,7 +129,7 @@ const Navbar = () => {
           <div className="relative overflow-hidden rounded-xl border border-slate-200/90 shadow-xs bg-white/90 p-1 group-hover:border-teal-500 group-hover:shadow-sm transition-all duration-200 flex items-center justify-center">
             <img
               src={idwaaLogo}
-              alt="IDWAA - State College Workflow Portal Logo"
+              alt="IDWAA Logo"
               className="h-10 sm:h-11 w-auto max-w-[90px] sm:max-w-[110px] object-contain rounded-lg"
             />
           </div>
