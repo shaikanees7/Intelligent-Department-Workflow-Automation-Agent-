@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
+import { AuthContext } from '../../context/AuthContext';
 import api from '../../services/api';
 import {
   Activity,
@@ -10,10 +11,20 @@ import {
   AlertTriangle,
   RotateCcw,
   CheckCircle2,
-  ArrowRight
+  ArrowRight,
+  Hash,
+  Phone
 } from 'lucide-react';
 
 const NewRequest = () => {
+  const { user } = useContext(AuthContext);
+
+  const [registrationNumber, setRegistrationNumber] = useState(
+    user?.registration_number || user?.registrationNumber || ''
+  );
+  const [mobileNumber, setMobileNumber] = useState(
+    user?.phone || ''
+  );
   const [subject, setSubject] = useState('');
   const [reason, setReason] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -26,6 +37,18 @@ const NewRequest = () => {
   const [successData, setSuccessData] = useState(null);
 
   const navigate = useNavigate();
+
+  // Sync if user profile loads asynchronously
+  useEffect(() => {
+    if (user) {
+      if (!registrationNumber && (user.registration_number || user.registrationNumber)) {
+        setRegistrationNumber(user.registration_number || user.registrationNumber);
+      }
+      if (!mobileNumber && user.phone) {
+        setMobileNumber(user.phone);
+      }
+    }
+  }, [user]);
 
   // Check priority based on start date
   useEffect(() => {
@@ -53,6 +76,16 @@ const NewRequest = () => {
     e.preventDefault();
     setError('');
 
+    if (!registrationNumber.trim()) {
+      setError('Registration Number is required.');
+      return;
+    }
+
+    if (!mobileNumber.trim()) {
+      setError('Mobile Number is required.');
+      return;
+    }
+
     if (new Date(startDate) > new Date(endDate)) {
       setError('Start date cannot be after end date.');
       return;
@@ -61,12 +94,12 @@ const NewRequest = () => {
     try {
       setSubmitting(true);
       const formData = new FormData();
-      // Default request_type for schema compatibility while AI dynamically categorizes
       formData.append('request_type', 'OD');
+      formData.append('registration_number', registrationNumber.trim());
+      formData.append('mobile_number', mobileNumber.trim());
+      formData.append('phone', mobileNumber.trim());
 
-      const fullReason = subject.trim()
-        ? `[Subject: ${subject.trim()}] ${reason.trim()}`
-        : reason.trim();
+      const fullReason = `[Reg No: ${registrationNumber.trim()}] [Phone: ${mobileNumber.trim()}] [Subject: ${subject.trim()}] ${reason.trim()}`;
 
       formData.append('reason', fullReason);
       formData.append('start_date', startDate);
@@ -158,8 +191,8 @@ const NewRequest = () => {
                 <div className="text-xs">
                   <h3 className="font-bold text-slate-900">Intelligent AI Classification & Routing</h3>
                   <p className="text-slate-600 mt-0.5 leading-relaxed">
-                    You don't need to choose an administrative category. Simply describe your purpose, dates, and justification.
-                    Our AI Routing Agent evaluates your application and assigns it directly to the relevant university office (e.g. Examination Cell, Finance Office, Hostel Office, Sports Department, etc.).
+                    You don't need to choose an administrative category. Simply provide your registration number, contact phone, and describe your purpose.
+                    Our AI Routing Agent evaluates your application and assigns it directly to the relevant university office.
                   </p>
                 </div>
               </div>
@@ -184,6 +217,39 @@ const NewRequest = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Student Verification: Registration Number & Mobile Number */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <Hash className="w-3.5 h-3.5 text-primary-600" />
+                      Registration Number <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={registrationNumber}
+                      onChange={(e) => setRegistrationNumber(e.target.value)}
+                      required
+                      placeholder="e.g. 21BCE1024 / 241FA18363"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500 text-slate-900 font-semibold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5 text-primary-600" />
+                      Mobile Number <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      value={mobileNumber}
+                      onChange={(e) => setMobileNumber(e.target.value)}
+                      required
+                      placeholder="e.g. +91 9876543210"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500 text-slate-900 font-semibold"
+                    />
+                  </div>
+                </div>
+
                 {/* Subject / Purpose Title */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">

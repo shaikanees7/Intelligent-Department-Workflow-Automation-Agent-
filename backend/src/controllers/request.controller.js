@@ -9,8 +9,22 @@ const ApiResponse = require('../utils/apiResponse');
 
 const submitRequest = async (req, res, next) => {
   try {
-    const { request_type, reason, start_date, end_date } = req.body;
+    const { request_type, reason, start_date, end_date, registration_number, phone, mobile_number } = req.body;
     const studentUserId = req.user.userId;
+
+    // Persist/Update phone & registration number if supplied
+    const studentPhone = (phone || mobile_number || '').trim();
+    if (studentPhone) {
+      await db.query('UPDATE users SET phone = ? WHERE user_id = ?', [studentPhone, studentUserId]);
+    }
+
+    const regNo = (registration_number || '').trim();
+    if (regNo) {
+      await db.query(
+        'INSERT INTO students (user_id, registration_number, section, semester, batch_year) VALUES (?, ?, "A", 6, "2022-2026") ON DUPLICATE KEY UPDATE registration_number = ?',
+        [studentUserId, regNo, regNo]
+      );
+    }
 
     // Check mentor assignment
     const [mentorRows] = await db.query(
