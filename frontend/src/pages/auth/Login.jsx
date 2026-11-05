@@ -183,16 +183,16 @@ const Login = () => {
         </Link>
       </div>
 
-      {/* Balanced Intensity Frosted Glass Login Box */}
+      {/* Balanced Intensity Frosted Glass Login Box (-5% Sheer) */}
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-slate-950/40 backdrop-blur-md py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/20 space-y-6 text-white">
+        <div className="bg-slate-950/35 backdrop-blur-md py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/15 space-y-6 text-white">
           <div className="text-center">
             <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-lg">Institutional Login</h2>
             <p className="text-xs text-slate-200 mt-1 drop-shadow-md">Sign in to test demo or department account</p>
           </div>
 
           {/* Notice Banner */}
-          <div className="p-3 bg-sky-500/20 border border-sky-400/30 rounded-2xl flex items-start gap-2.5 text-xs text-sky-100 backdrop-blur-xs">
+          <div className="p-3 bg-sky-500/15 border border-sky-400/25 rounded-2xl flex items-start gap-2.5 text-xs text-sky-100 backdrop-blur-xs">
             <Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
             <div>
               <span className="font-bold text-white drop-shadow-sm">Instant Demo Login Ready:</span>
@@ -215,7 +215,7 @@ const Login = () => {
                     key={r.role}
                     type="button"
                     onClick={() => handleQuickDemoClick(r.role)}
-                    className={`p-2.5 border border-white/15 rounded-2xl flex flex-col items-center justify-center text-center transition hover:scale-[1.02] shadow-sm bg-black/35 hover:bg-black/55 backdrop-blur-xs ${r.color}`}
+                    className={`p-2.5 border border-white/10 rounded-2xl flex flex-col items-center justify-center text-center transition hover:scale-[1.02] shadow-sm bg-black/30 hover:bg-black/50 backdrop-blur-xs ${r.color}`}
                   >
                     <Icon className="w-4 h-4 text-white mb-1" />
                     <span className="text-xs font-bold text-white drop-shadow-sm">{r.label}</span>
@@ -227,9 +227,9 @@ const Login = () => {
           </div>
 
           <div className="relative flex py-1 items-center">
-            <div className="flex-grow border-t border-white/15"></div>
+            <div className="flex-grow border-t border-white/10"></div>
             <span className="shrink-0 mx-3 text-slate-200 text-xs uppercase font-semibold drop-shadow-sm">Or enter credentials</span>
-            <div className="flex-grow border-t border-white/15"></div>
+            <div className="flex-grow border-t border-white/10"></div>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
@@ -243,7 +243,7 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="e.g. your_email@gmail.com"
-                  className="w-full pl-9 pr-3 py-2.5 bg-black/40 hover:bg-black/50 focus:bg-black/60 border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                  className="w-full pl-9 pr-3 py-2.5 bg-black/35 hover:bg-black/45 focus:bg-black/55 border border-white/15 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
                 />
               </div>
             </div>
@@ -263,7 +263,7 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-3 py-2.5 bg-black/40 hover:bg-black/50 focus:bg-black/60 border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                  className="w-full pl-9 pr-3 py-2.5 bg-black/35 hover:bg-black/45 focus:bg-black/55 border border-white/15 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
                 />
               </div>
             </div>
