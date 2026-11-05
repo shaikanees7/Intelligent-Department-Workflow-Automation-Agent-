@@ -237,6 +237,14 @@ const getRequestTracking = async (req, res, next) => {
       [currentReq.request_id]
     );
 
+    if (assignedOffice.length) {
+      currentReq.assigned_office = assignedOffice[0];
+      currentReq.routed_office_name = assignedOffice[0].office_name;
+      currentReq.routed_office_code = assignedOffice[0].office_code;
+      currentReq.routed_responsible_officer = assignedOffice[0].responsible_officer;
+      currentReq.routed_office_location = assignedOffice[0].location;
+    }
+
     const [clarifications] = await db.query(
       `SELECT * FROM clarification_history WHERE request_id = ? ORDER BY clarification_id ASC`,
       [currentReq.request_id]

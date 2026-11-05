@@ -100,8 +100,8 @@ class WorkflowEngine {
       const currentIdx = steps.findIndex(s => s.step_order === reqData.current_step_order);
       const nextStep = steps[currentIdx + 1];
 
-      // If no next step, FINAL SANCTION is reached!
-      if (!nextStep) {
+      // If no next step, or if approved by assigned University Office Administrator, FINAL SANCTION is reached!
+      if (!nextStep || (reviewer.role === 'OFFICE_ADMIN' && action === 'APPROVED')) {
         let pdfPath = null;
         try {
           pdfPath = await generatePermissionPdf(requestId);
@@ -149,6 +149,7 @@ class WorkflowEngine {
 
       // Advance to next authority
       const nextRole = nextStep.required_role;
+      let effectiveRole = nextRole;
       let nextReviewerId = null;
 
       if (nextRole === 'MENTOR') {
@@ -164,11 +165,34 @@ class WorkflowEngine {
         );
         if (facRows.length) nextReviewerId = facRows[0].user_id;
       } else if (nextRole === 'HOD') {
-        const [hodRows] = await connection.query(
-          'SELECT user_id FROM users WHERE role = "HOD" AND department_id = ? AND is_active = TRUE LIMIT 1',
-          [reqData.student_dept_id || 1]
+        // Check if an AI or administrator assigned a specific university office to this request
+        const [officeRows] = await connection.query(
+          `SELECT aoa.office_id, uo.name AS office_name, uo.code AS office_code, os.user_id AS office_staff_id
+           FROM application_office_assignments aoa
+           JOIN university_offices uo ON aoa.office_id = uo.office_id
+           LEFT JOIN office_staff os ON uo.office_id = os.office_id
+           WHERE aoa.request_id = ?
+           LIMIT 1`,
+          [requestId]
         );
-        if (hodRows.length) nextReviewerId = hodRows[0].user_id;
+
+        if (officeRows.length && officeRows[0].office_code !== 'DEPT_OFFICE') {
+          effectiveRole = officeRows[0].office_code || 'OFFICE_ADMIN';
+          if (officeRows[0].office_staff_id) {
+            nextReviewerId = officeRows[0].office_staff_id;
+          } else {
+            const [offUser] = await connection.query(
+              'SELECT user_id FROM users WHERE role = "OFFICE_ADMIN" AND is_active = TRUE LIMIT 1'
+            );
+            if (offUser.length) nextReviewerId = offUser[0].user_id;
+          }
+        } else {
+          const [hodRows] = await connection.query(
+            'SELECT user_id FROM users WHERE role = "HOD" AND department_id = ? AND is_active = TRUE LIMIT 1',
+            [reqData.student_dept_id || 1]
+          );
+          if (hodRows.length) nextReviewerId = hodRows[0].user_id;
+        }
       } else if (nextRole === 'ADMIN') {
         const [adminRows] = await connection.query(
           'SELECT user_id FROM users WHERE role = "ADMIN" AND is_active = TRUE LIMIT 1'
@@ -184,7 +208,7 @@ class WorkflowEngine {
              overall_status = 'UNDER_REVIEW', 
              updated_at = NOW()
          WHERE request_id = ?`,
-        [nextStep.step_order, nextRole, nextReviewerId, requestId]
+        [nextStep.step_order, effectiveRole, nextReviewerId, requestId]
       );
       await connection.commit();
 
@@ -194,7 +218,7 @@ class WorkflowEngine {
           user_id: nextReviewerId,
           request_id: requestId,
           title: `Action Required: ${reqData.request_type} (${reqData.request_code})`,
-          message: `Application submitted by ${reqData.student_first_name} ${reqData.student_last_name} awaits your review as ${nextRole}.`,
+          message: `Application submitted by ${reqData.student_first_name} ${reqData.student_last_name} awaits your review as ${effectiveRole}.`,
           type: 'ASSIGNMENT'
         });
 

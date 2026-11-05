@@ -10,18 +10,32 @@ import {
   Calendar,
   AlertTriangle,
   Download,
-  FileText
+  FileText,
+  Landmark,
+  Building2,
+  ShieldCheck,
+  MapPin,
+  Sparkles
 } from 'lucide-react';
 import StatusBadge from '../common/StatusBadge';
 
-const WorkflowTrackerTimeline = ({ request, history = [] }) => {
+const WorkflowTrackerTimeline = ({ request, history = [], assignedOffice = null, aiRouting = null }) => {
   if (!request) return null;
 
-  // Standard 4-step workflow sequence:
-  // Step 1: Submission
-  // Step 2: Mentor Verification
-  // Step 3: Faculty / Coordinator Approval
-  // Step 4: HOD Final Sanction
+  // Resolve assigned university office details
+  const office = assignedOffice || request.assigned_office;
+  const officeName = office?.office_name || office?.name || request.routed_office_name || request.office_name;
+  const officeCode = office?.office_code || office?.code || request.routed_office_code || request.office_code;
+  const responsibleOfficer = office?.responsible_officer || request.routed_responsible_officer;
+  const officeLocation = office?.location || request.routed_office_location;
+
+  const isAssignedToSpecialOffice = Boolean(officeName && officeCode !== 'DEPT_OFFICE');
+
+  // Dynamic 4-step workflow sequence:
+  // Step 1: Submission (Student)
+  // Step 2: Mentor Verification (Academic Mentor)
+  // Step 3: Faculty Coordinator Approval (Department Faculty)
+  // Step 4: Final Sanction (Routes to Assigned University Office e.g. Academic Office, Hostel Office, Exam Cell, Sports Dept, etc. instead of HOD!)
   const stages = [
     {
       stepOrder: 1,
@@ -46,10 +60,16 @@ const WorkflowTrackerTimeline = ({ request, history = [] }) => {
     },
     {
       stepOrder: 4,
-      name: 'HOD Final Sanction',
-      role: 'HOD',
-      icon: CheckCircle2,
-      description: 'Final institutional authorization and digital gate pass sanction'
+      name: isAssignedToSpecialOffice
+        ? `${officeName} Final Sanction`
+        : 'HOD Final Sanction',
+      role: isAssignedToSpecialOffice
+        ? (officeCode || 'OFFICE')
+        : 'HOD',
+      icon: isAssignedToSpecialOffice ? Landmark : CheckCircle2,
+      description: isAssignedToSpecialOffice
+        ? `Final institutional authorization and digital gate pass sanction by ${responsibleOfficer ? `${responsibleOfficer} (${officeName})` : officeName}${officeLocation ? ` • ${officeLocation}` : ''}`
+        : 'Final institutional authorization and digital gate pass sanction by Head of Department'
     }
   ];
 
@@ -75,8 +95,17 @@ const WorkflowTrackerTimeline = ({ request, history = [] }) => {
             {Boolean(request.is_urgent) && <StatusBadge status="URGENT" />}
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Type: <span className="font-semibold text-slate-700">{request.request_type} Request</span> • 
-            Submitted: <span className="font-semibold text-slate-700">{new Date(request.created_at).toLocaleDateString()}</span> •
+            Type: <span className="font-semibold text-slate-700">{request.request_type} Request</span> •{' '}
+            {isAssignedToSpecialOffice && (
+              <>
+                Routed Authority:{' '}
+                <span className="font-semibold text-primary-700 bg-primary-50 px-2 py-0.5 rounded border border-primary-200">
+                  {officeName}
+                </span>{' '}
+                •{' '}
+              </>
+            )}
+            Submitted: <span className="font-semibold text-slate-700">{new Date(request.created_at).toLocaleDateString()}</span> •{' '}
             Duration: <span className="font-semibold text-slate-700">{new Date(request.start_date).toLocaleDateString()} to {new Date(request.end_date).toLocaleDateString()}</span>
           </p>
         </div>
@@ -118,17 +147,13 @@ const WorkflowTrackerTimeline = ({ request, history = [] }) => {
           const isStoppedHere = isRejected && stage.stepOrder === currentStep;
 
           let nodeStyle = 'bg-white border-slate-300 text-slate-400';
-          let iconColor = 'text-slate-400';
 
           if (isDone) {
             nodeStyle = 'bg-emerald-500 border-emerald-500 text-white';
-            iconColor = 'text-white';
           } else if (isCurrent) {
             nodeStyle = 'bg-amber-500 border-amber-500 text-white ring-4 ring-amber-100 animate-pulse';
-            iconColor = 'text-white';
           } else if (isStoppedHere) {
             nodeStyle = 'bg-rose-500 border-rose-500 text-white ring-4 ring-rose-100';
-            iconColor = 'text-white';
           }
 
           const StageIcon = stage.icon;
@@ -157,7 +182,11 @@ const WorkflowTrackerTimeline = ({ request, history = [] }) => {
                     <span className="font-bold text-sm text-slate-900">
                       Step {stage.stepOrder}: {stage.name}
                     </span>
-                    <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-700">
+                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${
+                      stage.stepOrder === 4 && isAssignedToSpecialOffice
+                        ? 'bg-sky-100 text-sky-800 border border-sky-200 font-mono'
+                        : 'bg-slate-200 text-slate-700'
+                    }`}>
                       {stage.role}
                     </span>
                   </div>
@@ -165,18 +194,22 @@ const WorkflowTrackerTimeline = ({ request, history = [] }) => {
                   <div className="text-xs">
                     {isDone ? (
                       <span className="font-semibold text-emerald-600 flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Completed
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        {stage.stepOrder === 4 && isAssignedToSpecialOffice ? `Sanctioned by ${officeName}` : 'Completed'}
                       </span>
                     ) : isCurrent ? (
                       <span className="font-semibold text-amber-600 flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" /> Pending Review
+                        <Clock className="w-3.5 h-3.5" />
+                        {stage.stepOrder === 4 && isAssignedToSpecialOffice ? `Pending ${officeName} Review` : 'Pending Review'}
                       </span>
                     ) : isStoppedHere ? (
                       <span className="font-semibold text-rose-600 flex items-center gap-1">
                         <XCircle className="w-3.5 h-3.5" /> Rejected at this stage
                       </span>
                     ) : (
-                      <span className="text-slate-400">Upcoming Stage</span>
+                      <span className="text-slate-400">
+                        {stage.stepOrder === 4 && isAssignedToSpecialOffice ? `Upcoming (${officeName})` : 'Upcoming Stage'}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -188,7 +221,10 @@ const WorkflowTrackerTimeline = ({ request, history = [] }) => {
                   <div className="mt-3 pt-3 border-t border-slate-200/60 bg-white/70 p-3 rounded-lg text-xs space-y-1">
                     <div className="flex items-center justify-between text-slate-600">
                       <span className="font-medium">
-                        Reviewed by: <strong className="text-slate-800">{stepHist.first_name} {stepHist.last_name}</strong> ({stepHist.role})
+                        Reviewed by: <strong className="text-slate-800">{stepHist.first_name} {stepHist.last_name}</strong>{' '}
+                        <span className="text-slate-500">
+                          ({stage.stepOrder === 4 && isAssignedToSpecialOffice ? officeName : stepHist.role})
+                        </span>
                       </span>
                       <span className="text-slate-400 text-[11px]">
                         {new Date(stepHist.action_timestamp).toLocaleString()}
