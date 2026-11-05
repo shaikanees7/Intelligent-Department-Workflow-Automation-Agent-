@@ -28,7 +28,18 @@ const listOffices = async (req, res, next) => {
         : (o.supported_permission_types || [])
     }));
 
-    return ApiResponse.success(res, 'University offices retrieved successfully', formatted);
+    // Deduplicate offices by normalized name to guarantee zero duplicate options
+    const seenNames = new Set();
+    const uniqueOffices = [];
+    for (const off of formatted) {
+      const normName = (off.name || '').trim().toLowerCase();
+      if (!seenNames.has(normName)) {
+        seenNames.add(normName);
+        uniqueOffices.push(off);
+      }
+    }
+
+    return ApiResponse.success(res, 'University offices retrieved successfully', uniqueOffices);
   } catch (err) {
     next(err);
   }

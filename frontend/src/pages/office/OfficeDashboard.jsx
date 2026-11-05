@@ -61,8 +61,18 @@ const OfficeDashboard = () => {
       try {
         const res = await api.get('/offices');
         if (res.data?.success && Array.isArray(res.data?.data)) {
-          setOffices(res.data.data);
-          if (!user?.office_id && res.data.data.length > 0) {
+          // Deduplicate by normalized office name
+          const seen = new Set();
+          const cleanOffices = [];
+          for (const o of res.data.data) {
+            const norm = (o.name || '').trim().toLowerCase();
+            if (!seen.has(norm)) {
+              seen.add(norm);
+              cleanOffices.push(o);
+            }
+          }
+          setOffices(cleanOffices);
+          if (!user?.office_id && cleanOffices.length > 0) {
             setSelectedOfficeId(res.data.data[0].office_id);
           }
         }

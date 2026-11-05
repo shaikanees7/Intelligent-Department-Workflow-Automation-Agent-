@@ -89,9 +89,18 @@ const TrackRequest = () => {
       api.get('/offices')
         .then((res) => {
           if (res.data?.success && Array.isArray(res.data?.data)) {
-            setAllOffices(res.data.data);
-            if (res.data.data.length > 0) {
-              setTargetOfficeId(res.data.data[0].office_id);
+            const seen = new Set();
+            const cleanOffices = [];
+            for (const o of res.data.data) {
+              const norm = (o.name || '').trim().toLowerCase();
+              if (!seen.has(norm)) {
+                seen.add(norm);
+                cleanOffices.push(o);
+              }
+            }
+            setAllOffices(cleanOffices);
+            if (cleanOffices.length > 0) {
+              setTargetOfficeId(cleanOffices[0].office_id);
             }
           }
         })

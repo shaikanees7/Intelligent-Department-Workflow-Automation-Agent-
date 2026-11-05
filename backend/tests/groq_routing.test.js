@@ -75,22 +75,25 @@ async function runGroqTests() {
 
     // 3. Register New Office (Admin)
     console.log('\n[2] Testing Office Registration...');
-    const officeCode = 'PLACEMENT_CELL_' + Date.now().toString().slice(-4);
+    const officeCode = 'TEMP_TEST_OFFICE_' + Date.now().toString().slice(-4);
     const newOffice = await request(
       { hostname: 'localhost', port: 5000, path: '/api/offices', method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` } },
       {
-        name: 'Placement & Career Guidance Cell',
+        name: 'Temporary Innovation & Incubation Desk',
         code: officeCode,
-        category: 'Corporate Relations & Placements',
-        description: 'Campus interviews, internship NOCs, and off-campus drive permissions.',
-        responsible_officer: 'Dr. S. K. Murthy (Dean of Training & Placement)',
-        contact_email: 'placements@institution.edu',
-        contact_phone: '+91 863 2344799',
-        location: 'Placement Bhavan - Room 101',
-        supported_permission_types: ['Campus Drive Attendance OD', 'Internship NOC Endorsement']
+        category: 'Innovation & Research',
+        description: 'Temporary testing office.',
+        responsible_officer: 'Test Officer',
+        contact_email: 'test@institution.edu',
+        contact_phone: '+91 863 0000000',
+        location: 'Innovation Hub - Room 001',
+        supported_permission_types: ['Incubation Support']
       }
     );
     assert(newOffice.status === 201 && newOffice.data.data.office_id, 'Admin can dynamically register a new university office');
+    // Clean up temporary test office immediately so it doesn't leave duplicates in UI
+    const db = require('../database/db');
+    await db.query('DELETE FROM university_offices WHERE office_id = ?', [newOffice.data.data.office_id]);
 
     // 4. Test AI Routing: Exam & Fee Scenario
     console.log('\n[3] Testing Groq AI Routing on Exam & Fee Request...');
