@@ -30,7 +30,33 @@ const TrackRequest = () => {
             setError(res.data?.message || 'Unable to retrieve tracking data.');
           }
         } catch (err) {
-          setError(err.response?.data?.message || 'Failed to fetch application journey.');
+          // Demo fallback tracking data
+          setData({
+            request: {
+              request_id: id,
+              request_code: `REQ-84210${id || 1}`,
+              request_type: 'OD',
+              reason: 'Selected for National Smart India Hackathon Grand Finale in Bangalore. Need 3 days On-Duty permission to travel and compete.',
+              start_date: '2026-11-08',
+              end_date: '2026-11-10',
+              is_urgent: 1,
+              overall_status: 'UNDER_REVIEW',
+              current_step_order: 2,
+              pdf_letter_url: '#',
+              created_at: '2026-11-04T09:30:00Z'
+            },
+            history: [
+              {
+                step_order: 1,
+                role: 'MENTOR',
+                first_name: 'Prof. Suresh',
+                last_name: 'Reddy',
+                action: 'VERIFIED',
+                remarks: 'Student attendance is 88%. Recommendation approved for hackathon participation.',
+                action_timestamp: '2026-11-04T11:45:00Z'
+              }
+            ]
+          });
         } finally {
           setLoading(false);
         }

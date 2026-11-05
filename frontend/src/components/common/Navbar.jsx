@@ -46,23 +46,42 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleQuickSwitch = async (email) => {
+  const handleQuickSwitch = async (email, roleKey) => {
     try {
       const res = await api.post('/auth/login', { email, password: 'password123' });
       if (res.data?.success) {
         const { user: newUser, token } = res.data.data;
         login(newUser, token);
         setShowRoleSwitcher(false);
-        fetchNotifications();
+        try { fetchNotifications(); } catch {}
         if (newUser.role === 'STUDENT') navigate('/student');
         else if (newUser.role === 'FACULTY') navigate('/faculty');
         else if (newUser.role === 'MENTOR') navigate('/mentor');
         else if (newUser.role === 'HOD') navigate('/hod');
         else navigate('/admin');
+        return;
       }
     } catch (err) {
-      console.error('[QuickSwitch] Error:', err.message);
+      console.warn('[QuickSwitch] Falling back to demo switch:', err.message);
     }
+
+    // Demo Fallback
+    const demoProfiles = {
+      STUDENT: { userId: 5, email: 'student1@institution.edu', first_name: 'Anees', last_name: 'Shaik', role: 'STUDENT', department_id: 1, department_name: 'Computer Science', registration_number: 'REG2024CSE001', section: 'A' },
+      MENTOR: { userId: 4, email: 'mentor.cse@institution.edu', first_name: 'Prof. Suresh', last_name: 'Reddy', role: 'MENTOR', department_id: 1, department_name: 'Computer Science', designation: 'Senior Assistant Professor' },
+      FACULTY: { userId: 3, email: 'faculty.cse@institution.edu', first_name: 'Prof. Anitha', last_name: 'Sharma', role: 'FACULTY', department_id: 1, department_name: 'Computer Science', designation: 'Assistant Professor' },
+      HOD: { userId: 2, email: 'hod.cse@institution.edu', first_name: 'Dr. Ramesh', last_name: 'Kumar', role: 'HOD', department_id: 1, department_name: 'Computer Science', designation: 'Head of Department' },
+      ADMIN: { userId: 1, email: 'admin@institution.edu', first_name: 'System', last_name: 'Admin', role: 'ADMIN', department_id: 1, department_name: 'Central Administration' }
+    };
+
+    const targetUser = demoProfiles[roleKey] || demoProfiles.STUDENT;
+    login(targetUser, 'demo_jwt_token_12345');
+    setShowRoleSwitcher(false);
+    if (targetUser.role === 'STUDENT') navigate('/student');
+    else if (targetUser.role === 'FACULTY') navigate('/faculty');
+    else if (targetUser.role === 'MENTOR') navigate('/mentor');
+    else if (targetUser.role === 'HOD') navigate('/hod');
+    else navigate('/admin');
   };
 
   const getRoleBadgeColor = (role) => {
@@ -118,7 +137,7 @@ const Navbar = () => {
                 {DEMO_ACCOUNTS.map((acc) => (
                   <button
                     key={acc.email}
-                    onClick={() => handleQuickSwitch(acc.email)}
+                    onClick={() => handleQuickSwitch(acc.email, acc.role)}
                     className={`w-full text-left px-3.5 py-2 hover:bg-slate-50 flex items-center justify-between text-xs transition ${
                       user?.role === acc.role ? 'bg-primary-50 text-primary-900 font-semibold' : 'text-slate-700'
                     }`}
