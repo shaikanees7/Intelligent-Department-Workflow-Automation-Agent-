@@ -72,6 +72,19 @@ const MyRequests = () => {
             overall_status: 'APPROVED',
             pdf_letter_url: '#',
             created_at: '2026-09-10T14:20:00Z'
+          },
+          {
+            request_id: 4,
+            request_code: 'REQ-915432',
+            request_type: 'EXAM',
+            reason: '[EXAM Subject: CS402 Cloud Computing Lab Reschedule] Clashing with university sports selection trial.',
+            start_date: '2026-11-15',
+            end_date: '2026-11-15',
+            is_urgent: 0,
+            current_reviewer_role: 'MENTOR',
+            overall_status: 'PENDING',
+            pdf_letter_url: null,
+            created_at: '2026-11-05T08:15:00Z'
           }
         ]);
       } finally {
@@ -145,6 +158,7 @@ const MyRequests = () => {
                 <option value="OD">On-Duty (OD)</option>
                 <option value="LEAVE">Student Leave</option>
                 <option value="EVENT">Event Participation</option>
+                <option value="EXAM">Exam Permission</option>
               </select>
 
               <select

@@ -51,6 +51,17 @@ const WORKFLOWS_DATA = [
       { step: 3, role: 'FACULTY', label: 'Event Faculty Coordinator Sanction' },
       { step: 4, role: 'HOD', label: 'HOD Final Approval' }
     ]
+  },
+  {
+    type: 'EXAM',
+    title: 'Exam Permission Workflow',
+    description: 'Triggered for lab practical reschedule, supplementary clearance, and hall ticket clash exemptions.',
+    steps: [
+      { step: 1, role: 'STUDENT', label: 'Submission with Exam Details & Fee/Hall Ticket Copy' },
+      { step: 2, role: 'MENTOR', label: 'Academic Attendance & Eligibility Verification' },
+      { step: 3, role: 'FACULTY', label: 'Subject Faculty / Exam Coordinator Review' },
+      { step: 4, role: 'HOD', label: 'HOD Final Clearance & Controller of Exams Endorsement' }
+    ]
   }
 ];
 

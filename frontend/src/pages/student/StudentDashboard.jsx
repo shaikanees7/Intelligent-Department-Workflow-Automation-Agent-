@@ -18,7 +18,8 @@ import {
   Sparkles,
   ArrowRight,
   ShieldCheck,
-  Send
+  Send,
+  BookOpen
 } from 'lucide-react';
 
 const StudentDashboard = () => {
@@ -76,6 +77,20 @@ const StudentDashboard = () => {
             overall_status: 'APPROVED',
             pdf_letter_url: '#',
             created_at: '2026-09-10T14:20:00Z'
+          },
+          {
+            request_id: 4,
+            request_code: 'REQ-915432',
+            request_type: 'EXAM',
+            reason: '[EXAM Subject: CS402 Cloud Computing Lab Reschedule] Clashing with university sports selection trial.',
+            start_date: '2026-11-15',
+            end_date: '2026-11-15',
+            is_urgent: 0,
+            current_reviewer_role: 'MENTOR',
+            reviewer_first_name: 'Kavitha',
+            overall_status: 'PENDING',
+            pdf_letter_url: null,
+            created_at: '2026-11-05T08:15:00Z'
           }
         ]);
       } finally {
@@ -168,12 +183,12 @@ const StudentDashboard = () => {
             </div>
           </div>
 
-          {/* Quick Submission Cards for 3 Types */}
+          {/* Quick Submission Cards for 4 Types */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
               Request Types & Permissions
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               <Link
                 to="/student/new-request?type=OD"
                 className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-primary-400 hover:shadow-md transition group space-y-3"
@@ -227,6 +242,24 @@ const StudentDashboard = () => {
                   Apply Event <ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </Link>
+
+              <Link
+                to="/student/new-request?type=EXAM"
+                className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-emerald-400 hover:shadow-md transition group space-y-3"
+              >
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                <h4 className="font-bold text-base text-slate-900 group-hover:text-emerald-700 transition">
+                  Exam Permission Request
+                </h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Lab practical reschedule, supplementary examination clearance, re-sits, and hall ticket exemptions.
+                </p>
+                <div className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                  Apply Exam <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
             </div>
           </div>
 
@@ -254,7 +287,7 @@ const StudentDashboard = () => {
                 </div>
                 <p className="text-sm font-bold text-slate-700">No applications submitted yet</p>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                  Submit an On-Duty, Leave, or Event permission request to initiate the automated approval workflow.
+                  Submit an On-Duty, Leave, Event, or Exam permission request to initiate the automated approval workflow.
                 </p>
                 <Link
                   to="/student/new-request"

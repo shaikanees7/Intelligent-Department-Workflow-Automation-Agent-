@@ -13,7 +13,8 @@ import {
   RotateCcw,
   CheckCircle2,
   ArrowRight,
-  FileText
+  FileText,
+  BookOpen
 } from 'lucide-react';
 
 const NewRequest = () => {
@@ -161,7 +162,7 @@ const NewRequest = () => {
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
                   Select Request Category
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   <button
                     type="button"
                     onClick={() => setRequestType('OD')}
@@ -209,6 +210,22 @@ const NewRequest = () => {
                       <div className="text-[10px] text-slate-500">Festivals, Workshops</div>
                     </div>
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setRequestType('EXAM')}
+                    className={`p-4 rounded-xl border text-left transition flex items-center gap-3 ${
+                      requestType === 'EXAM'
+                        ? 'bg-emerald-50 border-emerald-400 ring-2 ring-emerald-200'
+                        : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    <BookOpen className={`w-5 h-5 ${requestType === 'EXAM' ? 'text-emerald-700' : 'text-slate-500'}`} />
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">Exam Permission</div>
+                      <div className="text-[10px] text-slate-500">Lab, Reschedule, Backlog</div>
+                    </div>
+                  </button>
                 </div>
               </div>
 
@@ -239,6 +256,8 @@ const NewRequest = () => {
                       ? 'Event / Organization / Hackathon Name'
                       : requestType === 'LEAVE'
                       ? 'Leave Category (e.g. Medical / Family Emergency / Sick Leave)'
+                      : requestType === 'EXAM'
+                      ? 'Course Code, Subject Name & Exam Details'
                       : 'Event Title & Hosting Institute'}
                   </label>
                   <input
@@ -251,6 +270,8 @@ const NewRequest = () => {
                         ? 'e.g. National Smart India Hackathon'
                         : requestType === 'LEAVE'
                         ? 'e.g. Severe Fever / Medical Rest'
+                        : requestType === 'EXAM'
+                        ? 'e.g. CS402 Cloud Computing Lab Reschedule / Supplementary Exam'
                         : 'e.g. Annual Technical Symposium at IIT Madras'
                     }
                     className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
@@ -301,7 +322,9 @@ const NewRequest = () => {
                 {/* File Upload */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Supporting Document (Brochure, Invitation Letter, or Medical Certificate)
+                    {requestType === 'EXAM'
+                      ? 'Supporting Document (Hall Ticket Copy, Fee Receipt, or Medical Proof)'
+                      : 'Supporting Document (Brochure, Invitation Letter, or Medical Certificate)'}
                   </label>
                   <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-xl bg-slate-50/50 hover:bg-slate-50 transition cursor-pointer relative">
                     <div className="space-y-2 text-center">
