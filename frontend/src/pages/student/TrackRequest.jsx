@@ -445,6 +445,7 @@ const TrackRequest = () => {
               <WorkflowTrackerTimeline
                 request={data.request}
                 history={data.history}
+                documents={data.documents}
               />
             </div>
           )}

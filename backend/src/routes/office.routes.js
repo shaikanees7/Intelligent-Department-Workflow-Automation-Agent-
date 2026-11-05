@@ -26,3 +26,4 @@ router.post('/', verifyToken, requireRole('ADMIN'), createOffice);
 router.put('/:id', verifyToken, requireRole('ADMIN'), updateOffice);
 
 module.exports = router;
+

@@ -14,7 +14,10 @@ import {
   CheckCircle2,
   ArrowRight,
   FileText,
-  BookOpen
+  BookOpen,
+  FileCheck,
+  Paperclip,
+  X
 } from 'lucide-react';
 
 const NewRequest = () => {
@@ -26,6 +29,7 @@ const NewRequest = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [extraDetails, setExtraDetails] = useState('');
+  const [permissionLetter, setPermissionLetter] = useState(null);
   const [file, setFile] = useState(null);
   const [isUrgent, setIsUrgent] = useState(false);
 
@@ -53,6 +57,7 @@ const NewRequest = () => {
     setStartDate('');
     setEndDate('');
     setExtraDetails('');
+    setPermissionLetter(null);
     setFile(null);
     setError('');
   };
@@ -78,6 +83,10 @@ const NewRequest = () => {
       formData.append('reason', fullReason);
       formData.append('start_date', startDate);
       formData.append('end_date', endDate);
+
+      if (permissionLetter) {
+        formData.append('permission_letter', permissionLetter);
+      }
 
       if (file) {
         formData.append('supporting_document', file);
@@ -319,29 +328,130 @@ const NewRequest = () => {
                   />
                 </div>
 
-                {/* File Upload */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    {requestType === 'EXAM'
-                      ? 'Supporting Document (Hall Ticket Copy, Fee Receipt, or Medical Proof)'
-                      : 'Supporting Document (Brochure, Invitation Letter, or Medical Certificate)'}
-                  </label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-xl bg-slate-50/50 hover:bg-slate-50 transition cursor-pointer relative">
-                    <div className="space-y-2 text-center">
-                      <Upload className="mx-auto h-8 w-8 text-slate-400" />
-                      <div className="flex text-xs text-slate-600 justify-center">
-                        <label className="relative cursor-pointer rounded-md font-bold text-primary-600 hover:text-primary-500">
-                          <span>{file ? file.name : 'Choose a file to attach'}</span>
-                          <input
-                            type="file"
-                            onChange={(e) => setFile(e.target.files[0] || null)}
-                            className="sr-only"
-                            accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
-                          />
-                        </label>
+                {/* 1. Dedicated Permission Letter Upload Section */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                      <FileCheck className="w-4 h-4 text-primary-600" />
+                      <span>Upload Official Permission Letter</span>
+                      <span className="text-rose-500 font-bold">*</span>
+                    </label>
+                    <span className="text-[10px] font-semibold text-primary-700 bg-primary-50 px-2 py-0.5 rounded-md border border-primary-200">
+                      Formal Application Format
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Upload your signed permission letter, handwritten application, or parent/guardian consent document.
+                  </p>
+
+                  <div className={`mt-1.5 border-2 border-dashed rounded-xl p-5 transition ${
+                    permissionLetter 
+                      ? 'border-emerald-400 bg-emerald-50/40' 
+                      : 'border-slate-300 hover:border-primary-400 bg-slate-50/60 hover:bg-slate-50'
+                  }`}>
+                    {permissionLetter ? (
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                            <FileCheck className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-slate-900 truncate max-w-xs sm:max-w-md">
+                              {permissionLetter.name}
+                            </div>
+                            <div className="text-[10px] text-slate-500">
+                              {(permissionLetter.size / 1024).toFixed(1)} KB • Permission Letter Attached
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setPermissionLetter(null)}
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                          title="Remove file"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
                       </div>
-                      <p className="text-[10px] text-slate-400">PDF, PNG, JPG up to 5MB</p>
-                    </div>
+                    ) : (
+                      <div className="text-center space-y-2">
+                        <Upload className="mx-auto h-8 w-8 text-primary-500" />
+                        <div className="flex text-xs text-slate-600 justify-center">
+                          <label className="relative cursor-pointer rounded-md font-bold text-primary-600 hover:text-primary-700">
+                            <span>Click to upload Permission Letter</span>
+                            <input
+                              type="file"
+                              onChange={(e) => setPermissionLetter(e.target.files[0] || null)}
+                              className="sr-only"
+                              accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                            />
+                          </label>
+                        </div>
+                        <p className="text-[10px] text-slate-400">PDF, PNG, JPG, or DOC up to 5MB</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 2. Additional Supporting Document Section */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <Paperclip className="w-3.5 h-3.5 text-slate-500" />
+                      <span>
+                        {requestType === 'EXAM'
+                          ? 'Supporting Document (Hall Ticket Copy, Fee Receipt, or Medical Proof)'
+                          : 'Supporting Document (Brochure, Invitation Letter, or Medical Certificate)'}
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-normal">(Optional)</span>
+                    </label>
+                  </div>
+
+                  <div className={`mt-1 border-2 border-dashed rounded-xl p-4 transition ${
+                    file 
+                      ? 'border-sky-400 bg-sky-50/40' 
+                      : 'border-slate-200 hover:border-slate-300 bg-slate-50/30 hover:bg-slate-50'
+                  }`}>
+                    {file ? (
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-sky-100 text-primary-700 flex items-center justify-center font-bold">
+                            <Paperclip className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-slate-900 truncate max-w-xs sm:max-w-md">
+                              {file.name}
+                            </div>
+                            <div className="text-[10px] text-slate-500">
+                              {(file.size / 1024).toFixed(1)} KB • Supporting Attachment
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setFile(null)}
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                          title="Remove file"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="text-center space-y-1">
+                        <div className="flex text-xs text-slate-600 justify-center">
+                          <label className="relative cursor-pointer rounded-md font-semibold text-slate-600 hover:text-primary-600">
+                            <span>Attach secondary supporting document</span>
+                            <input
+                              type="file"
+                              onChange={(e) => setFile(e.target.files[0] || null)}
+                              className="sr-only"
+                              accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                            />
+                          </label>
+                        </div>
+                        <p className="text-[10px] text-slate-400">PDF, PNG, JPG up to 5MB</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 

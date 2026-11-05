@@ -16,7 +16,7 @@ const { requireRole } = require('../middleware/role.middleware');
 const { validateRequestSubmission } = require('../middleware/validator.middleware');
 
 // Student submission & list
-router.post('/', verifyToken, requireRole('STUDENT'), upload.single('supporting_document'), validateRequestSubmission, submitRequest);
+router.post('/', verifyToken, requireRole('STUDENT'), upload.any(), validateRequestSubmission, submitRequest);
 router.get('/my', verifyToken, requireRole('STUDENT'), getMyRequests);
 
 // Reviewer pending queue (Mentor, Faculty, HOD, Admin, Office Admin)
