@@ -9,7 +9,7 @@
     "db:seed": "node database/seed.js",
     "db:seed:offices": "node database/seed_offices.js",
     "test": "node tests/api.test.js",
-    "test:ai": "node tests/gemini_routing.test.js"
+    "test:ai": "node tests/groq_routing.test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -21,9 +21,10 @@ function request(options, data = null) {
   });
 }
 
-async function runGeminiTests() {
+async function runGroqTests() {
   console.log('====================================================');
-  console.log('AI-POWERED ROUTING & UNIVERSITY OFFICES TEST SUITE');
+  console.log('GROQ AI-POWERED ROUTING & OFFICES TEST SUITE');
+  console.log('Model: openai/gpt-oss-120b (Ultra-Fast LPU Inference)');
   console.log('====================================================\n');
 
   let passed = 0;
@@ -238,4 +239,4 @@ async function runGeminiTests() {
   }
 }
 
-runGeminiTests();
+runGroqTests();

@@ -289,7 +289,7 @@ const getAIRoutingDetails = async (req, res, next) => {
 const submitClarification = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { reply } = req.body;
+    const reply = req.body.reply || req.body.response_text;
     const studentUserId = req.user.userId;
 
     if (!reply || !reply.trim()) {
@@ -306,7 +306,8 @@ const submitClarification = async (req, res, next) => {
 const manualRoute = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { office_id, remarks } = req.body;
+    const office_id = req.body.office_id || req.body.target_office_id;
+    const remarks = req.body.remarks || req.body.reason;
     const adminUserId = req.user.userId;
 
     if (!office_id) {
