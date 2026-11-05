@@ -183,16 +183,16 @@ const Login = () => {
         </Link>
       </div>
 
-      {/* Transparent Frosted Glass Login Box */}
+      {/* Very Low Intensity Transparent Glass Login Box */}
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-slate-900/60 backdrop-blur-xl py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/20 space-y-6 text-white">
+        <div className="bg-slate-950/20 backdrop-blur-xs py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/10 space-y-6 text-white">
           <div className="text-center">
-            <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-sm">Institutional Login</h2>
-            <p className="text-xs text-slate-300 mt-1">Sign in to test demo or department account</p>
+            <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-md">Institutional Login</h2>
+            <p className="text-xs text-slate-200 mt-1 drop-shadow-sm">Sign in to test demo or department account</p>
           </div>
 
-          {/* Transparent Notice Banner */}
-          <div className="p-3 bg-sky-500/20 border border-sky-400/30 rounded-2xl flex items-start gap-2.5 text-xs text-sky-200 backdrop-blur-sm">
+          {/* Very Low Intensity Notice Banner */}
+          <div className="p-3 bg-sky-500/15 border border-sky-400/25 rounded-2xl flex items-start gap-2.5 text-xs text-sky-200 backdrop-blur-xs">
             <Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
             <div>
               <span className="font-bold text-white">Instant Demo Login Ready:</span>
@@ -204,7 +204,7 @@ const Login = () => {
 
           {/* 1-Click Role Login Cards */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2 text-center">
+            <label className="block text-[11px] font-bold text-slate-200 uppercase tracking-wider mb-2 text-center drop-shadow-xs">
               1-Click Demo Login (Select Role)
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -215,10 +215,10 @@ const Login = () => {
                     key={r.role}
                     type="button"
                     onClick={() => handleQuickDemoClick(r.role)}
-                    className={`p-2.5 border border-white/15 rounded-2xl flex flex-col items-center justify-center text-center transition hover:scale-[1.02] shadow-sm backdrop-blur-sm ${r.color}`}
+                    className={`p-2.5 border border-white/10 rounded-2xl flex flex-col items-center justify-center text-center transition hover:scale-[1.02] shadow-sm bg-black/20 hover:bg-black/40 backdrop-blur-xs ${r.color}`}
                   >
                     <Icon className="w-4 h-4 text-white mb-1" />
-                    <span className="text-xs font-bold text-white">{r.label}</span>
+                    <span className="text-xs font-bold text-white drop-shadow-xs">{r.label}</span>
                     <span className="text-[10px] text-sky-300 font-semibold mt-0.5">Log In →</span>
                   </button>
                 );
@@ -227,53 +227,53 @@ const Login = () => {
           </div>
 
           <div className="relative flex py-1 items-center">
-            <div className="flex-grow border-t border-white/15"></div>
-            <span className="shrink-0 mx-3 text-slate-400 text-xs uppercase font-semibold">Or enter credentials</span>
-            <div className="flex-grow border-t border-white/15"></div>
+            <div className="flex-grow border-t border-white/10"></div>
+            <span className="shrink-0 mx-3 text-slate-300 text-xs uppercase font-semibold drop-shadow-xs">Or enter credentials</span>
+            <div className="flex-grow border-t border-white/10"></div>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-200 mb-1">Email Address</label>
+              <label className="block text-xs font-bold text-slate-200 mb-1 drop-shadow-xs">Email Address</label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <Mail className="w-4 h-4 text-slate-300 absolute left-3 top-3" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="e.g. your_email@gmail.com"
-                  className="w-full pl-9 pr-3 py-2.5 bg-white/10 hover:bg-white/15 focus:bg-white/20 border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                  className="w-full pl-9 pr-3 py-2.5 bg-black/25 hover:bg-black/35 focus:bg-black/45 border border-white/15 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-bold text-slate-200">Password</label>
-                <Link to="/forgot-password" className="text-xs text-sky-300 hover:text-sky-200 hover:underline">
+                <label className="block text-xs font-bold text-slate-200 drop-shadow-xs">Password</label>
+                <Link to="/forgot-password" className="text-xs text-sky-300 hover:text-sky-200 hover:underline drop-shadow-xs">
                   Forgot password?
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-slate-300 absolute left-3 top-3" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-3 py-2.5 bg-white/10 hover:bg-white/15 focus:bg-white/20 border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                  className="w-full pl-9 pr-3 py-2.5 bg-black/25 hover:bg-black/35 focus:bg-black/45 border border-white/15 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-200 mb-1">Log In As Role</label>
+              <label className="block text-xs font-bold text-slate-200 mb-1 drop-shadow-xs">Log In As Role</label>
               <select
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-900/90 border border-white/20 rounded-xl text-xs font-semibold text-white focus:ring-2 focus:ring-sky-400 focus:outline-none"
+                className="w-full px-3 py-2.5 bg-slate-950/70 border border-white/15 rounded-xl text-xs font-semibold text-white focus:ring-2 focus:ring-sky-400 focus:outline-none"
               >
                 <option value="STUDENT" className="bg-slate-900 text-white">Student Dashboard</option>
                 <option value="MENTOR" className="bg-slate-900 text-white">Academic Mentor Dashboard</option>
@@ -286,16 +286,16 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-primary-950/50 transition disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+              className="w-full py-3 px-4 bg-primary-600/90 hover:bg-primary-600 text-white font-bold rounded-xl text-sm shadow-lg shadow-black/40 transition disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
             >
               {loading ? 'Authenticating...' : 'Sign In Now'}
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
-          <div className="text-center text-xs text-slate-300 pt-2 border-t border-white/15">
+          <div className="text-center text-xs text-slate-300 pt-2 border-t border-white/10">
             Need a student account?{' '}
-            <Link to="/register" className="font-bold text-sky-400 hover:text-sky-300 hover:underline">
+            <Link to="/register" className="font-bold text-sky-400 hover:text-sky-300 hover:underline drop-shadow-xs">
               Register here
             </Link>
           </div>
