@@ -133,14 +133,9 @@ const Navbar = () => {
               className="h-10 sm:h-11 w-auto max-w-[90px] sm:max-w-[110px] object-contain rounded-lg"
             />
           </div>
-          <div className="space-y-0.5 hidden sm:block">
-            <div className="font-serif text-base sm:text-lg font-bold text-slate-900 tracking-wider leading-none group-hover:text-teal-700 transition">
-              STATE COLLEGE
-            </div>
-            <div className="text-[10px] font-semibold text-slate-500 tracking-[0.2em] uppercase block leading-tight">
-              WORKFLOW PORTAL
-            </div>
-          </div>
+          <span className="font-serif text-xl sm:text-2xl font-bold text-slate-900 tracking-wider leading-none group-hover:text-teal-700 transition">
+            IDWAA
+          </span>
         </Link>
       </div>
 
