@@ -160,13 +160,13 @@ const Login = () => {
 
   return (
     <div className="relative min-h-screen bg-slate-900 flex flex-col justify-center py-10 sm:px-6 lg:px-8 font-sans overflow-hidden">
-      {/* Low Intensity Campus Aerial Background Image */}
+      {/* 50% Intensity University Campus Main Building Background */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25 filter blur-[0.5px] scale-105 transition-all duration-700 pointer-events-none"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50 scale-100 transition-all duration-700 pointer-events-none"
         style={{ backgroundImage: "url('/campus-bg.jpg')" }}
       />
-      {/* Soft gradient overlay for high contrast & readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-900/60 to-slate-950/80 pointer-events-none" />
+      {/* Ambient overlay for readability and contrast */}
+      <div className="absolute inset-0 bg-slate-950/40 pointer-events-none" />
 
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md">
         <Link to="/" className="flex items-center justify-center space-x-3 mb-6 group">
