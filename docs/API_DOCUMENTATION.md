@@ -245,3 +245,83 @@ Marks a specific notification as read.
 ### `PATCH /api/notifications/read-all`
 Marks all user notifications as read.
 - **Access**: Bearer Token (Any Role)
+
+---
+
+## 5. University Offices & AI Routing Endpoints (`/api/offices` & `/api/requests`)
+
+### `GET /api/offices`
+Retrieves all registered university offices with operational status and metrics.
+- **Access**: Public / Authenticated
+
+### `GET /api/offices/:id`
+Retrieves specific office metadata and its assigned applications queue.
+- **Access**: Bearer Token (`OFFICE_ADMIN`, `ADMIN`)
+
+### `POST /api/offices`
+Registers a new university administrative office dynamically.
+- **Access**: Bearer Token (`ADMIN`)
+- **Body**:
+```json
+{
+  "name": "Examination Cell",
+  "code": "EXAM_CELL",
+  "description": "Examination eligibility, supplementary clearance, hall tickets, clashing schedules",
+  "category": "EXAMINATION",
+  "responsible_officer": "Controller of Examinations",
+  "contact_email": "examcell@institution.edu",
+  "contact_phone": "+91 863 2344 700",
+  "location": "Admin Block, 2nd Floor, Room 204",
+  "supported_permission_types": ["EXAM_PERMISSION", "HALL_TICKET", "REVALUATION"],
+  "status": "ACTIVE"
+}
+```
+
+### `PUT /api/offices/:id`
+Updates office contact information, officer assignments, supported types, or status (`ACTIVE`/`INACTIVE`).
+- **Access**: Bearer Token (`ADMIN`)
+
+### `POST /api/offices/:id/action`
+Executes an office action on an assigned application (`ACCEPT`, `FORWARD`, `APPROVE`, `REJECT`).
+- **Access**: Bearer Token (`OFFICE_ADMIN`, `ADMIN`)
+- **Body**:
+```json
+{
+  "request_id": 4,
+  "assignment_id": 1,
+  "action": "ACCEPT", // "ACCEPT" | "FORWARD" | "APPROVE" | "REJECT"
+  "remarks": "Application accepted for verification.",
+  "target_office_id": 2 // Required if action is "FORWARD"
+}
+```
+
+### `GET /api/requests/:id/ai-routing`
+Retrieves AI classification results, confidence scores, detected primary/secondary offices, and reasoning.
+- **Access**: Bearer Token (Applicant, Reviewer, Admin)
+
+### `POST /api/requests/:id/clarify`
+Allows a student to provide clarification when a request is ambiguous (`requires_clarification: true`). The AI agent re-analyzes the clarification and routes to the appropriate desk.
+- **Access**: Bearer Token (`STUDENT` applicant)
+- **Body**:
+```json
+{
+  "response_text": "I need permission for examination fee clearance so I can download my hall ticket."
+}
+```
+
+### `POST /api/requests/:id/manual-route`
+Allows administrators or reviewers to manually override or correct AI routing.
+- **Access**: Bearer Token (`ADMIN`, `OFFICE_ADMIN`)
+- **Body**:
+```json
+{
+  "target_office_id": 1,
+  "reason": "Administrative override to examination desk."
+}
+```
+
+### `GET /api/admin/ai-stats`
+Returns institutional AI routing metrics: total registered offices, active/inactive counts, total classified requests, successfully routed counts, manual review queue, average confidence, and office distribution.
+- **Access**: Bearer Token (`ADMIN`)
+
+

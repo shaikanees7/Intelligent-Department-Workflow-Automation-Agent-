@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   getDashboardStats,
+  getAIRoutingStats,
   listUsers,
   createUser,
   updateUser,
@@ -14,6 +15,7 @@ const { requireRole } = require('../middleware/role.middleware');
 
 // Stats accessible by HOD and Admin
 router.get('/stats', verifyToken, requireRole('HOD', 'ADMIN'), getDashboardStats);
+router.get('/ai-stats', verifyToken, requireRole('HOD', 'ADMIN', 'OFFICE_ADMIN'), getAIRoutingStats);
 
 // Administrative operations
 router.get('/users', verifyToken, requireRole('ADMIN'), listUsers);

@@ -18,7 +18,9 @@ const login = async (req, res, next) => {
     if (!user) {
       const salt = await bcrypt.genSalt(10);
       const defaultHash = await bcrypt.hash(password || 'password123', salt);
-      const role = email.toLowerCase().includes('mentor')
+      const role = email.toLowerCase().includes('office') || email.toLowerCase().includes('warden')
+        ? 'OFFICE_ADMIN'
+        : email.toLowerCase().includes('mentor')
         ? 'MENTOR'
         : email.toLowerCase().includes('faculty')
         ? 'FACULTY'

@@ -7,7 +7,9 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "db:seed": "node database/seed.js",
-    "test": "node tests/api.test.js"
+    "db:seed:offices": "node database/seed_offices.js",
+    "test": "node tests/api.test.js",
+    "test:ai": "node tests/gemini_routing.test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

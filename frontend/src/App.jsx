@@ -21,6 +21,8 @@ import FacultyDashboard from './pages/faculty/FacultyDashboard';
 import MentorDashboard from './pages/mentor/MentorDashboard';
 import HODDashboard from './pages/hod/HODDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import UniversityOffices from './pages/admin/UniversityOffices';
+import OfficeDashboard from './pages/office/OfficeDashboard';
 
 function App() {
   return (
@@ -130,12 +132,38 @@ function App() {
               }
             />
 
+            {/* University Office Protected Routes */}
+            <Route
+              path="/office"
+              element={
+                <ProtectedRoute allowedRoles={['OFFICE_ADMIN', 'ADMIN']}>
+                  <OfficeDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/office/:id"
+              element={
+                <ProtectedRoute allowedRoles={['OFFICE_ADMIN', 'ADMIN']}>
+                  <OfficeDashboard />
+                </ProtectedRoute>
+              }
+            />
+
             {/* Admin Institutional Routes */}
             <Route
               path="/admin"
               element={
                 <ProtectedRoute allowedRoles={['ADMIN']}>
                   <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/offices"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <UniversityOffices />
                 </ProtectedRoute>
               }
             />

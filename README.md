@@ -7,14 +7,19 @@ A centralized, enterprise-grade digital permission and workflow automation platf
 ## 🏛️ System Features & Functionalities
 
 - **Intelligent Multi-Level Workflows**: Configurable sequential approval chains (Student → Mentor → Faculty Coordinator → HOD).
+- **Google Gemini AI Routing Agent**: Integrates Google Gemini API to analyze submitted student requests, understand natural language intents, classify permission categories, and match against active registered university offices.
+- **University Office Registration Module**: Centralized administration portal allowing dynamic registration, editing, and activation of university administrative sections (Examination Cell, Finance Office, Hostel Office, Academic Office, Sports Department, Library, Transportation Office, etc.).
+- **Interactive AI Clarification Engine**: Flags ambiguous requests, asks targeted clarification questions to students, receives answers, and re-classifies applications automatically with historical audit trails.
+- **Dedicated Office Administrator Portals (`/office`)**: Custom workflow desk for university office administrators to review incoming requests, accept assignments, forward between offices, approve, or reject.
 - **Rule-Based Urgency Engine**: Automatically detects short lead times (<48 hours) and flags urgent applications for priority review.
 - **Dynamic Authority Routing**: Automatically resolves the student's assigned academic mentor, department faculty coordinator, and HOD from institutional records.
-- **Role-Based Portals (5 Distinct Roles)**:
-  - **Student**: Submit OD, Leave, Event, and Exam permission requests; upload supporting documents; track live progress; download signed PDF gate passes.
+- **Role-Based Portals (6 Distinct Roles)**:
+  - **Student**: Submit OD, Leave, Event, and Exam permission requests; upload supporting documents; track live progress; answer AI clarifications; download signed PDF gate passes.
+  - **Office Admin**: Review routed applications, inspect AI routing explanations, accept or forward requests, and grant section-level sanctions.
   - **Mentor**: Verify mentee academic standing, check attendance metrics, add observations, and forward applications.
   - **Faculty**: Department review desk, adjust lab/class schedules, sanction or reject with remarks.
   - **HOD**: Executive department authorization, digital sanctioning, and institutional gate pass issuance.
-  - **Administrator**: Institutional analytics, user management, mentor assignments, workflow engine configuration, and audit logs.
+  - **Administrator**: Institutional analytics, university office registration, AI routing metrics, user management, mentor assignments, workflow engine configuration, and audit logs.
 - **Digital PDF Pass Generation**: Automatic cryptographic generation of official permission letters with unique reference IDs and verified signatories upon HOD approval.
 - **Background Automation & Alerts**: Automated hourly cron service sending reminder notifications for stagnant applications pending over 24 hours.
 - **Immutable Audit Trail**: Transparent step-by-step history tracking reviewer identities, timestamps, and decision remarks.

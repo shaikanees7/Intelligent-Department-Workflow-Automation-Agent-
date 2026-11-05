@@ -8,6 +8,7 @@ import {
   CheckSquare,
   Users,
   Building,
+  Building2,
   Sliders,
   BarChart3,
   GraduationCap,
@@ -50,10 +51,16 @@ const Sidebar = ({ role }) => {
       case 'ADMIN':
         return [
           { to: '/admin', label: 'Admin Dashboard', icon: LayoutDashboard, exact: true },
+          { to: '/admin/offices', label: 'University Offices', icon: Building2 },
           { to: '/admin/users', label: 'User Directory', icon: Users },
           { to: '/admin/workflows', label: 'Workflow Config', icon: Sliders },
           { to: '/admin/departments', label: 'Departments', icon: Building },
           { to: '/admin/reports', label: 'Audit Reports', icon: BarChart3 }
+        ];
+      case 'OFFICE_ADMIN':
+        return [
+          { to: '/office', label: 'Office Review Desk', icon: Building2, exact: true },
+          { to: '/office?tab=processed', label: 'Processed Applications', icon: Files }
         ];
       default:
         return [];

@@ -5,10 +5,12 @@ const authRoutes = require('./auth.routes');
 const requestRoutes = require('./request.routes');
 const adminRoutes = require('./admin.routes');
 const notificationRoutes = require('./notification.routes');
+const officeRoutes = require('./office.routes');
 
 router.use('/auth', authRoutes);
 router.use('/requests', requestRoutes);
 router.use('/admin', adminRoutes);
 router.use('/notifications', notificationRoutes);
+router.use('/offices', officeRoutes);
 
 module.exports = router;

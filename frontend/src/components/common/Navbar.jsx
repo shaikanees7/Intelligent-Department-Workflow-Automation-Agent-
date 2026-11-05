@@ -17,6 +17,8 @@ import {
 
 const DEMO_ACCOUNTS = [
   { role: 'STUDENT', email: 'student1@institution.edu', label: 'Student (Anees Shaik)' },
+  { role: 'OFFICE_ADMIN', email: 'office.exam@institution.edu', label: 'Exam Cell Office Admin' },
+  { role: 'OFFICE_ADMIN', email: 'office.hostel@institution.edu', label: 'Hostel Office Admin' },
   { role: 'MENTOR', email: 'mentor.cse@institution.edu', label: 'Academic Mentor (Prof. Suresh Reddy)' },
   { role: 'FACULTY', email: 'faculty.cse@institution.edu', label: 'Faculty Coordinator (Prof. Anitha Sharma)' },
   { role: 'HOD', email: 'hod.cse@institution.edu', label: 'Head of Dept (Dr. Ramesh Kumar)' },
@@ -55,6 +57,7 @@ const Navbar = () => {
         setShowRoleSwitcher(false);
         try { fetchNotifications(); } catch {}
         if (newUser.role === 'STUDENT') navigate('/student');
+        else if (newUser.role === 'OFFICE_ADMIN') navigate('/office');
         else if (newUser.role === 'FACULTY') navigate('/faculty');
         else if (newUser.role === 'MENTOR') navigate('/mentor');
         else if (newUser.role === 'HOD') navigate('/hod');
@@ -68,6 +71,7 @@ const Navbar = () => {
     // Demo Fallback
     const demoProfiles = {
       STUDENT: { userId: 5, email: 'student1@institution.edu', first_name: 'Anees', last_name: 'Shaik', role: 'STUDENT', department_id: 1, department_name: 'Computer Science', registration_number: 'REG2024CSE001', section: 'A' },
+      OFFICE_ADMIN: { userId: 10, email: 'office.exam@institution.edu', first_name: 'Exam Cell', last_name: 'Admin', role: 'OFFICE_ADMIN', office_id: 1, department_id: 1, department_name: 'Examination Cell' },
       MENTOR: { userId: 4, email: 'mentor.cse@institution.edu', first_name: 'Prof. Suresh', last_name: 'Reddy', role: 'MENTOR', department_id: 1, department_name: 'Computer Science', designation: 'Senior Assistant Professor' },
       FACULTY: { userId: 3, email: 'faculty.cse@institution.edu', first_name: 'Prof. Anitha', last_name: 'Sharma', role: 'FACULTY', department_id: 1, department_name: 'Computer Science', designation: 'Assistant Professor' },
       HOD: { userId: 2, email: 'hod.cse@institution.edu', first_name: 'Dr. Ramesh', last_name: 'Kumar', role: 'HOD', department_id: 1, department_name: 'Computer Science', designation: 'Head of Department' },
@@ -78,6 +82,7 @@ const Navbar = () => {
     login(targetUser, 'demo_jwt_token_12345');
     setShowRoleSwitcher(false);
     if (targetUser.role === 'STUDENT') navigate('/student');
+    else if (targetUser.role === 'OFFICE_ADMIN') navigate('/office');
     else if (targetUser.role === 'FACULTY') navigate('/faculty');
     else if (targetUser.role === 'MENTOR') navigate('/mentor');
     else if (targetUser.role === 'HOD') navigate('/hod');
@@ -87,6 +92,7 @@ const Navbar = () => {
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case 'ADMIN': return 'bg-purple-100 text-purple-700 border-purple-200';
+      case 'OFFICE_ADMIN': return 'bg-amber-100 text-amber-800 border-amber-300';
       case 'HOD': return 'bg-rose-100 text-rose-700 border-rose-200';
       case 'FACULTY': return 'bg-blue-100 text-blue-700 border-blue-200';
       case 'MENTOR': return 'bg-indigo-100 text-indigo-700 border-indigo-200';

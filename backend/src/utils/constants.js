@@ -4,7 +4,8 @@ module.exports = {
     FACULTY: 'FACULTY',
     MENTOR: 'MENTOR',
     HOD: 'HOD',
-    ADMIN: 'ADMIN'
+    ADMIN: 'ADMIN',
+    OFFICE_ADMIN: 'OFFICE_ADMIN'
   },
   REQUEST_TYPES: {
     OD: 'OD',

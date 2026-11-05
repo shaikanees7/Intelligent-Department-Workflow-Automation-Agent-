@@ -2,6 +2,7 @@ const db = require('../../database/db');
 const PermissionRequest = require('../models/PermissionRequest');
 const PriorityEngine = require('../services/priorityEngine.service');
 const WorkflowEngine = require('../services/workflowEngine.service');
+const GeminiRoutingService = require('../services/geminiRouting.service');
 const Notification = require('../models/Notification');
 const { sendNotificationEmail } = require('../services/email.service');
 const ApiResponse = require('../utils/apiResponse');
@@ -43,12 +44,30 @@ const submitRequest = async (req, res, next) => {
       );
     }
 
+    // Trigger Gemini AI Classification & Dynamic Office Routing
+    const routingPayload = {
+      request_id: requestId,
+      request_code: requestCode,
+      request_type,
+      reason,
+      start_date,
+      end_date,
+      student_user_id: studentUserId
+    };
+
+    // Run classification (await so immediate AI feedback is generated, catch internally for safe fallback)
+    try {
+      await GeminiRoutingService.classifyAndRoute(requestId, routingPayload);
+    } catch (aiErr) {
+      console.warn('[Gemini Routing Background Warning]:', aiErr.message);
+    }
+
     // In-app Notification for student
     await Notification.create({
       user_id: studentUserId,
       request_id: requestId,
       title: `Application Submitted (${requestCode})`,
-      message: `Your ${request_type} application has been successfully submitted and routed to your Academic Mentor for verification.`,
+      message: `Your ${request_type} application has been analyzed by AI and routed for departmental & office processing.`,
       type: 'SUBMISSION'
     });
 
@@ -94,9 +113,18 @@ const getMyRequests = async (req, res, next) => {
     const [rows] = await db.query(
       `SELECT r.*, 
               u.first_name AS reviewer_first_name, 
-              u.last_name AS reviewer_last_name
+              u.last_name AS reviewer_last_name,
+              uo.name AS routed_office_name,
+              uo.code AS routed_office_code,
+              aoa.status AS office_assignment_status,
+              acl.permission_category AS ai_category,
+              acl.confidence AS ai_confidence,
+              acl.requires_clarification AS ai_needs_clarification
        FROM permission_requests r
        LEFT JOIN users u ON r.current_reviewer_user_id = u.user_id
+       LEFT JOIN application_office_assignments aoa ON r.request_id = aoa.request_id
+       LEFT JOIN university_offices uo ON aoa.office_id = uo.office_id
+       LEFT JOIN ai_classification_logs acl ON r.request_id = acl.request_id
        WHERE r.student_user_id = ? 
        ORDER BY r.created_at DESC`,
       [req.user.userId]
@@ -122,12 +150,19 @@ const getPendingRequests = async (req, res, next) => {
              s.semester,
              d.name AS department,
              '88%' AS attendance,
+             uo.name AS routed_office_name,
+             acl.permission_category AS ai_category,
+             acl.confidence AS ai_confidence,
+             acl.reason AS ai_reason,
              (SELECT remarks FROM approval_history WHERE request_id = r.request_id AND action = 'VERIFIED' ORDER BY action_timestamp DESC LIMIT 1) AS mentor_remarks,
              (SELECT remarks FROM approval_history WHERE request_id = r.request_id AND action = 'APPROVED' ORDER BY action_timestamp DESC LIMIT 1) AS faculty_remarks
       FROM permission_requests r
       JOIN users u ON r.student_user_id = u.user_id
       LEFT JOIN students s ON u.user_id = s.user_id
       LEFT JOIN departments d ON u.department_id = d.department_id
+      LEFT JOIN application_office_assignments aoa ON r.request_id = aoa.request_id
+      LEFT JOIN university_offices uo ON aoa.office_id = uo.office_id
+      LEFT JOIN ai_classification_logs acl ON r.request_id = acl.request_id
       WHERE r.overall_status IN ('SUBMITTED', 'PENDING', 'UNDER_REVIEW')
     `;
 
@@ -188,10 +223,98 @@ const getRequestTracking = async (req, res, next) => {
       [currentReq.request_id]
     );
 
+    // AI routing information
+    const [aiLogs] = await db.query(
+      `SELECT * FROM ai_classification_logs WHERE request_id = ? ORDER BY log_id DESC LIMIT 1`,
+      [currentReq.request_id]
+    );
+
+    const [assignedOffice] = await db.query(
+      `SELECT aoa.*, uo.name AS office_name, uo.code AS office_code, uo.responsible_officer, uo.location
+       FROM application_office_assignments aoa
+       JOIN university_offices uo ON aoa.office_id = uo.office_id
+       WHERE aoa.request_id = ?`,
+      [currentReq.request_id]
+    );
+
+    const [clarifications] = await db.query(
+      `SELECT * FROM clarification_history WHERE request_id = ? ORDER BY clarification_id ASC`,
+      [currentReq.request_id]
+    );
+
     return ApiResponse.success(res, 'Tracking details', {
       request: currentReq,
-      history: historyRows
+      history: historyRows,
+      ai_routing: aiLogs[0] || null,
+      assigned_office: assignedOffice[0] || null,
+      clarifications: clarifications || []
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getAIRoutingDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const [logs] = await db.query(
+      `SELECT * FROM ai_classification_logs WHERE request_id = ? ORDER BY log_id DESC LIMIT 1`,
+      [id]
+    );
+
+    const [officeAssignments] = await db.query(
+      `SELECT aoa.*, uo.name AS office_name, uo.code AS office_code, uo.responsible_officer, uo.contact_email, uo.location
+       FROM application_office_assignments aoa
+       JOIN university_offices uo ON aoa.office_id = uo.office_id
+       WHERE aoa.request_id = ?`,
+      [id]
+    );
+
+    const [clarifications] = await db.query(
+      `SELECT * FROM clarification_history WHERE request_id = ? ORDER BY clarification_id ASC`,
+      [id]
+    );
+
+    return ApiResponse.success(res, 'AI routing details retrieved', {
+      classification: logs[0] || null,
+      office_assignment: officeAssignments[0] || null,
+      clarification_history: clarifications
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const submitClarification = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { reply } = req.body;
+    const studentUserId = req.user.userId;
+
+    if (!reply || !reply.trim()) {
+      return ApiResponse.error(res, 'Clarification reply cannot be empty.', null, 400);
+    }
+
+    const result = await GeminiRoutingService.submitClarification(id, studentUserId, reply);
+    return ApiResponse.success(res, 'Clarification processed and request re-routed by AI.', result);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const manualRoute = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { office_id, remarks } = req.body;
+    const adminUserId = req.user.userId;
+
+    if (!office_id) {
+      return ApiResponse.error(res, 'office_id is required.', null, 400);
+    }
+
+    const result = await GeminiRoutingService.manualRoute(id, office_id, adminUserId, remarks);
+    return ApiResponse.success(res, 'Application successfully routed to selected office.', result);
   } catch (err) {
     next(err);
   }
@@ -221,5 +344,8 @@ module.exports = {
   getMyRequests,
   getPendingRequests,
   getRequestTracking,
+  getAIRoutingDetails,
+  submitClarification,
+  manualRoute,
   reviewAction
 };
