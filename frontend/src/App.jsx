@@ -4,14 +4,23 @@ import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
-// Pages
+// Public & Auth Pages
+import LandingPage from './pages/LandingPage';
 import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import NotFound from './pages/common/NotFound';
+
+// Role-Based Dashboards & Pages
 import StudentDashboard from './pages/student/StudentDashboard';
+import NewRequest from './pages/student/NewRequest';
+import MyRequests from './pages/student/MyRequests';
+import TrackRequest from './pages/student/TrackRequest';
+
 import FacultyDashboard from './pages/faculty/FacultyDashboard';
 import MentorDashboard from './pages/mentor/MentorDashboard';
+import HODDashboard from './pages/hod/HODDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
-import TrackRequest from './pages/student/TrackRequest';
-import NotFound from './pages/common/NotFound';
 
 function App() {
   return (
@@ -19,42 +28,127 @@ function App() {
       <NotificationProvider>
         <Router>
           <Routes>
+            {/* Public Landing & Authentication */}
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
             {/* Student Protected Routes */}
-            <Route path="/student" element={
-              <ProtectedRoute allowedRoles={['STUDENT']}>
-                <StudentDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/student/track/:id" element={
-              <ProtectedRoute allowedRoles={['STUDENT']}>
-                <TrackRequest />
-              </ProtectedRoute>
-            } />
+            <Route
+              path="/student"
+              element={
+                <ProtectedRoute allowedRoles={['STUDENT']}>
+                  <StudentDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/new-request"
+              element={
+                <ProtectedRoute allowedRoles={['STUDENT']}>
+                  <NewRequest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/requests"
+              element={
+                <ProtectedRoute allowedRoles={['STUDENT']}>
+                  <MyRequests />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/track"
+              element={
+                <ProtectedRoute allowedRoles={['STUDENT']}>
+                  <TrackRequest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/track/:id"
+              element={
+                <ProtectedRoute allowedRoles={['STUDENT']}>
+                  <TrackRequest />
+                </ProtectedRoute>
+              }
+            />
 
-            {/* Faculty Protected Routes */}
-            <Route path="/faculty" element={
-              <ProtectedRoute allowedRoles={['FACULTY']}>
-                <FacultyDashboard />
-              </ProtectedRoute>
-            } />
+            {/* Faculty Coordinator Routes */}
+            <Route
+              path="/faculty"
+              element={
+                <ProtectedRoute allowedRoles={['FACULTY']}>
+                  <FacultyDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/faculty/*"
+              element={
+                <ProtectedRoute allowedRoles={['FACULTY']}>
+                  <FacultyDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-            {/* Mentor Protected Routes */}
-            <Route path="/mentor" element={
-              <ProtectedRoute allowedRoles={['MENTOR']}>
-                <MentorDashboard />
-              </ProtectedRoute>
-            } />
+            {/* Academic Mentor Routes */}
+            <Route
+              path="/mentor"
+              element={
+                <ProtectedRoute allowedRoles={['MENTOR']}>
+                  <MentorDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/mentor/*"
+              element={
+                <ProtectedRoute allowedRoles={['MENTOR']}>
+                  <MentorDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-            {/* Admin & HOD Protected Routes */}
-            <Route path="/admin" element={
-              <ProtectedRoute allowedRoles={['ADMIN', 'HOD']}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
+            {/* HOD Department Routes */}
+            <Route
+              path="/hod"
+              element={
+                <ProtectedRoute allowedRoles={['HOD']}>
+                  <HODDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hod/*"
+              element={
+                <ProtectedRoute allowedRoles={['HOD']}>
+                  <HODDashboard />
+                </ProtectedRoute>
+              }
+            />
 
+            {/* Admin Institutional Routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/*"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* 404 Fallback */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
