@@ -72,11 +72,11 @@ const DEMO_PRESETS = {
 };
 
 const QUICK_ROLES = [
-  { role: 'STUDENT', label: 'Student', email: 'student1@institution.edu', icon: GraduationCap, color: 'hover:border-emerald-400 bg-emerald-50/50' },
-  { role: 'MENTOR', label: 'Mentor', email: 'mentor.cse@institution.edu', icon: ShieldCheck, color: 'hover:border-indigo-400 bg-indigo-50/50' },
-  { role: 'FACULTY', label: 'Faculty', email: 'faculty.cse@institution.edu', icon: Building, color: 'hover:border-blue-400 bg-blue-50/50' },
-  { role: 'HOD', label: 'HOD', email: 'hod.cse@institution.edu', icon: Award, color: 'hover:border-rose-400 bg-rose-50/50' },
-  { role: 'ADMIN', label: 'Admin', email: 'admin@institution.edu', icon: Users, color: 'hover:border-purple-400 bg-purple-50/50' }
+  { role: 'STUDENT', label: 'Student', email: 'student1@institution.edu', icon: GraduationCap, color: 'hover:border-emerald-400 bg-white/10 hover:bg-emerald-500/20' },
+  { role: 'MENTOR', label: 'Mentor', email: 'mentor.cse@institution.edu', icon: ShieldCheck, color: 'hover:border-indigo-400 bg-white/10 hover:bg-indigo-500/20' },
+  { role: 'FACULTY', label: 'Faculty', email: 'faculty.cse@institution.edu', icon: Building, color: 'hover:border-blue-400 bg-white/10 hover:bg-blue-500/20' },
+  { role: 'HOD', label: 'HOD', email: 'hod.cse@institution.edu', icon: Award, color: 'hover:border-rose-400 bg-white/10 hover:bg-rose-500/20' },
+  { role: 'ADMIN', label: 'Admin', email: 'admin@institution.edu', icon: Users, color: 'hover:border-purple-400 bg-white/10 hover:bg-purple-500/20' }
 ];
 
 const Login = () => {
@@ -159,50 +159,52 @@ const Login = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-900 flex flex-col justify-center py-10 sm:px-6 lg:px-8 font-sans overflow-hidden">
+    <div className="relative min-h-screen bg-slate-950 flex flex-col justify-center py-10 sm:px-6 lg:px-8 font-sans overflow-hidden">
       {/* 50% Intensity University Campus Main Building Background */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50 scale-100 transition-all duration-700 pointer-events-none"
         style={{ backgroundImage: "url('/campus-bg.jpg')" }}
       />
-      {/* Ambient overlay for readability and contrast */}
-      <div className="absolute inset-0 bg-slate-950/40 pointer-events-none" />
+      {/* Ambient dark overlay for maximum contrast and transparency depth */}
+      <div className="absolute inset-0 bg-slate-950/45 pointer-events-none" />
 
+      {/* Brand Header */}
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md">
         <Link to="/" className="flex items-center justify-center space-x-3 mb-6 group">
-          <div className="w-12 h-12 bg-white/10 backdrop-blur-md text-white rounded-2xl flex items-center justify-center font-black shadow-lg border border-white/20 group-hover:bg-primary-600 transition">
+          <div className="w-12 h-12 bg-white/15 backdrop-blur-md text-white rounded-2xl flex items-center justify-center font-black shadow-xl border border-white/25 group-hover:bg-primary-600 transition">
             <Building2 className="w-6 h-6 text-sky-400 group-hover:text-white transition" />
           </div>
           <div>
-            <span className="text-xl font-black text-white tracking-tight block drop-shadow-xs">IDWAA</span>
-            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
+            <span className="text-xl font-black text-white tracking-tight block drop-shadow-md">IDWAA</span>
+            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider block drop-shadow-sm">
               Workflow Automation Agent
             </span>
           </div>
         </Link>
       </div>
 
+      {/* Transparent Frosted Glass Login Box */}
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-white/95 backdrop-blur-md py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/40 space-y-6">
+        <div className="bg-slate-900/60 backdrop-blur-xl py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/20 space-y-6 text-white">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Institutional Login</h2>
-            <p className="text-xs text-slate-500 mt-1">Sign in to test demo or department account</p>
+            <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-sm">Institutional Login</h2>
+            <p className="text-xs text-slate-300 mt-1">Sign in to test demo or department account</p>
           </div>
 
-          {/* Quick Notice Banner */}
-          <div className="p-3 bg-sky-50 border border-sky-200 rounded-xl flex items-start gap-2.5 text-xs text-sky-900">
-            <Info className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+          {/* Transparent Notice Banner */}
+          <div className="p-3 bg-sky-500/20 border border-sky-400/30 rounded-2xl flex items-start gap-2.5 text-xs text-sky-200 backdrop-blur-sm">
+            <Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
             <div>
-              <span className="font-bold">Instant Demo Login Ready:</span>
-              <p className="text-[11px] text-sky-800 mt-0.5">
-                Click any of the role cards below, or sign in with your email to launch the dashboard.
+              <span className="font-bold text-white">Instant Demo Login Ready:</span>
+              <p className="text-[11px] text-sky-200 mt-0.5">
+                Click any role card below or sign in with your email to launch the dashboard.
               </p>
             </div>
           </div>
 
           {/* 1-Click Role Login Cards */}
           <div>
-            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 text-center">
+            <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2 text-center">
               1-Click Demo Login (Select Role)
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -213,11 +215,11 @@ const Login = () => {
                     key={r.role}
                     type="button"
                     onClick={() => handleQuickDemoClick(r.role)}
-                    className={`p-2.5 border border-slate-200 rounded-xl flex flex-col items-center justify-center text-center transition hover:shadow-xs ${r.color}`}
+                    className={`p-2.5 border border-white/15 rounded-2xl flex flex-col items-center justify-center text-center transition hover:scale-[1.02] shadow-sm backdrop-blur-sm ${r.color}`}
                   >
-                    <Icon className="w-4 h-4 text-slate-700 mb-1" />
-                    <span className="text-xs font-bold text-slate-900">{r.label}</span>
-                    <span className="text-[10px] text-primary-600 font-semibold mt-0.5">Log In →</span>
+                    <Icon className="w-4 h-4 text-white mb-1" />
+                    <span className="text-xs font-bold text-white">{r.label}</span>
+                    <span className="text-[10px] text-sky-300 font-semibold mt-0.5">Log In →</span>
                   </button>
                 );
               })}
@@ -225,14 +227,14 @@ const Login = () => {
           </div>
 
           <div className="relative flex py-1 items-center">
-            <div className="flex-grow border-t border-slate-200"></div>
+            <div className="flex-grow border-t border-white/15"></div>
             <span className="shrink-0 mx-3 text-slate-400 text-xs uppercase font-semibold">Or enter credentials</span>
-            <div className="flex-grow border-t border-slate-200"></div>
+            <div className="flex-grow border-t border-white/15"></div>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+              <label className="block text-xs font-bold text-slate-200 mb-1">Email Address</label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
@@ -241,15 +243,15 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="e.g. your_email@gmail.com"
-                  className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition"
+                  className="w-full pl-9 pr-3 py-2.5 bg-white/10 hover:bg-white/15 focus:bg-white/20 border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-bold text-slate-700">Password</label>
-                <Link to="/forgot-password" className="text-xs text-primary-600 hover:underline">
+                <label className="block text-xs font-bold text-slate-200">Password</label>
+                <Link to="/forgot-password" className="text-xs text-sky-300 hover:text-sky-200 hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -261,39 +263,39 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition"
+                  className="w-full pl-9 pr-3 py-2.5 bg-white/10 hover:bg-white/15 focus:bg-white/20 border border-white/20 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Log In As Role</label>
+              <label className="block text-xs font-bold text-slate-200 mb-1">Log In As Role</label>
               <select
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2.5 bg-slate-900/90 border border-white/20 rounded-xl text-xs font-semibold text-white focus:ring-2 focus:ring-sky-400 focus:outline-none"
               >
-                <option value="STUDENT">Student Dashboard</option>
-                <option value="MENTOR">Academic Mentor Dashboard</option>
-                <option value="FACULTY">Faculty Coordinator Dashboard</option>
-                <option value="HOD">Head of Department (HOD) Portal</option>
-                <option value="ADMIN">System Administrator Hub</option>
+                <option value="STUDENT" className="bg-slate-900 text-white">Student Dashboard</option>
+                <option value="MENTOR" className="bg-slate-900 text-white">Academic Mentor Dashboard</option>
+                <option value="FACULTY" className="bg-slate-900 text-white">Faculty Coordinator Dashboard</option>
+                <option value="HOD" className="bg-slate-900 text-white">Head of Department (HOD) Portal</option>
+                <option value="ADMIN" className="bg-slate-900 text-white">System Administrator Hub</option>
               </select>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl text-sm shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+              className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-primary-950/50 transition disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
             >
               {loading ? 'Authenticating...' : 'Sign In Now'}
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
-          <div className="text-center text-xs text-slate-600 pt-2 border-t border-slate-100">
+          <div className="text-center text-xs text-slate-300 pt-2 border-t border-white/15">
             Need a student account?{' '}
-            <Link to="/register" className="font-bold text-primary-600 hover:underline">
+            <Link to="/register" className="font-bold text-sky-400 hover:text-sky-300 hover:underline">
               Register here
             </Link>
           </div>

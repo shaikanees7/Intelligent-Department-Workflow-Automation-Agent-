@@ -79,10 +79,10 @@ const Register = () => {
       </div>
 
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-xl px-4">
-        <div className="bg-white/95 backdrop-blur-md py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/40 space-y-6">
+        <div className="bg-slate-900/60 backdrop-blur-xl py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/20 space-y-6 text-white">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Create Student Account</h2>
-            <p className="text-xs text-slate-500 mt-1">
+            <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-sm">Create Student Account</h2>
+            <p className="text-xs text-slate-300 mt-1">
               Enroll digitally into your department workflow network
             </p>
           </div>
