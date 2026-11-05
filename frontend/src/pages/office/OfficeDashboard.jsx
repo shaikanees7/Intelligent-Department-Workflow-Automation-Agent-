@@ -23,7 +23,8 @@ import {
   Calendar,
   Layers,
   ArrowUpRight,
-  Info
+  Info,
+  Phone
 } from 'lucide-react';
 
 const OfficeDashboard = () => {
@@ -296,10 +297,16 @@ const OfficeDashboard = () => {
 
                         <td className="py-4 px-6 whitespace-nowrap">
                           <div className="font-bold text-slate-900">{app.student_name}</div>
-                          <div className="text-[11px] text-slate-500">
-                            {app.registration_number} • Sec {app.section}
+                          <div className="text-[11px] font-semibold text-slate-700">
+                            Reg: {app.registration_number || 'N/A'}
                           </div>
-                          <div className="text-[10px] text-slate-400">{app.department_name}</div>
+                          {(app.phone || app.student_phone) && (
+                            <div className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1 mt-0.5">
+                              <Phone className="w-3 h-3 text-emerald-600" />
+                              <span>{app.phone || app.student_phone}</span>
+                            </div>
+                          )}
+                          <div className="text-[10px] text-slate-400">{app.department_name} • Sec {app.section || 'A'}</div>
                         </td>
 
                         <td className="py-4 px-6">
@@ -434,7 +441,7 @@ const OfficeDashboard = () => {
                         </span>
                       </div>
                       <p className="text-sky-800 text-[11px] mt-1 leading-relaxed">
-                        Student: <strong>{activeModalReq.student_name}</strong> • "{activeModalReq.reason}"
+                        Student: <strong>{activeModalReq.student_name}</strong> (Reg: {activeModalReq.registration_number || 'N/A'}{(activeModalReq.phone || activeModalReq.student_phone) ? ` • Mob: ${activeModalReq.phone || activeModalReq.student_phone}` : ''}) • "{activeModalReq.reason}"
                       </p>
                     </div>
 

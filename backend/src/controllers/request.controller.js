@@ -159,6 +159,8 @@ const getPendingRequests = async (req, res, next) => {
       SELECT r.*, 
              CONCAT(u.first_name, ' ', u.last_name) AS student_name,
              u.email AS student_email,
+             u.phone AS student_phone,
+             u.phone,
              s.registration_number,
              s.section,
              s.semester,
@@ -208,6 +210,9 @@ const getRequestTracking = async (req, res, next) => {
     const [reqRows] = await db.query(
       `SELECT r.*, 
               CONCAT(u.first_name, ' ', u.last_name) AS student_name,
+              u.email AS student_email,
+              u.phone AS student_phone,
+              u.phone,
               s.registration_number,
               s.section,
               d.name AS department_name

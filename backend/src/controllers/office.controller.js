@@ -57,6 +57,8 @@ const getOfficeById = async (req, res, next) => {
               r.request_code, r.request_type, r.reason, r.start_date, r.end_date, r.is_urgent, r.overall_status,
               CONCAT(u.first_name, ' ', u.last_name) AS student_name,
               u.email AS student_email,
+              u.phone AS student_phone,
+              u.phone,
               s.registration_number, s.section,
               d.name AS department_name,
               acl.permission_category, acl.confidence AS ai_confidence, acl.reason AS ai_reason
@@ -222,6 +224,8 @@ const getOfficeApplications = async (req, res, next) => {
              r.request_code, r.request_type, r.reason, r.start_date, r.end_date, r.is_urgent, r.overall_status,
              CONCAT(u.first_name, ' ', u.last_name) AS student_name,
              u.email AS student_email,
+             u.phone AS student_phone,
+             u.phone,
              s.registration_number, s.section,
              d.name AS department_name,
              acl.permission_category, acl.confidence AS ai_confidence, acl.reason AS ai_reason,

@@ -95,7 +95,14 @@ const WorkflowTrackerTimeline = ({ request, history = [], assignedOffice = null,
             {Boolean(request.is_urgent) && <StatusBadge status="URGENT" />}
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Type: <span className="font-semibold text-slate-700">{request.request_type} Request</span> •{' '}
+            Student: <span className="font-semibold text-slate-800">{request.student_name || 'Applicant'}</span>
+            {request.registration_number && (
+              <> • Reg: <span className="font-semibold text-slate-800 font-mono">{request.registration_number}</span></>
+            )}
+            {(request.phone || request.student_phone) && (
+              <> • Mob: <span className="font-semibold text-emerald-700">{request.phone || request.student_phone}</span></>
+            )}
+            {' '}• Type: <span className="font-semibold text-slate-700">{request.request_type} Request</span> •{' '}
             {isAssignedToSpecialOffice && (
               <>
                 Routed Authority:{' '}

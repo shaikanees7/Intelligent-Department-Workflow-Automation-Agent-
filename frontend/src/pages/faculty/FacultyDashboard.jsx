@@ -20,7 +20,8 @@ import {
   Filter,
   Check,
   X,
-  FileCheck2
+  FileCheck2,
+  Phone
 } from 'lucide-react';
 
 const INITIAL_FACULTY_QUEUE = [
@@ -280,9 +281,16 @@ const FacultyDashboard = () => {
                         </td>
                         <td className="py-4 px-6 whitespace-nowrap">
                           <div className="font-bold text-slate-900">{req.student_name}</div>
-                          <div className="text-[11px] text-slate-500">
-                            {req.registration_number} • Sec {req.section}
+                          <div className="text-[11px] font-semibold text-slate-700">
+                            Reg: {req.registration_number || 'N/A'}
                           </div>
+                          {(req.phone || req.student_phone) && (
+                            <div className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1 mt-0.5">
+                              <Phone className="w-3 h-3 text-emerald-600" />
+                              <span>{req.phone || req.student_phone}</span>
+                            </div>
+                          )}
+                          <div className="text-[10px] text-slate-400">Sec {req.section || 'A'}</div>
                         </td>
                         <td className="py-4 px-6">
                           <span className="font-bold px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-800">
@@ -373,7 +381,7 @@ const FacultyDashboard = () => {
                   <div className="space-y-4 text-xs">
                     <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                       <div className="font-bold text-slate-900">
-                        {selectedRequest.student_name} ({selectedRequest.registration_number})
+                        {selectedRequest.student_name} (Reg: {selectedRequest.registration_number || 'N/A'}{(selectedRequest.phone || selectedRequest.student_phone) ? ` • Mob: ${selectedRequest.phone || selectedRequest.student_phone}` : ''})
                       </div>
                       <div className="text-slate-500">
                         Type: {selectedRequest.request_type} • Section {selectedRequest.section}

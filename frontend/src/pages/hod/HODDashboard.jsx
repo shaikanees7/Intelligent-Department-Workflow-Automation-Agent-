@@ -18,7 +18,8 @@ import {
   Download,
   AlertCircle,
   Building,
-  TrendingUp
+  TrendingUp,
+  Phone
 } from 'lucide-react';
 
 const INITIAL_HOD_QUEUE = [
@@ -229,9 +230,16 @@ const HODDashboard = () => {
                         </td>
                         <td className="py-4 px-6 whitespace-nowrap">
                           <div className="font-bold text-slate-900">{req.student_name}</div>
-                          <div className="text-[11px] text-slate-500">
-                            {req.registration_number} • Sec {req.section}
+                          <div className="text-[11px] font-semibold text-slate-700">
+                            Reg: {req.registration_number || 'N/A'}
                           </div>
+                          {(req.phone || req.student_phone) && (
+                            <div className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1 mt-0.5">
+                              <Phone className="w-3 h-3 text-emerald-600" />
+                              <span>{req.phone || req.student_phone}</span>
+                            </div>
+                          )}
+                          <div className="text-[10px] text-slate-400">Sec {req.section || 'A'}</div>
                         </td>
                         <td className="py-4 px-6">
                           <span className="font-bold px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-800">
@@ -384,7 +392,7 @@ const HODDashboard = () => {
                   <div className="space-y-4 text-xs">
                     <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                       <div className="font-bold text-slate-900">
-                        {selectedReq.student_name} ({selectedReq.registration_number})
+                        {selectedReq.student_name} (Reg: {selectedReq.registration_number || 'N/A'}{(selectedReq.phone || selectedReq.student_phone) ? ` • Mob: ${selectedReq.phone || selectedReq.student_phone}` : ''})
                       </div>
                       <div className="text-slate-700 mt-1 italic bg-white p-2 rounded border border-slate-200">
                         "{selectedReq.reason}"
