@@ -67,7 +67,7 @@ const submitRequest = async (req, res, next) => {
       user_id: studentUserId,
       request_id: requestId,
       title: `Application Submitted (${requestCode})`,
-      message: `Your ${request_type} application has been analyzed by AI and routed for departmental & office processing.`,
+      message: `Your permission application has been analyzed by AI and routed for departmental & office processing.`,
       type: 'SUBMISSION'
     });
 
@@ -77,7 +77,7 @@ const submitRequest = async (req, res, next) => {
         user_id: assignedMentorId,
         request_id: requestId,
         title: `Mentee Verification Pending (${requestCode})`,
-        message: `Student application (${request_type}) is awaiting your academic verification.`,
+        message: `Student application is awaiting your academic verification.`,
         type: 'ASSIGNMENT'
       });
     }
@@ -88,7 +88,7 @@ const submitRequest = async (req, res, next) => {
       sendNotificationEmail(
         studentRows[0].email,
         `Application Submitted: ${requestCode}`,
-        `Hello ${studentRows[0].first_name},\n\nYour ${request_type} request (${requestCode}) has been received and routed for approval.`
+        `Hello ${studentRows[0].first_name},\n\nYour permission request (${requestCode}) has been received and routed for approval.`
       );
     }
 

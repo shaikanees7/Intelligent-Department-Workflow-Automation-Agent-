@@ -190,7 +190,7 @@ const StudentDashboard = () => {
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               <Link
-                to="/student/new-request?type=OD"
+                to="/student/new-request"
                 className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-primary-400 hover:shadow-md transition group space-y-3"
               >
                 <div className="w-10 h-10 rounded-xl bg-sky-100 text-primary-700 flex items-center justify-center font-bold">
@@ -203,12 +203,12 @@ const StudentDashboard = () => {
                   Academic competitions, external hackathons, industrial visits, and conference attendance.
                 </p>
                 <div className="text-xs font-bold text-primary-600 flex items-center gap-1">
-                  Apply OD <ArrowRight className="w-3.5 h-3.5" />
+                  Apply Now <ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </Link>
 
               <Link
-                to="/student/new-request?type=LEAVE"
+                to="/student/new-request"
                 className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-primary-400 hover:shadow-md transition group space-y-3"
               >
                 <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
@@ -221,12 +221,12 @@ const StudentDashboard = () => {
                   Personal emergencies, family obligations, and medical leave with doctor certificate.
                 </p>
                 <div className="text-xs font-bold text-indigo-600 flex items-center gap-1">
-                  Apply Leave <ArrowRight className="w-3.5 h-3.5" />
+                  Apply Now <ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </Link>
 
               <Link
-                to="/student/new-request?type=EVENT"
+                to="/student/new-request"
                 className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-primary-400 hover:shadow-md transition group space-y-3"
               >
                 <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
@@ -239,12 +239,12 @@ const StudentDashboard = () => {
                   College fest coordination, sports tournaments, technical workshops, and club activities.
                 </p>
                 <div className="text-xs font-bold text-purple-600 flex items-center gap-1">
-                  Apply Event <ArrowRight className="w-3.5 h-3.5" />
+                  Apply Now <ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </Link>
 
               <Link
-                to="/student/new-request?type=EXAM"
+                to="/student/new-request"
                 className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs hover:border-emerald-400 hover:shadow-md transition group space-y-3"
               >
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
@@ -257,7 +257,7 @@ const StudentDashboard = () => {
                   Lab practical reschedule, supplementary examination clearance, re-sits, and hall ticket exemptions.
                 </p>
                 <div className="text-xs font-bold text-emerald-600 flex items-center gap-1">
-                  Apply Exam <ArrowRight className="w-3.5 h-3.5" />
+                  Apply Now <ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </Link>
             </div>
@@ -323,7 +323,7 @@ const StudentDashboard = () => {
                         </td>
                         <td className="py-4 px-6">
                           <span className="font-semibold px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-800">
-                            {req.request_type}
+                            {req.ai_category || req.request_type}
                           </span>
                         </td>
                         <td className="py-4 px-6 max-w-xs truncate" title={req.reason}>

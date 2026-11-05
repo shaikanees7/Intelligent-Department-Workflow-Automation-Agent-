@@ -211,7 +211,7 @@ const MyRequests = () => {
                         </td>
                         <td className="py-4 px-6">
                           <span className="font-bold px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-800">
-                            {req.request_type}
+                            {req.ai_category || req.request_type}
                           </span>
                         </td>
                         <td className="py-4 px-6 max-w-sm">

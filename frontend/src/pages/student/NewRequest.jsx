@@ -1,31 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import api from '../../services/api';
 import {
-  FilePlus,
   Activity,
-  Calendar,
   Sparkles,
   Upload,
   AlertTriangle,
   RotateCcw,
   CheckCircle2,
-  ArrowRight,
-  FileText,
-  BookOpen
+  ArrowRight
 } from 'lucide-react';
 
 const NewRequest = () => {
-  const [searchParams] = useSearchParams();
-  const initialType = searchParams.get('type') || 'OD';
-
-  const [requestType, setRequestType] = useState(initialType);
+  const [subject, setSubject] = useState('');
   const [reason, setReason] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [extraDetails, setExtraDetails] = useState('');
   const [file, setFile] = useState(null);
   const [isUrgent, setIsUrgent] = useState(false);
 
@@ -49,10 +41,10 @@ const NewRequest = () => {
   }, [startDate]);
 
   const handleReset = () => {
+    setSubject('');
     setReason('');
     setStartDate('');
     setEndDate('');
-    setExtraDetails('');
     setFile(null);
     setError('');
   };
@@ -69,11 +61,12 @@ const NewRequest = () => {
     try {
       setSubmitting(true);
       const formData = new FormData();
-      formData.append('request_type', requestType);
+      // Default request_type for schema compatibility while AI dynamically categorizes
+      formData.append('request_type', 'OD');
 
-      const fullReason = extraDetails
-        ? `[${requestType} Subject: ${extraDetails}] ${reason}`
-        : reason;
+      const fullReason = subject.trim()
+        ? `[Subject: ${subject.trim()}] ${reason.trim()}`
+        : reason.trim();
 
       formData.append('reason', fullReason);
       formData.append('start_date', startDate);
@@ -109,7 +102,7 @@ const NewRequest = () => {
                 Submit Permission Application
               </h1>
               <p className="text-xs text-slate-500 mt-1">
-                Your request will be automatically routed to your assigned mentor and faculty coordinator.
+                Fill in your request details. The University AI Agent will automatically classify and route your application to the responsible office.
               </p>
             </div>
             <Link
@@ -129,15 +122,15 @@ const NewRequest = () => {
               <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl inline-block max-w-md">
                 <div className="text-xs text-slate-500">Official Reference Code:</div>
                 <div className="text-xl font-extrabold text-primary-700 mt-0.5 tracking-wider">
-                  {successData.requestCode}
+                  {successData.requestCode || successData.request_code}
                 </div>
               </div>
               <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
-                Your application has entered Step 1: Academic Mentor Verification. Notifications have been dispatched.
+                Your application has been received and analyzed by our AI Routing Agent. Verification workflows and office notifications have been dispatched.
               </p>
               <div className="flex justify-center gap-3 pt-2">
                 <Link
-                  to={`/student/track/${successData.requestId}`}
+                  to={`/student/track/${successData.requestId || successData.request_id}`}
                   className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs px-5 py-3 rounded-xl shadow-sm transition"
                 >
                   <Activity className="w-4 h-4" />
@@ -157,75 +150,17 @@ const NewRequest = () => {
             </div>
           ) : (
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
-              {/* Type Switcher Tabs */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                  Select Request Category
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setRequestType('OD')}
-                    className={`p-4 rounded-xl border text-left transition flex items-center gap-3 ${
-                      requestType === 'OD'
-                        ? 'bg-sky-50 border-sky-400 ring-2 ring-sky-200'
-                        : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Activity className={`w-5 h-5 ${requestType === 'OD' ? 'text-primary-700' : 'text-slate-500'}`} />
-                    <div>
-                      <div className="text-xs font-bold text-slate-900">On-Duty (OD)</div>
-                      <div className="text-[10px] text-slate-500">Hackathons, Competitions</div>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setRequestType('LEAVE')}
-                    className={`p-4 rounded-xl border text-left transition flex items-center gap-3 ${
-                      requestType === 'LEAVE'
-                        ? 'bg-indigo-50 border-indigo-400 ring-2 ring-indigo-200'
-                        : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Calendar className={`w-5 h-5 ${requestType === 'LEAVE' ? 'text-indigo-700' : 'text-slate-500'}`} />
-                    <div>
-                      <div className="text-xs font-bold text-slate-900">Student Leave</div>
-                      <div className="text-[10px] text-slate-500">Medical or Personal Absence</div>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setRequestType('EVENT')}
-                    className={`p-4 rounded-xl border text-left transition flex items-center gap-3 ${
-                      requestType === 'EVENT'
-                        ? 'bg-purple-50 border-purple-400 ring-2 ring-purple-200'
-                        : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Sparkles className={`w-5 h-5 ${requestType === 'EVENT' ? 'text-purple-700' : 'text-slate-500'}`} />
-                    <div>
-                      <div className="text-xs font-bold text-slate-900">Event Participation</div>
-                      <div className="text-[10px] text-slate-500">Festivals, Workshops</div>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setRequestType('EXAM')}
-                    className={`p-4 rounded-xl border text-left transition flex items-center gap-3 ${
-                      requestType === 'EXAM'
-                        ? 'bg-emerald-50 border-emerald-400 ring-2 ring-emerald-200'
-                        : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
-                    }`}
-                  >
-                    <BookOpen className={`w-5 h-5 ${requestType === 'EXAM' ? 'text-emerald-700' : 'text-slate-500'}`} />
-                    <div>
-                      <div className="text-xs font-bold text-slate-900">Exam Permission</div>
-                      <div className="text-[10px] text-slate-500">Lab, Reschedule, Backlog</div>
-                    </div>
-                  </button>
+              {/* AI Guidance Card */}
+              <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-primary-50/80 via-indigo-50/50 to-sky-50/60 border border-primary-200/80 rounded-2xl">
+                <div className="p-2 rounded-xl bg-primary-600 text-white shrink-0 mt-0.5">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div className="text-xs">
+                  <h3 className="font-bold text-slate-900">Intelligent AI Classification & Routing</h3>
+                  <p className="text-slate-600 mt-0.5 leading-relaxed">
+                    You don't need to choose an administrative category. Simply describe your purpose, dates, and justification.
+                    Our AI Routing Agent evaluates your application and assigns it directly to the relevant university office (e.g. Examination Cell, Finance Office, Hostel Office, Sports Department, etc.).
+                  </p>
                 </div>
               </div>
 
@@ -249,57 +184,47 @@ const NewRequest = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Specific field for context */}
+                {/* Subject / Purpose Title */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    {requestType === 'OD'
-                      ? 'Event / Organization / Hackathon Name'
-                      : requestType === 'LEAVE'
-                      ? 'Leave Category (e.g. Medical / Family Emergency / Sick Leave)'
-                      : requestType === 'EXAM'
-                      ? 'Course Code, Subject Name & Exam Details'
-                      : 'Event Title & Hosting Institute'}
+                    Request Subject / Purpose Title <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
-                    value={extraDetails}
-                    onChange={(e) => setExtraDetails(e.target.value)}
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
                     required
-                    placeholder={
-                      requestType === 'OD'
-                        ? 'e.g. National Smart India Hackathon'
-                        : requestType === 'LEAVE'
-                        ? 'e.g. Severe Fever / Medical Rest'
-                        : requestType === 'EXAM'
-                        ? 'e.g. CS402 Cloud Computing Lab Reschedule / Supplementary Exam'
-                        : 'e.g. Annual Technical Symposium at IIT Madras'
-                    }
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                    placeholder="e.g. Smart India Hackathon / Medical Leave / Supplementary Exam Reschedule / Hostel Outing"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500 text-slate-900"
                   />
                 </div>
 
                 {/* Duration Dates */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">From Date</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      From Date <span className="text-rose-500">*</span>
+                    </label>
                     <input
                       type="date"
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
                       required
                       min={new Date().toISOString().split('T')[0]}
-                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500 text-slate-900"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">To Date</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      To Date <span className="text-rose-500">*</span>
+                    </label>
                     <input
                       type="date"
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
                       required
                       min={startDate || new Date().toISOString().split('T')[0]}
-                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500 text-slate-900"
                     />
                   </div>
                 </div>
@@ -307,24 +232,22 @@ const NewRequest = () => {
                 {/* Detailed Justification */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Detailed Reason / Justification
+                    Detailed Reason / Justification <span className="text-rose-500">*</span>
                   </label>
                   <textarea
                     rows={4}
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                     required
-                    placeholder="Provide detailed explanation for your absence or on-duty participation..."
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500 leading-relaxed"
+                    placeholder="Provide a detailed explanation for your request, including any relevant course, exam, event, or personal details for the AI agent to evaluate..."
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500 text-slate-900 leading-relaxed"
                   />
                 </div>
 
                 {/* File Upload */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    {requestType === 'EXAM'
-                      ? 'Supporting Document (Hall Ticket Copy, Fee Receipt, or Medical Proof)'
-                      : 'Supporting Document (Brochure, Invitation Letter, or Medical Certificate)'}
+                    Supporting Document (Optional: Brochure, Invitation Letter, Medical Certificate, Fee Receipt)
                   </label>
                   <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-xl bg-slate-50/50 hover:bg-slate-50 transition cursor-pointer relative">
                     <div className="space-y-2 text-center">
@@ -340,7 +263,7 @@ const NewRequest = () => {
                           />
                         </label>
                       </div>
-                      <p className="text-[10px] text-slate-400">PDF, PNG, JPG up to 5MB</p>
+                      <p className="text-[10px] text-slate-400">PDF, PNG, JPG, DOC up to 5MB</p>
                     </div>
                   </div>
                 </div>
@@ -375,4 +298,3 @@ const NewRequest = () => {
 };
 
 export default NewRequest;
-
