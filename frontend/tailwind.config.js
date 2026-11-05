@@ -6,7 +6,19 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+        cinzel: ['"Cinzel"', 'serif'],
+      },
       colors: {
+        royal: {
+          400: '#3b82f6',
+          500: '#1d68ff',
+          600: '#155dfc',
+          700: '#004fe6',
+          800: '#003eb8'
+        },
         primary: {
           50: '#f0f9ff',
           100: '#e0f2fe',
