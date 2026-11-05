@@ -176,7 +176,6 @@ Analyze the following student permission application and classify which register
 
 STUDENT REQUEST DETAILS:
 - Request Code: ${requestData.request_code || 'N/A'}
-- Request Category: ${requestData.request_type || 'N/A'}
 - Student Reason / Justification: "${requestData.reason}"
 - Duration: ${requestData.start_date} to ${requestData.end_date}
 

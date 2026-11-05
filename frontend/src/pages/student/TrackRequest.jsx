@@ -339,11 +339,13 @@ const TrackRequest = () => {
                     {/* Classification & Reason Box */}
                     <div className="bg-white/5 rounded-xl p-4 border border-white/10 space-y-2">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                        Identified Category & Reasoning:
+                        AI Routing Reasoning & Justification:
                       </span>
-                      <div className="text-xs font-semibold text-emerald-400">
-                        {aiRouting.permission_category || 'General Administrative Permission'}
-                      </div>
+                      {aiRouting.permission_category && !['OD', 'OD REQUEST'].includes(aiRouting.permission_category.trim().toUpperCase()) && (
+                        <div className="text-xs font-semibold text-emerald-400">
+                          {aiRouting.permission_category}
+                        </div>
+                      )}
                       <p className="text-[11px] text-slate-300 leading-relaxed italic">
                         "{aiRouting.reason || 'Automatically routed based on university desk responsibility mapping.'}"
                       </p>
