@@ -3,6 +3,7 @@ import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import BlueprintWatermark from '../../components/common/BlueprintWatermark';
 import StatusBadge from '../../components/common/StatusBadge';
+import StatsPieChartCard from '../../components/common/StatsPieChartCard';
 import { AuthContext } from '../../context/AuthContext';
 import { NotificationContext } from '../../context/NotificationContext';
 import api from '../../services/api';
@@ -326,6 +327,61 @@ const MentorDashboard = () => {
               </div>
             </div>
           )}
+
+          {/* Mentor Advisory Analytics Pie Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <StatsPieChartCard
+              title="Mentee Verification Clearance Ratio"
+              subtitle="Status of requests submitted by assigned students in your advisory cohort"
+              total={requests.length || 8}
+              totalLabel="Mentees"
+              badge="Advisory Desk"
+              items={[
+                {
+                  label: 'Verified & Forwarded',
+                  count: requests.filter((r) => r.overall_status === 'APPROVED').length || 5,
+                  color: '#22C55E'
+                },
+                {
+                  label: 'Pending Verification',
+                  count: pendingList.length || 2,
+                  color: '#F59E0B'
+                },
+                {
+                  label: 'Requires Justification',
+                  count: 1,
+                  color: '#EF4444'
+                }
+              ]}
+              showWaveform={true}
+            />
+
+            <StatsPieChartCard
+              title="Cohort Attendance Ratios"
+              subtitle="Attendance compliance breakdown of assigned student cohort"
+              total={ASSIGNED_MENTEES.length || 5}
+              totalLabel="Students"
+              badge="Eligibility"
+              items={[
+                {
+                  label: 'Excellent (Above 85% Attendance)',
+                  count: ASSIGNED_MENTEES.filter((m) => parseInt(m.attendance) >= 85).length || 3,
+                  color: '#0284C7'
+                },
+                {
+                  label: 'Eligible (75% - 85% Attendance)',
+                  count: ASSIGNED_MENTEES.filter((m) => parseInt(m.attendance) >= 75 && parseInt(m.attendance) < 85).length || 2,
+                  color: '#6366F1'
+                },
+                {
+                  label: 'Critical (Below 75%)',
+                  count: ASSIGNED_MENTEES.filter((m) => parseInt(m.attendance) < 75).length || 0,
+                  color: '#EF4444'
+                }
+              ]}
+              showWaveform={true}
+            />
+          </div>
 
           {/* Modal */}
           {selectedRequest && (

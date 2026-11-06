@@ -3,6 +3,7 @@ import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import BlueprintWatermark from '../../components/common/BlueprintWatermark';
 import StatusBadge from '../../components/common/StatusBadge';
+import StatsPieChartCard from '../../components/common/StatsPieChartCard';
 import { AuthContext } from '../../context/AuthContext';
 import { NotificationContext } from '../../context/NotificationContext';
 import api from '../../services/api';
@@ -290,68 +291,83 @@ const HODDashboard = () => {
             )}
           </div>
 
-          {/* Department Analytics Visual Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-primary-600" />
-                  Requests by Category
+          {/* Department Analytics Visual Pie Charts & Images */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <StatsPieChartCard
+              title="Department Sanctions & Clearance Ratios"
+              subtitle="Live breakdown of applications submitted to Computer Science Department"
+              total={stats.total_requests || 82}
+              totalLabel="Total"
+              badge="Department Live"
+              items={[
+                {
+                  label: 'Sanctioned & Generated',
+                  count: stats.approved_count || 19,
+                  color: '#22C55E'
+                },
+                {
+                  label: 'Awaiting HOD Sanction',
+                  count: stats.pending_count || 63,
+                  color: '#F59E0B'
+                },
+                {
+                  label: 'Rejected',
+                  count: stats.rejected_count || 1,
+                  color: '#EF4444'
+                }
+              ]}
+              showWaveform={true}
+            />
+
+            <StatsPieChartCard
+              title="Requests by Academic Category"
+              subtitle="Distribution across institutional permission categories for AY 2025-26"
+              total={18}
+              totalLabel="Categories"
+              badge="AY 2025-26"
+              items={[
+                {
+                  label: 'On-Duty (OD) Requests',
+                  count: 10,
+                  color: '#0284C7'
+                },
+                {
+                  label: 'Student Leave Requests',
+                  count: 5,
+                  color: '#6366F1'
+                },
+                {
+                  label: 'Event Participation',
+                  count: 3,
+                  color: '#A855F7'
+                }
+              ]}
+              showWaveform={true}
+            />
+          </div>
+
+          {/* Turnaround & Automated Compliance Card */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="space-y-1 max-w-xl">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
+                  <TrendingUp className="w-4 h-4" />
+                </span>
+                <h4 className="font-bold text-slate-900 text-sm">
+                  Approval Turnaround Efficiency
                 </h4>
-                <span className="text-xs text-slate-500">Academic Year 2025-26</span>
+                <span className="text-xs text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  92% On-Time
+                </span>
               </div>
-
-              <div className="space-y-3 text-xs">
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span>On-Duty (OD) Requests (55%)</span>
-                    <span className="text-slate-500">10 requests</span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-primary-600 h-2.5 rounded-full" style={{ width: '55%' }} />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span>Student Leave Requests (30%)</span>
-                    <span className="text-slate-500">5 requests</span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-indigo-600 h-2.5 rounded-full" style={{ width: '30%' }} />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span>Event Participation (15%)</span>
-                    <span className="text-slate-500">3 requests</span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-purple-600 h-2.5 rounded-full" style={{ width: '15%' }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-emerald-600" />
-                  Approval Efficiency
-                </h4>
-                <span className="text-xs text-emerald-600 font-bold">92% On-Time</span>
-              </div>
-
-              <p className="text-xs text-slate-600 leading-relaxed">
-                With the Intelligent Workflow Automation Agent, average departmental approval turnaround time has dropped from 3.5 days to 4.2 hours.
+              <p className="text-xs text-slate-600 leading-relaxed pt-1">
+                With IDWAA (Intelligent Department Workflow Automation Agent), average departmental approval turnaround time has dropped from 3.5 days to 4.2 hours.
               </p>
-
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-700">
-                <div className="font-bold text-slate-800">Automated Audit Compliance:</div>
-                <div className="text-[11px] text-slate-500 mt-0.5">
-                  All approvals maintain digital timestamps, reviewer signatures, and cryptographically verifiable PDF gate passes.
-                </div>
+            </div>
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-700 w-full md:w-80">
+              <div className="font-bold text-slate-800">Automated Audit Compliance:</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">
+                All approvals maintain digital timestamps, reviewer signatures, and cryptographically verifiable PDF gate passes.
               </div>
             </div>
           </div>

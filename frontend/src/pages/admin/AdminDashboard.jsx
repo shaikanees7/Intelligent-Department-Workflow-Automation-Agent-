@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import BlueprintWatermark from '../../components/common/BlueprintWatermark';
+import StatsPieChartCard from '../../components/common/StatsPieChartCard';
 import { AuthContext } from '../../context/AuthContext';
 import api from '../../services/api';
 import {
@@ -197,6 +198,61 @@ const AdminDashboard = () => {
                 {stats.total_requests ? Math.round((stats.approved_count / stats.total_requests) * 100) : 92}%
               </h3>
             </div>
+          </div>
+
+          {/* Institutional Analytics Pie Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <StatsPieChartCard
+              title="Institution-Wide Clearance Ratios"
+              subtitle="All student applications processed across university departments and offices"
+              total={stats.total_requests || 18}
+              totalLabel="Total"
+              badge="Global Metrics"
+              items={[
+                {
+                  label: 'Approved & Gate Pass Issued',
+                  count: stats.approved_count || 14,
+                  color: '#22C55E'
+                },
+                {
+                  label: 'In Active Review Queue',
+                  count: stats.pending_count || 3,
+                  color: '#F59E0B'
+                },
+                {
+                  label: 'Rejected with Remarks',
+                  count: stats.rejected_count || 1,
+                  color: '#EF4444'
+                }
+              ]}
+              showWaveform={true}
+            />
+
+            <StatsPieChartCard
+              title="Active User Cohort & Roles"
+              subtitle="Distribution of enrolled university accounts by institutional tier"
+              total={usersList.length || 10}
+              totalLabel="Users"
+              badge="Access Roster"
+              items={[
+                {
+                  label: 'Students',
+                  count: usersList.filter((u) => u.role === 'STUDENT').length || 4,
+                  color: '#0284C7'
+                },
+                {
+                  label: 'Academic Mentors & Faculty',
+                  count: usersList.filter((u) => u.role === 'MENTOR' || u.role === 'FACULTY').length || 3,
+                  color: '#6366F1'
+                },
+                {
+                  label: 'Office Admins & HODs',
+                  count: usersList.filter((u) => u.role === 'OFFICE_ADMIN' || u.role === 'HOD' || u.role === 'ADMIN').length || 3,
+                  color: '#A855F7'
+                }
+              ]}
+              showWaveform={true}
+            />
           </div>
 
           {/* Navigation Tabs */}

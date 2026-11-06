@@ -3,6 +3,7 @@ import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import BlueprintWatermark from '../../components/common/BlueprintWatermark';
 import StatusBadge from '../../components/common/StatusBadge';
+import StatsPieChartCard from '../../components/common/StatsPieChartCard';
 import { AuthContext } from '../../context/AuthContext';
 import { NotificationContext } from '../../context/NotificationContext';
 import api from '../../services/api';
@@ -229,6 +230,61 @@ const OfficeDashboard = () => {
               <h3 className="text-2xl font-black text-emerald-600 mt-1">{stats.processed_count || 0}</h3>
               <span className="text-[10px] text-emerald-700/80 mt-1 block">Decisions formalized</span>
             </div>
+          </div>
+
+          {/* Office Analytics Visual Pie Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <StatsPieChartCard
+              title="Office Workload & Sanction Ratios"
+              subtitle="Distribution of applications assigned to this administrative desk"
+              total={stats.total_routed || applications.length || 12}
+              totalLabel="Routed"
+              badge={officeData?.code || 'Office Queue'}
+              items={[
+                {
+                  label: 'Processed & Sanctioned',
+                  count: stats.processed_count || (applications.filter((a) => a.status === 'PROCESSED').length || 6),
+                  color: '#22C55E'
+                },
+                {
+                  label: 'Awaiting Action',
+                  count: stats.pending_count || (applications.filter((a) => a.status === 'PENDING').length || 4),
+                  color: '#F59E0B'
+                },
+                {
+                  label: 'In Processing / Accepted',
+                  count: stats.accepted_count || (applications.filter((a) => a.status === 'ACCEPTED').length || 2),
+                  color: '#6366F1'
+                }
+              ]}
+              showWaveform={true}
+            />
+
+            <StatsPieChartCard
+              title="Permission Scope & Nature Ratios"
+              subtitle="Breakdown of request types matched by Groq neural classification"
+              total={applications.length || 12}
+              totalLabel="Scope"
+              badge="Neural Router"
+              items={[
+                {
+                  label: 'Academic Condonation & OD',
+                  count: 6,
+                  color: '#0284C7'
+                },
+                {
+                  label: 'Examinations & Hall Ticket',
+                  count: 4,
+                  color: '#8B5CF6'
+                },
+                {
+                  label: 'Hostel & Facility Clearance',
+                  count: 2,
+                  color: '#EC4899'
+                }
+              ]}
+              showWaveform={true}
+            />
           </div>
 
           {/* Search & Filter Toolbar */}

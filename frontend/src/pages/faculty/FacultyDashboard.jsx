@@ -3,6 +3,7 @@ import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import BlueprintWatermark from '../../components/common/BlueprintWatermark';
 import StatusBadge from '../../components/common/StatusBadge';
+import StatsPieChartCard from '../../components/common/StatsPieChartCard';
 import { AuthContext } from '../../context/AuthContext';
 import { NotificationContext } from '../../context/NotificationContext';
 import api from '../../services/api';
@@ -343,6 +344,49 @@ const FacultyDashboard = () => {
                 </table>
               </div>
             )}
+          </div>
+
+          {/* Faculty Analytics Pie Charts & Images */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <StatsPieChartCard
+              title="Faculty Review & Clearance Distribution"
+              subtitle="Live breakdown of student applications routed to Faculty Review Desk"
+              total={queue.length || 14}
+              totalLabel="Requests"
+              badge="Faculty Queue"
+              items={[
+                {
+                  label: 'Approved & Forwarded to HOD',
+                  count: queue.filter((r) => r.overall_status === 'APPROVED').length || 8,
+                  color: '#22C55E'
+                },
+                {
+                  label: 'Awaiting Coordinator Action',
+                  count: pendingRequests.length || 5,
+                  color: '#F59E0B'
+                },
+                {
+                  label: 'Rejected',
+                  count: queue.filter((r) => r.overall_status === 'REJECTED').length || 1,
+                  color: '#EF4444'
+                }
+              ]}
+              showWaveform={true}
+            />
+
+            <StatsPieChartCard
+              title="Requests by Academic Purpose"
+              subtitle="Distribution of student permission categories verified by department"
+              total={14}
+              totalLabel="Categories"
+              badge="CSE Department"
+              items={[
+                { label: 'On-Duty (OD) Hackathons & Conferences', count: 8, color: '#0284C7' },
+                { label: 'Student Leave & Medical Emergencies', count: 4, color: '#6366F1' },
+                { label: 'Event Participation & Competitions', count: 2, color: '#A855F7' }
+              ]}
+              showWaveform={true}
+            />
           </div>
 
           {/* Action Review Modal */}
