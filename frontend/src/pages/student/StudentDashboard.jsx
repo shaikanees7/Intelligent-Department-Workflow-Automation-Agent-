@@ -90,7 +90,7 @@ const StudentDashboard = () => {
         <Sidebar role="STUDENT" />
 
         {/* Main Dashboard Space */}
-        <main className="flex-1 w-full space-y-6">
+        <main className="flex-1 min-w-0 w-full space-y-6">
           {/* Main White Card Shell */}
           <div className="bg-white/95 rounded-3xl border border-[#EAE0E8] shadow-card-soft p-5 sm:p-7 space-y-6 backdrop-blur-xs">
             {/* Student Welcome Banner (Deep Navy-Purple SaaS Featured Card) */}
@@ -324,39 +324,39 @@ const StudentDashboard = () => {
                   </Link>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
+                <div className="overflow-x-auto w-full">
+                  <table className="w-full text-left text-xs min-w-[640px] lg:min-w-0">
                     <thead className="bg-[#FAF5F7] text-[#837B96] font-bold border-b border-[#F0E8EE] uppercase tracking-wider text-[11px]">
                       <tr>
-                        <th className="py-3.5 px-6">Request ID</th>
-                        <th className="py-3.5 px-6">Type</th>
-                        <th className="py-3.5 px-6">Reason / Subject</th>
-                        <th className="py-3.5 px-6">Validity Dates</th>
-                        <th className="py-3.5 px-6">Status</th>
-                        <th className="py-3.5 px-6 text-right">Action</th>
+                        <th className="py-3 px-3.5 lg:px-4">Request ID</th>
+                        <th className="py-3 px-3.5 lg:px-4">Type</th>
+                        <th className="py-3 px-3.5 lg:px-4">Reason / Subject</th>
+                        <th className="py-3 px-3.5 lg:px-4">Validity Dates</th>
+                        <th className="py-3 px-3.5 lg:px-4">Status</th>
+                        <th className="py-3 px-3.5 lg:px-4 text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#F0E8EE] text-[#4F4665]">
                       {requests.slice(0, 6).map((req) => (
                         <tr key={req.request_id} className="hover:bg-[#FAF5F7] transition">
-                          <td className="py-4 px-6 font-mono font-bold text-[#261B50]">
+                          <td className="py-3.5 px-3.5 lg:px-4 font-mono font-bold text-[#261B50]">
                             {req.request_code}
                           </td>
-                          <td className="py-4 px-6">
+                          <td className="py-3.5 px-3.5 lg:px-4">
                             <span className="font-bold px-2.5 py-0.5 rounded-full text-[10px] bg-[#F4EBF7] text-[#8E32A8] border border-[#E8D1ED]">
                               {req.request_type}
                             </span>
                           </td>
-                          <td className="py-4 px-6 max-w-xs truncate font-medium text-[#261B50]">
+                          <td className="py-3.5 px-3.5 lg:px-4 max-w-xs truncate font-medium text-[#261B50]">
                             {req.reason}
                           </td>
-                          <td className="py-4 px-6 whitespace-nowrap text-[#7C7390]">
+                          <td className="py-3.5 px-3.5 lg:px-4 whitespace-nowrap text-[#7C7390] text-[11px]">
                             {new Date(req.start_date).toLocaleDateString()} – {new Date(req.end_date).toLocaleDateString()}
                           </td>
-                          <td className="py-4 px-6 whitespace-nowrap">
+                          <td className="py-3.5 px-3.5 lg:px-4 whitespace-nowrap">
                             <StatusBadge status={req.overall_status} size="sm" />
                           </td>
-                          <td className="py-4 px-6 text-right whitespace-nowrap">
+                          <td className="py-3.5 px-3.5 lg:px-4 text-right whitespace-nowrap">
                             <Link
                               to={`/student/track/${req.request_id}`}
                               className="inline-flex items-center gap-1 font-bold text-xs text-[#B95BD5] hover:text-[#8E32A8] bg-[#F7EDFA] hover:bg-[#F3E8F6] px-3 py-1 rounded-full border border-[#E8D1ED] transition"

@@ -174,7 +174,7 @@ const TrackRequest = () => {
       <div className="flex flex-col md:flex-row relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role={user?.role || 'STUDENT'} />
 
-        <main className="flex-1 w-full space-y-6">
+        <main className="flex-1 min-w-0 w-full space-y-6">
           <div className="saas-card rounded-3xl p-6 sm:p-8 space-y-6">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-[#EAE0E8] gap-3">

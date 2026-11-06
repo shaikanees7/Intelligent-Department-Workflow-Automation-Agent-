@@ -221,7 +221,7 @@ const UniversityOffices = () => {
       <div className="flex flex-1 relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role="ADMIN" />
 
-        <main className="flex-1 w-full space-y-6">
+        <main className="flex-1 min-w-0 w-full space-y-6">
           {/* Toast Notification */}
           {feedbackToast && (
             <div className="fixed bottom-6 right-6 z-50 bg-[#1E163B] text-white text-xs font-semibold px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2 border border-white/20 animate-in fade-in slide-in-from-bottom-2">

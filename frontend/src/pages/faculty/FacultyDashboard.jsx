@@ -111,7 +111,7 @@ const FacultyDashboard = () => {
       <div className="flex flex-1 relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role="FACULTY" />
 
-        <main className="flex-1 w-full space-y-6">
+        <main className="flex-1 min-w-0 w-full space-y-6">
           {/* Header */}
           <div className="saas-card rounded-3xl p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -227,23 +227,23 @@ const FacultyDashboard = () => {
                 No applications in this view.
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+              <div className="overflow-x-auto w-full">
+                <table className="w-full text-left text-xs min-w-[720px] lg:min-w-0">
                   <thead className="bg-saas-canvas/60 text-saas-textMuted font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                     <tr>
-                      <th className="py-3.5 px-6">Request ID</th>
-                      <th className="py-3.5 px-6">Student Details</th>
-                      <th className="py-3.5 px-6">Category</th>
-                      <th className="py-3.5 px-6">Purpose / Mentor Remarks</th>
-                      <th className="py-3.5 px-6">Dates</th>
-                      <th className="py-3.5 px-6">Status</th>
-                      <th className="py-3.5 px-6 text-right">Actions</th>
+                      <th className="py-3 px-3.5 lg:px-4">Request ID</th>
+                      <th className="py-3 px-3.5 lg:px-4">Student Details</th>
+                      <th className="py-3 px-3.5 lg:px-4">Category</th>
+                      <th className="py-3 px-3.5 lg:px-4">Purpose / Remarks</th>
+                      <th className="py-3 px-3.5 lg:px-4">Dates</th>
+                      <th className="py-3 px-3.5 lg:px-4">Status</th>
+                      <th className="py-3 px-3.5 lg:px-4 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F1E8EE] text-saas-textDark">
                     {displayedList.map((req) => (
                       <tr key={req.request_id} className="hover:bg-saas-canvas/40 transition">
-                        <td className="py-4 px-6 font-bold text-saas-textDark whitespace-nowrap">
+                        <td className="py-3.5 px-3.5 lg:px-4 font-bold text-saas-textDark whitespace-nowrap">
                           {req.request_code}
                           {Boolean(req.is_urgent) && (
                             <span className="block mt-1 text-[9px] font-bold text-rose-700 bg-[#FDEEF1] px-2 py-0.5 rounded-full border border-rose-200 text-center">
@@ -251,7 +251,7 @@ const FacultyDashboard = () => {
                             </span>
                           )}
                         </td>
-                        <td className="py-4 px-6 whitespace-nowrap">
+                        <td className="py-3.5 px-3.5 lg:px-4 whitespace-nowrap">
                           <div className="font-bold text-saas-textDark">{req.student_name}</div>
                           <div className="text-[11px] font-semibold text-saas-textMuted">
                             Reg: {req.registration_number || 'N/A'}
@@ -264,12 +264,12 @@ const FacultyDashboard = () => {
                           )}
                           <div className="text-[10px] text-saas-textMuted">Sec {req.section || 'A'}</div>
                         </td>
-                        <td className="py-4 px-6">
-                          <span className="badge-pill font-bold px-2.5 py-0.5 bg-saas-canvas text-saas-navy border border-[#EAE0E8]">
+                        <td className="py-3.5 px-3.5 lg:px-4">
+                          <span className="badge-pill font-bold px-2 py-0.5 bg-saas-canvas text-saas-navy border border-[#EAE0E8]">
                             {req.request_type}
                           </span>
                         </td>
-                        <td className="py-4 px-6 max-w-xs">
+                        <td className="py-3.5 px-3.5 lg:px-4 max-w-[180px] lg:max-w-xs">
                           <p className="text-saas-textDark font-medium truncate" title={req.reason}>
                             "{req.reason}"
                           </p>
@@ -279,25 +279,25 @@ const FacultyDashboard = () => {
                             </p>
                           )}
                         </td>
-                        <td className="py-4 px-6 text-saas-textMuted whitespace-nowrap">
+                        <td className="py-3.5 px-3.5 lg:px-4 text-saas-textMuted whitespace-nowrap text-[11px]">
                           {new Date(req.start_date).toLocaleDateString()} - {new Date(req.end_date).toLocaleDateString()}
                         </td>
-                        <td className="py-4 px-6 whitespace-nowrap">
+                        <td className="py-3.5 px-3.5 lg:px-4 whitespace-nowrap">
                           <StatusBadge status={req.overall_status} size="sm" />
                         </td>
-                        <td className="py-4 px-6 text-right whitespace-nowrap space-x-2">
+                        <td className="py-3.5 px-3.5 lg:px-4 text-right whitespace-nowrap space-x-1.5">
                           {activeTab === 'pending' ? (
                             <>
                               <button
                                 onClick={() => handleOpenActionModal(req, 'APPROVED')}
-                                className="inline-flex items-center gap-1 font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-full shadow-2xs transition"
+                                className="inline-flex items-center gap-1 font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-full shadow-2xs transition cursor-pointer"
                               >
                                 <Check className="w-3.5 h-3.5" />
                                 Approve
                               </button>
                               <button
                                 onClick={() => handleOpenActionModal(req, 'REJECTED')}
-                                className="inline-flex items-center gap-1 font-bold text-xs bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-1.5 rounded-full shadow-2xs transition"
+                                className="inline-flex items-center gap-1 font-bold text-xs bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-full shadow-2xs transition cursor-pointer"
                               >
                                 <X className="w-3.5 h-3.5" />
                                 Reject

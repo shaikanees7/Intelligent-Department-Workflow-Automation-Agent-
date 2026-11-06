@@ -113,7 +113,7 @@ const MentorDashboard = () => {
       <div className="flex flex-1 relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role="MENTOR" />
 
-        <main className="flex-1 w-full space-y-6">
+        <main className="flex-1 min-w-0 w-full space-y-6">
           {/* Header Banner */}
           <div className="saas-card rounded-3xl p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -190,23 +190,23 @@ const MentorDashboard = () => {
                   <p>All permission requests from your assigned cohort have been verified and advanced.</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
+                <div className="overflow-x-auto w-full">
+                  <table className="w-full text-left text-xs min-w-[720px] lg:min-w-0">
                     <thead className="bg-[#FAF5F8] text-[#837B96] font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                       <tr>
-                        <th className="py-3.5 px-6">Request ID</th>
-                        <th className="py-3.5 px-6">Mentee Info</th>
-                        <th className="py-3.5 px-6">Attendance</th>
-                        <th className="py-3.5 px-6">Category</th>
-                        <th className="py-3.5 px-6">Reason Excerpt</th>
-                        <th className="py-3.5 px-6">Duration</th>
-                        <th className="py-3.5 px-6 text-right">Verification Action</th>
+                        <th className="py-3 px-3.5 lg:px-4">Request ID</th>
+                        <th className="py-3 px-3.5 lg:px-4">Mentee Info</th>
+                        <th className="py-3 px-3.5 lg:px-4">Attendance</th>
+                        <th className="py-3 px-3.5 lg:px-4">Category</th>
+                        <th className="py-3 px-3.5 lg:px-4">Reason Excerpt</th>
+                        <th className="py-3 px-3.5 lg:px-4">Duration</th>
+                        <th className="py-3 px-3.5 lg:px-4 text-right">Verification Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#F1E8EE] text-[#261B50]">
                       {pendingList.map((req) => (
                         <tr key={req.request_id} className="hover:bg-[#FAF5F8]/60 transition">
-                          <td className="py-4 px-6 font-bold text-[#261B50] whitespace-nowrap">
+                          <td className="py-3.5 px-3.5 lg:px-4 font-bold text-[#261B50] whitespace-nowrap">
                             {req.request_code}
                             {Boolean(req.is_urgent) && (
                               <span className="block mt-1 text-[9px] font-bold text-rose-700 bg-[#FDEEF1] px-2 py-0.5 rounded-full border border-rose-200 text-center">
@@ -214,7 +214,7 @@ const MentorDashboard = () => {
                               </span>
                             )}
                           </td>
-                          <td className="py-4 px-6 whitespace-nowrap">
+                          <td className="py-3.5 px-3.5 lg:px-4 whitespace-nowrap">
                             <div className="font-bold text-[#261B50]">{req.student_name}</div>
                             <div className="text-[11px] font-semibold text-[#7C7390]">
                               Reg: {req.registration_number || 'N/A'}
@@ -227,25 +227,25 @@ const MentorDashboard = () => {
                             )}
                             <div className="text-[10px] text-[#7C7390]">Sec {req.section || 'A'}</div>
                           </td>
-                          <td className="py-4 px-6 whitespace-nowrap font-bold text-emerald-700">
+                          <td className="py-3.5 px-3.5 lg:px-4 whitespace-nowrap font-bold text-emerald-700">
                             {req.attendance || '88%'}
                           </td>
-                          <td className="py-4 px-6">
-                            <span className="badge-pill font-bold px-2.5 py-0.5 bg-[#FAF5F8] text-[#261B50] border border-[#EAE0E8]">
+                          <td className="py-3.5 px-3.5 lg:px-4">
+                            <span className="badge-pill font-bold px-2 py-0.5 bg-[#FAF5F8] text-[#261B50] border border-[#EAE0E8]">
                               {req.request_type}
                             </span>
                           </td>
-                          <td className="py-4 px-6 max-w-xs truncate" title={req.reason}>
+                          <td className="py-3.5 px-3.5 lg:px-4 max-w-[180px] lg:max-w-xs truncate" title={req.reason}>
                             "{req.reason}"
                           </td>
-                          <td className="py-4 px-6 text-[#7C7390] whitespace-nowrap">
+                          <td className="py-3.5 px-3.5 lg:px-4 text-[#7C7390] whitespace-nowrap text-[11px]">
                             {new Date(req.start_date).toLocaleDateString()} - {new Date(req.end_date).toLocaleDateString()}
                           </td>
-                          <td className="py-4 px-6 text-right whitespace-nowrap space-x-2">
+                          <td className="py-3.5 px-3.5 lg:px-4 text-right whitespace-nowrap space-x-1.5">
                             <button
                               type="button"
                               onClick={() => handleOpenModal(req, 'VERIFIED')}
-                              className="inline-flex items-center gap-1 font-bold text-xs bg-[#261B50] hover:bg-[#1C143B] text-white px-3.5 py-1.5 rounded-full shadow-xs transition cursor-pointer"
+                              className="inline-flex items-center gap-1 font-bold text-xs bg-[#261B50] hover:bg-[#1C143B] text-white px-3 py-1.5 rounded-full shadow-xs transition cursor-pointer"
                             >
                               <Check className="w-3.5 h-3.5" />
                               Verify & Forward
@@ -253,7 +253,7 @@ const MentorDashboard = () => {
                             <button
                               type="button"
                               onClick={() => handleOpenModal(req, 'REJECTED')}
-                              className="inline-flex items-center gap-1 font-bold text-xs bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-1.5 rounded-full shadow-xs transition cursor-pointer"
+                              className="inline-flex items-center gap-1 font-bold text-xs bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-full shadow-xs transition cursor-pointer"
                             >
                               <X className="w-3.5 h-3.5" />
                               Reject
@@ -281,27 +281,27 @@ const MentorDashboard = () => {
                   No students currently mapped to your section in the database.
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
+                <div className="overflow-x-auto w-full">
+                  <table className="w-full text-left text-xs min-w-[680px] lg:min-w-0">
                     <thead className="bg-[#FAF5F8] text-[#837B96] font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                       <tr>
-                        <th className="py-3.5 px-6">Student Name</th>
-                        <th className="py-3.5 px-6">Registration Number</th>
-                        <th className="py-3.5 px-6">Section</th>
-                        <th className="py-3.5 px-6">Attendance</th>
-                        <th className="py-3.5 px-6">Batch</th>
-                        <th className="py-3.5 px-6 text-right">Active Applications</th>
+                        <th className="py-3 px-3.5 lg:px-4">Student Name</th>
+                        <th className="py-3 px-3.5 lg:px-4">Registration Number</th>
+                        <th className="py-3 px-3.5 lg:px-4">Section</th>
+                        <th className="py-3 px-3.5 lg:px-4">Attendance</th>
+                        <th className="py-3 px-3.5 lg:px-4">Batch</th>
+                        <th className="py-3 px-3.5 lg:px-4 text-right">Active Applications</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#F1E8EE] text-[#261B50]">
                       {mentees.map((m) => (
                         <tr key={m.student_id || m.user_id} className="hover:bg-[#FAF5F8]/60 transition">
-                          <td className="py-4 px-6 font-bold text-[#261B50]">{m.student_name}</td>
-                          <td className="py-4 px-6 font-mono text-[#B95BD5] font-bold">{m.registration_number}</td>
-                          <td className="py-4 px-6">Sec {m.section}</td>
-                          <td className="py-4 px-6 font-bold text-emerald-700">{m.attendance || '88%'}</td>
-                          <td className="py-4 px-6 text-[#7C7390]">{m.batch_year || '2022-2026'}</td>
-                          <td className="py-4 px-6 text-right">
+                          <td className="py-3.5 px-3.5 lg:px-4 font-bold text-[#261B50]">{m.student_name}</td>
+                          <td className="py-3.5 px-3.5 lg:px-4 font-mono text-[#B95BD5] font-bold">{m.registration_number}</td>
+                          <td className="py-3.5 px-3.5 lg:px-4">Sec {m.section}</td>
+                          <td className="py-3.5 px-3.5 lg:px-4 font-bold text-emerald-700">{m.attendance || '88%'}</td>
+                          <td className="py-3.5 px-3.5 lg:px-4 text-[#7C7390]">{m.batch_year || '2022-2026'}</td>
+                          <td className="py-3.5 px-3.5 lg:px-4 text-right">
                             <span className={`badge-pill font-bold px-2.5 py-0.5 ${
                               m.active_requests_count > 0 ? 'bg-[#FEF6EB] text-amber-900 border border-[#F7E1B5]' : 'bg-[#FAF5F8] text-[#7C7390] border border-[#EAE0E8]'
                             }`}>

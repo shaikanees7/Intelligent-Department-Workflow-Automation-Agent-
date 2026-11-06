@@ -70,7 +70,7 @@ const Sidebar = ({ role }) => {
   const links = getLinks();
 
   return (
-    <aside className="w-56 sm:w-64 p-4 sm:p-6 shrink-0 relative z-10 hidden md:block">
+    <aside className="w-56 lg:w-60 xl:w-64 p-2 sm:p-3 lg:p-4 shrink-0 relative z-10 hidden md:block">
       <div className="space-y-6">
         <div className="text-[11px] font-black text-[#837B96] uppercase tracking-wider px-3">
           Navigation

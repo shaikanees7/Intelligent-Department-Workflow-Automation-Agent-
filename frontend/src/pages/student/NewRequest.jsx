@@ -191,7 +191,7 @@ const NewRequest = () => {
         <Sidebar role="STUDENT" />
 
         {/* Form Container */}
-        <main className="flex-1 w-full space-y-6">
+        <main className="flex-1 min-w-0 w-full space-y-6">
           <div className="bg-white/95 rounded-3xl border border-[#EAE0E8] shadow-card-soft p-6 sm:p-8 space-y-6 backdrop-blur-xs">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#F0E8EE]">

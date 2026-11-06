@@ -311,7 +311,7 @@ const AdminDashboard = () => {
       <div className="flex flex-1 relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role="ADMIN" />
 
-        <main className="flex-1 w-full space-y-6">
+        <main className="flex-1 min-w-0 w-full space-y-6">
           {/* Header */}
           <div className="saas-card rounded-3xl p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -530,16 +530,16 @@ const AdminDashboard = () => {
               </div>
 
               {/* Users Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+              <div className="overflow-x-auto w-full">
+                <table className="w-full text-left text-xs min-w-[720px] lg:min-w-0">
                   <thead className="bg-[#FAF5F8] text-[#837B96] font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                     <tr>
-                      <th className="py-3.5 px-6">User</th>
-                      <th className="py-3.5 px-6">Role & Designation</th>
-                      <th className="py-3.5 px-6">Department / Office</th>
-                      <th className="py-3.5 px-6">ID & Academic Info</th>
-                      <th className="py-3.5 px-6 text-center">Status</th>
-                      <th className="py-3.5 px-6 text-right">Actions</th>
+                      <th className="py-3 px-3.5 lg:px-4">User</th>
+                      <th className="py-3 px-3.5 lg:px-4">Role & Designation</th>
+                      <th className="py-3 px-3.5 lg:px-4">Department / Office</th>
+                      <th className="py-3 px-3.5 lg:px-4">ID & Academic Info</th>
+                      <th className="py-3 px-3.5 lg:px-4 text-center">Status</th>
+                      <th className="py-3 px-3.5 lg:px-4 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F1E8EE] text-[#261B50]">
@@ -665,46 +665,48 @@ const AdminDashboard = () => {
               </div>
 
               <div className="saas-card rounded-3xl overflow-hidden">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#FAF5F8] text-[#837B96] font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
-                    <tr>
-                      <th className="py-3.5 px-6">Department</th>
-                      <th className="py-3.5 px-6">Section</th>
-                      <th className="py-3.5 px-6">Assigned Mentor</th>
-                      <th className="py-3.5 px-6">Contact Email</th>
-                      <th className="py-3.5 px-6 text-center">Enrolled Students</th>
-                      <th className="py-3.5 px-6 text-right">Academic Year</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#F1E8EE] text-[#261B50]">
-                    {assignments.section_mentors && assignments.section_mentors.length > 0 ? (
-                      assignments.section_mentors.map((sm) => (
-                        <tr key={sm.assignment_id} className="hover:bg-[#FAF5F8]/60 transition">
-                          <td className="py-4 px-6 font-bold text-[#261B50]">
-                            {sm.department_name} ({sm.department_code})
-                          </td>
-                          <td className="py-4 px-6">
-                            <span className="badge-pill font-mono font-black text-xs px-3 py-1 bg-[#FAF5F8] text-[#B95BD5] border border-[#EAE0E8]">
-                              Section {sm.section}
-                            </span>
-                          </td>
-                          <td className="py-4 px-6 font-bold text-[#261B50]">
-                            {sm.mentor_first_name} {sm.mentor_last_name}
-                          </td>
-                          <td className="py-4 px-6 font-mono text-[#837B96]">{sm.mentor_email}</td>
-                          <td className="py-4 px-6 text-center font-bold text-[#261B50]">{sm.student_count || 0}</td>
-                          <td className="py-4 px-6 text-right font-mono text-[#837B96]">{sm.academic_year || '2025-2026'}</td>
-                        </tr>
-                      ))
-                    ) : (
+                <div className="overflow-x-auto w-full">
+                  <table className="w-full text-left text-xs min-w-[700px] lg:min-w-0">
+                    <thead className="bg-[#FAF5F8] text-[#837B96] font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                       <tr>
-                        <td colSpan="6" className="py-8 text-center text-[#837B96]">
-                          No section mentor mappings configured yet.
-                        </td>
+                        <th className="py-3 px-3.5 lg:px-4">Department</th>
+                        <th className="py-3 px-3.5 lg:px-4">Section</th>
+                        <th className="py-3 px-3.5 lg:px-4">Assigned Mentor</th>
+                        <th className="py-3 px-3.5 lg:px-4">Contact Email</th>
+                        <th className="py-3 px-3.5 lg:px-4 text-center">Enrolled Students</th>
+                        <th className="py-3 px-3.5 lg:px-4 text-right">Academic Year</th>
                       </tr>
-                    )}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-[#F1E8EE] text-[#261B50]">
+                      {assignments.section_mentors && assignments.section_mentors.length > 0 ? (
+                        assignments.section_mentors.map((sm) => (
+                          <tr key={sm.assignment_id} className="hover:bg-[#FAF5F8]/60 transition">
+                            <td className="py-3.5 px-3.5 lg:px-4 font-bold text-[#261B50]">
+                              {sm.department_name} ({sm.department_code})
+                            </td>
+                            <td className="py-3.5 px-3.5 lg:px-4">
+                              <span className="badge-pill font-mono font-black text-xs px-3 py-1 bg-[#FAF5F8] text-[#B95BD5] border border-[#EAE0E8]">
+                                Section {sm.section}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-3.5 lg:px-4 font-bold text-[#261B50]">
+                              {sm.mentor_first_name} {sm.mentor_last_name}
+                            </td>
+                            <td className="py-3.5 px-3.5 lg:px-4 font-mono text-[#837B96]">{sm.mentor_email}</td>
+                            <td className="py-3.5 px-3.5 lg:px-4 text-center font-bold text-[#261B50]">{sm.student_count || 0}</td>
+                            <td className="py-3.5 px-3.5 lg:px-4 text-right font-mono text-[#837B96]">{sm.academic_year || '2025-2026'}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="6" className="py-8 text-center text-[#837B96]">
+                            No section mentor mappings configured yet.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
@@ -790,48 +792,50 @@ const AdminDashboard = () => {
               </div>
 
               <div className="saas-card rounded-3xl overflow-hidden">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#FAF5F8] text-[#837B96] font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
-                    <tr>
-                      <th className="px-6 py-3.5">Office Name & Code</th>
-                      <th className="px-6 py-3.5">Category</th>
-                      <th className="px-6 py-3.5">Responsible Officer</th>
-                      <th className="px-6 py-3.5">Campus Location</th>
-                      <th className="px-6 py-3.5 text-center">Status</th>
-                      <th className="px-6 py-3.5 text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#F1E8EE] text-[#261B50]">
-                    {offices.map((office) => (
-                      <tr key={office.office_id} className="hover:bg-[#FAF5F8]/60 transition">
-                        <td className="px-6 py-3.5">
-                          <div className="font-bold text-[#261B50]">{office.name}</div>
-                          <span className="text-[10px] font-mono text-[#B95BD5]">[{office.code}]</span>
-                        </td>
-                        <td className="px-6 py-3.5">
-                          <span className="badge-pill text-[10px] font-bold px-2.5 py-0.5 bg-[#FAF5F8] text-[#261B50] border border-[#EAE0E8]">
-                            {office.category}
-                          </span>
-                        </td>
-                        <td className="px-6 py-3.5 text-[#7C7390]">{office.responsible_officer}</td>
-                        <td className="px-6 py-3.5 text-[#7C7390]">{office.location}</td>
-                        <td className="px-6 py-3.5 text-center">
-                          <span className="badge-pill text-[10px] font-bold px-2.5 py-0.5 bg-[#E8F7F0] text-emerald-700 border border-[#B3E8CE]">
-                            Active
-                          </span>
-                        </td>
-                        <td className="px-6 py-3.5 text-right">
-                          <Link
-                            to={`/office?office_id=${office.office_id}`}
-                            className="font-bold text-[#B95BD5] hover:text-[#261B50] transition"
-                          >
-                            Open Desk →
-                          </Link>
-                        </td>
+                <div className="overflow-x-auto w-full">
+                  <table className="w-full text-left text-xs min-w-[700px] lg:min-w-0">
+                    <thead className="bg-[#FAF5F8] text-[#837B96] font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
+                      <tr>
+                        <th className="px-4 py-3">Office Name & Code</th>
+                        <th className="px-4 py-3">Category</th>
+                        <th className="px-4 py-3">Responsible Officer</th>
+                        <th className="px-4 py-3">Campus Location</th>
+                        <th className="px-4 py-3 text-center">Status</th>
+                        <th className="px-4 py-3 text-right">Action</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-[#F1E8EE] text-[#261B50]">
+                      {offices.map((office) => (
+                        <tr key={office.office_id} className="hover:bg-[#FAF5F8]/60 transition">
+                          <td className="px-4 py-3.5">
+                            <div className="font-bold text-[#261B50]">{office.name}</div>
+                            <span className="text-[10px] font-mono text-[#B95BD5]">[{office.code}]</span>
+                          </td>
+                          <td className="px-4 py-3.5">
+                            <span className="badge-pill text-[10px] font-bold px-2.5 py-0.5 bg-[#FAF5F8] text-[#261B50] border border-[#EAE0E8]">
+                              {office.category}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3.5 text-[#7C7390]">{office.responsible_officer}</td>
+                          <td className="px-4 py-3.5 text-[#7C7390]">{office.location}</td>
+                          <td className="px-4 py-3.5 text-center">
+                            <span className="badge-pill text-[10px] font-bold px-2.5 py-0.5 bg-[#E8F7F0] text-emerald-700 border border-[#B3E8CE]">
+                              Active
+                            </span>
+                          </td>
+                          <td className="px-4 py-3.5 text-right">
+                            <Link
+                              to={`/office?office_id=${office.office_id}`}
+                              className="font-bold text-[#B95BD5] hover:text-[#261B50] transition"
+                            >
+                              Open Desk →
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
@@ -846,16 +850,16 @@ const AdminDashboard = () => {
                 </p>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+              <div className="overflow-x-auto w-full">
+                <table className="w-full text-left text-xs min-w-[700px] lg:min-w-0">
                   <thead className="bg-[#FAF5F8] text-[#837B96] font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                     <tr>
-                      <th className="py-3 px-6">Timestamp</th>
-                      <th className="py-3 px-6">Actor</th>
-                      <th className="py-3 px-6">Action</th>
-                      <th className="py-3 px-6">Entity</th>
-                      <th className="py-3 px-6">Details</th>
-                      <th className="py-3 px-6 text-right">IP Address</th>
+                      <th className="py-3 px-3.5 lg:px-4">Timestamp</th>
+                      <th className="py-3 px-3.5 lg:px-4">Actor</th>
+                      <th className="py-3 px-3.5 lg:px-4">Action</th>
+                      <th className="py-3 px-3.5 lg:px-4">Entity</th>
+                      <th className="py-3 px-3.5 lg:px-4">Details</th>
+                      <th className="py-3 px-3.5 lg:px-4 text-right">IP Address</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F1E8EE] text-[#261B50]">

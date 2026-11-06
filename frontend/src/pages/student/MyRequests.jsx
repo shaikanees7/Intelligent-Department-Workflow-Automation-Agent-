@@ -119,7 +119,7 @@ const MyRequests = () => {
       <div className="flex flex-col md:flex-row relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role="STUDENT" />
 
-        <main className="flex-1 w-full space-y-6">
+        <main className="flex-1 min-w-0 w-full space-y-6">
           <div className="bg-white/95 rounded-3xl border border-[#EAE0E8] shadow-card-soft p-6 sm:p-8 space-y-6 backdrop-blur-xs">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-[#F0E8EE] gap-4">
@@ -202,22 +202,22 @@ const MyRequests = () => {
                   </button>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
+                <div className="overflow-x-auto w-full">
+                  <table className="w-full text-left text-xs min-w-[640px] lg:min-w-0">
                     <thead className="bg-[#FAF5F7] text-[#837B96] font-bold border-b border-[#F0E8EE] uppercase tracking-wider text-[11px]">
                       <tr>
-                        <th className="py-4 px-6">Request ID</th>
-                        <th className="py-4 px-6">Category</th>
-                        <th className="py-4 px-6">Purpose / Remarks</th>
-                        <th className="py-4 px-6">Validity Dates</th>
-                        <th className="py-4 px-6">Workflow Status</th>
-                        <th className="py-4 px-6 text-right">Actions</th>
+                        <th className="py-3 px-3.5 lg:px-4">Request ID</th>
+                        <th className="py-3 px-3.5 lg:px-4">Category</th>
+                        <th className="py-3 px-3.5 lg:px-4">Purpose / Remarks</th>
+                        <th className="py-3 px-3.5 lg:px-4">Validity Dates</th>
+                        <th className="py-3 px-3.5 lg:px-4">Workflow Status</th>
+                        <th className="py-3 px-3.5 lg:px-4 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#F0E8EE] text-[#4F4665]">
                       {filteredRequests.map((req) => (
                         <tr key={req.request_id} className="hover:bg-[#FAF5F7] transition">
-                          <td className="py-4 px-6 whitespace-nowrap">
+                          <td className="py-3.5 px-3.5 lg:px-4 whitespace-nowrap">
                             <span className="font-mono font-bold text-[#261B50]">
                               {req.request_code}
                             </span>

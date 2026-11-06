@@ -163,7 +163,7 @@ const OfficeDashboard = () => {
       <div className="flex flex-1 relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role={user?.role === 'ADMIN' ? 'ADMIN' : 'OFFICE_ADMIN'} />
 
-        <main className="flex-1 w-full space-y-6">
+        <main className="flex-1 min-w-0 w-full space-y-6">
           {/* Header Banner - Deep Navy-Purple SaaS Featured */}
           <div className="saas-dark-card rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-saas-primary/25 to-transparent blur-3xl pointer-events-none -mr-24 -mt-24"></div>
@@ -340,23 +340,23 @@ const OfficeDashboard = () => {
                 <p>New applications routed by Groq AI will automatically appear here.</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+              <div className="overflow-x-auto w-full">
+                <table className="w-full text-left text-xs min-w-[760px] lg:min-w-0">
                   <thead className="bg-saas-canvas/60 text-saas-textMuted font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                     <tr>
-                      <th className="py-3.5 px-6">Request ID</th>
-                      <th className="py-3.5 px-6">Student Information</th>
-                      <th className="py-3.5 px-6">AI Classification & Confidence</th>
-                      <th className="py-3.5 px-6">Reason Excerpt</th>
-                      <th className="py-3.5 px-6">Duration</th>
-                      <th className="py-3.5 px-6">Office Status</th>
-                      <th className="py-3.5 px-6 text-right">Actions</th>
+                      <th className="py-3 px-3.5 lg:px-4">Request ID</th>
+                      <th className="py-3 px-3.5 lg:px-4">Student Info</th>
+                      <th className="py-3 px-3.5 lg:px-4">AI Classification</th>
+                      <th className="py-3 px-3.5 lg:px-4">Reason Excerpt</th>
+                      <th className="py-3 px-3.5 lg:px-4">Duration</th>
+                      <th className="py-3 px-3.5 lg:px-4">Office Status</th>
+                      <th className="py-3 px-3.5 lg:px-4 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F1E8EE] text-saas-textDark">
                     {filteredApplications.map((app) => (
                       <tr key={app.assignment_id || app.request_id} className="hover:bg-saas-canvas/40 transition">
-                        <td className="py-4 px-6 font-bold text-saas-textDark whitespace-nowrap">
+                        <td className="py-3.5 px-3.5 lg:px-4 font-bold text-saas-textDark whitespace-nowrap">
                           {app.request_code}
                           {Boolean(app.is_urgent) && (
                             <span className="block mt-1 text-[9px] font-bold text-rose-700 bg-[#FDEEF1] px-2 py-0.5 rounded-full border border-rose-200 text-center">
@@ -365,7 +365,7 @@ const OfficeDashboard = () => {
                           )}
                         </td>
 
-                        <td className="py-4 px-6 whitespace-nowrap">
+                        <td className="py-3.5 px-3.5 lg:px-4 whitespace-nowrap">
                           <div className="font-bold text-saas-textDark">{app.student_name}</div>
                           <div className="text-[11px] font-semibold text-saas-textMuted">
                             Reg: {app.registration_number || 'N/A'}
@@ -379,7 +379,7 @@ const OfficeDashboard = () => {
                           <div className="text-[10px] text-saas-textMuted">{app.department_name} • Sec {app.section || 'A'}</div>
                         </td>
 
-                        <td className="py-4 px-6">
+                        <td className="py-3.5 px-3.5 lg:px-4">
                           <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#EAE0F0] text-saas-navy font-bold text-[11px] border border-[#D8B8E8]">
                             <Sparkles className="w-3 h-3 text-saas-primary" />
                             {app.permission_category || 'General Permission'}
@@ -391,15 +391,15 @@ const OfficeDashboard = () => {
                           )}
                         </td>
 
-                        <td className="py-4 px-6 max-w-xs truncate" title={app.reason}>
+                        <td className="py-3.5 px-3.5 lg:px-4 max-w-[180px] lg:max-w-xs truncate" title={app.reason}>
                           "{app.reason}"
                         </td>
 
-                        <td className="py-4 px-6 text-saas-textMuted whitespace-nowrap">
+                        <td className="py-3.5 px-3.5 lg:px-4 text-saas-textMuted whitespace-nowrap text-[11px]">
                           {new Date(app.start_date).toLocaleDateString()} - {new Date(app.end_date).toLocaleDateString()}
                         </td>
 
-                        <td className="py-4 px-6 whitespace-nowrap">
+                        <td className="py-3.5 px-3.5 lg:px-4 whitespace-nowrap">
                           <span
                             className={`badge-pill font-bold py-1 px-2.5 ${
                               app.status === 'ACCEPTED'
@@ -417,7 +417,7 @@ const OfficeDashboard = () => {
                           </span>
                         </td>
 
-                        <td className="py-4 px-6 text-right whitespace-nowrap space-x-1.5">
+                        <td className="py-3.5 px-3.5 lg:px-4 text-right whitespace-nowrap space-x-1">
                           {app.status === 'PENDING' && (
                             <button
                               onClick={() => {
