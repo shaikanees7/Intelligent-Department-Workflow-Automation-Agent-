@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const upload = require('../config/multer.config');
 const {
+  validatePermissionIntent,
   submitRequest,
   getMyRequests,
   getPendingRequests,
@@ -14,6 +15,9 @@ const {
 const { verifyToken } = require('../middleware/auth.middleware');
 const { requireRole } = require('../middleware/role.middleware');
 const { validateRequestSubmission } = require('../middleware/validator.middleware');
+
+// Pre-submission intent validation (AI-powered check using Groq)
+router.post('/validate-intent', verifyToken, validatePermissionIntent);
 
 // Student submission & list
 router.post('/', verifyToken, requireRole('STUDENT'), upload.single('supporting_document'), validateRequestSubmission, submitRequest);

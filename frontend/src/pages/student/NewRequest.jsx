@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
@@ -16,7 +16,12 @@ import {
   Hash,
   Phone,
   Calendar,
-  FileText
+  FileText,
+  ShieldAlert,
+  HelpCircle,
+  Edit3,
+  X,
+  Loader2
 } from 'lucide-react';
 
 const NewRequest = () => {
@@ -38,7 +43,9 @@ const NewRequest = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [successData, setSuccessData] = useState(null);
+  const [validationModal, setValidationModal] = useState(null);
 
+  const reasonInputRef = useRef(null);
   const navigate = useNavigate();
 
   // Sync if user profile loads asynchronously
@@ -73,6 +80,17 @@ const NewRequest = () => {
     setEndDate('');
     setFile(null);
     setError('');
+    setValidationModal(null);
+  };
+
+  const handleEditFromModal = () => {
+    setValidationModal(null);
+    setTimeout(() => {
+      if (reasonInputRef.current) {
+        reasonInputRef.current.focus();
+        reasonInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 150);
   };
 
   const handleSubmit = async (e) => {
@@ -96,9 +114,33 @@ const NewRequest = () => {
 
     try {
       setSubmitting(true);
+
+      // 1. Pre-submission Intent Validation with Groq AI Agent
+      const validationRes = await api.post('/requests/validate-intent', {
+        subject: subject.trim(),
+        reason: reason.trim(),
+        request_type: 'OD',
+        start_date: startDate,
+        end_date: endDate
+      });
+
+      const validation = validationRes.data?.data;
+
+      // Check if the AI validation agent rejected or requested clarification
+      if (validation && !validation.valid) {
+        setSubmitting(false);
+        setValidationModal({
+          open: true,
+          type: validation.classification || 'INVALID_PERMISSION_INTENT',
+          data: validation
+        });
+        return;
+      }
+
+      // 2. Intent verified -> Proceed to submit request
       const formData = new FormData();
-      formData.append('subject', subject);
-      formData.append('reason', `[Subject: ${subject}] ${reason}`);
+      formData.append('subject', subject.trim());
+      formData.append('reason', `[Subject: ${subject.trim()}] ${reason.trim()}`);
       formData.append('request_type', 'OD'); // Default fallback category; AI router dynamically re-classifies
       formData.append('start_date', startDate);
       formData.append('end_date', endDate);
@@ -120,7 +162,16 @@ const NewRequest = () => {
       }
     } catch (err) {
       console.error('[NewRequest] Submission error:', err);
-      setError(err.response?.data?.message || 'Submission error. Please check fields and try again.');
+      // Capture server-side HTTP 422 intent validation rejections
+      if (err.response?.status === 422 && err.response?.data?.validation) {
+        setValidationModal({
+          open: true,
+          type: err.response.data.validation.classification || 'INVALID_PERMISSION_INTENT',
+          data: err.response.data.validation
+        });
+      } else {
+        setError(err.response?.data?.message || 'Submission error. Please check fields and try again.');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -326,6 +377,7 @@ const NewRequest = () => {
                       Detailed Reason / Justification <span className="text-[#E04F69]">*</span>
                     </label>
                     <textarea
+                      ref={reasonInputRef}
                       rows={4}
                       value={reason}
                       onChange={(e) => setReason(e.target.value)}
@@ -373,10 +425,19 @@ const NewRequest = () => {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="saas-pill-btn-primary cursor-pointer disabled:opacity-50"
+                      className="saas-pill-btn-primary cursor-pointer disabled:opacity-50 flex items-center gap-2"
                     >
-                      {submitting ? 'Submitting Application...' : 'Submit Application'}
-                      <ArrowRight className="w-4 h-4" />
+                      {submitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-white" />
+                          <span>Evaluating Intent with AI...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Submit Application</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>
@@ -385,6 +446,134 @@ const NewRequest = () => {
           </div>
         </main>
       </div>
+
+      {/* SaaS AI Permission Intent Modal */}
+      {validationModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#261B50]/40 backdrop-blur-sm animate-in fade-in duration-200"
+        >
+          <div className={`relative w-full max-w-lg bg-white/95 rounded-3xl p-6 sm:p-8 space-y-6 text-[#261B50] shadow-2xl backdrop-blur-md border ${
+            validationModal.type === 'INVALID_PERMISSION_INTENT'
+              ? 'border-[#F9CAD3] shadow-[0_20px_50px_rgba(224,79,105,0.15)]'
+              : 'border-[#EAE0E8] shadow-[0_20px_50px_rgba(185,91,213,0.15)]'
+          }`}>
+            {/* Header */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${
+                  validationModal.type === 'INVALID_PERMISSION_INTENT'
+                    ? 'bg-[#FDEEF1] text-[#E04F69] border-[#F9CAD3]'
+                    : 'bg-[#FEF6EB] text-[#E58B24] border-[#FCE1C2]'
+                }`}>
+                  {validationModal.type === 'INVALID_PERMISSION_INTENT' ? (
+                    <ShieldAlert className="w-6 h-6" />
+                  ) : (
+                    <HelpCircle className="w-6 h-6" />
+                  )}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
+                      validationModal.type === 'INVALID_PERMISSION_INTENT'
+                        ? 'bg-[#FDEEF1] text-[#E04F69]'
+                        : 'bg-[#FEF6EB] text-[#E58B24]'
+                    }`}>
+                      {validationModal.type === 'INVALID_PERMISSION_INTENT'
+                        ? 'Intent Blocked'
+                        : 'Clarification Required'}
+                    </span>
+                    <span className="text-[10px] text-[#837B96] font-mono">
+                      Groq LPU Engine
+                    </span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-black text-[#261B50] tracking-tight">
+                    {validationModal.type === 'INVALID_PERMISSION_INTENT'
+                      ? 'Permission Request Not Allowed'
+                      : 'Additional Information Required'}
+                  </h3>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setValidationModal(null)}
+                className="p-1.5 rounded-xl hover:bg-[#F4EBF7] text-[#837B96] hover:text-[#261B50] transition cursor-pointer"
+                aria-label="Close dialog"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* AI Explanation Box */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF5F8] border border-[#EAE0E8] space-y-3">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-[#261B50] flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#B95BD5]" />
+                  <span>AI Agent Evaluation</span>
+                </span>
+                {validationModal.data?.confidence && (
+                  <span className="text-[10px] font-mono font-bold text-[#837B96] bg-white px-2 py-0.5 rounded-md border border-[#EAE0E8]">
+                    Confidence: {(validationModal.data.confidence * 100).toFixed(0)}%
+                  </span>
+                )}
+              </div>
+              <p className="text-xs font-semibold text-[#261B50] leading-relaxed">
+                {validationModal.data?.message || 'This application does not meet institutional permission requirements.'}
+              </p>
+              {validationModal.data?.reason && (
+                <div className="pt-2 border-t border-[#F0E8EE] text-[11px] text-[#5D5570]">
+                  <span className="font-bold text-[#261B50]">Analysis: </span>
+                  {validationModal.data.reason}
+                </div>
+              )}
+            </div>
+
+            {/* Institutional Policy Suggestion Box */}
+            <div className="p-4 rounded-2xl bg-[#FAF8FA] border border-[#F0E8EE] text-xs text-[#5D5570] space-y-1.5">
+              <div className="font-bold text-[#261B50] text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-[#B95BD5]" />
+                <span>University Permission Guidelines</span>
+              </div>
+              {validationModal.type === 'INVALID_PERMISSION_INTENT' ? (
+                <p className="leading-relaxed">
+                  Permission requests must be for legitimate purposes such as On-Duty (OD) for hackathons, technical workshops, competitions, academic symposiums, verified medical appointments, or emergency leave. Applications intended to avoid or skip lectures cannot be entered into the workflow.
+                </p>
+              ) : (
+                <div className="space-y-1">
+                  <p className="leading-relaxed">
+                    Please provide essential details so your mentor and faculty coordinator can verify your request:
+                  </p>
+                  <ul className="list-disc pl-4 space-y-0.5 text-[11px] text-[#7C7390]">
+                    <li>Event or workshop name and organizing institution</li>
+                    <li>Specific medical appointment or health reason</li>
+                    <li>Relevant academic or course context</li>
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setValidationModal(null)}
+                className="saas-pill-btn-outline cursor-pointer text-xs"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={handleEditFromModal}
+                className="saas-pill-btn-primary cursor-pointer text-xs flex items-center gap-1.5"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                <span>{validationModal.type === 'INVALID_PERMISSION_INTENT' ? 'Edit Request' : 'Update Details'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

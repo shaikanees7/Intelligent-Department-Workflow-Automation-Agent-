@@ -3,14 +3,55 @@ const PermissionRequest = require('../models/PermissionRequest');
 const PriorityEngine = require('../services/priorityEngine.service');
 const WorkflowEngine = require('../services/workflowEngine.service');
 const GeminiRoutingService = require('../services/geminiRouting.service');
+const PermissionIntentService = require('../services/permissionIntent.service');
 const Notification = require('../models/Notification');
 const { sendNotificationEmail } = require('../services/email.service');
 const ApiResponse = require('../utils/apiResponse');
 
+/**
+ * Validates permission intent pre-submission or on-demand
+ */
+const validatePermissionIntent = async (req, res, next) => {
+  try {
+    const { subject, reason, request_type, start_date, end_date } = req.body;
+    const validation = await PermissionIntentService.validateIntent({
+      subject,
+      reason,
+      request_type,
+      start_date,
+      end_date
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: validation
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const submitRequest = async (req, res, next) => {
   try {
-    const { request_type, reason, start_date, end_date, registration_number, phone, mobile_number } = req.body;
+    const { request_type, subject, reason, start_date, end_date, registration_number, phone, mobile_number } = req.body;
     const studentUserId = req.user.userId;
+
+    // Server-side Intent Validation: Ensure request has legitimate university purpose
+    const intentValidation = await PermissionIntentService.validateIntent({
+      subject: subject || '',
+      reason: reason || '',
+      request_type: request_type || 'OD',
+      start_date,
+      end_date
+    });
+
+    if (!intentValidation.valid) {
+      return res.status(422).json({
+        success: false,
+        message: intentValidation.message,
+        validation: intentValidation
+      });
+    }
 
     // Persist/Update phone & registration number if supplied
     const studentPhone = (phone || mobile_number || '').trim();
@@ -368,6 +409,7 @@ const reviewAction = async (req, res, next) => {
 };
 
 module.exports = {
+  validatePermissionIntent,
   submitRequest,
   getMyRequests,
   getPendingRequests,
