@@ -14,7 +14,9 @@ import {
   ShieldCheck,
   Award,
   BookOpen,
-  Sparkles
+  Sparkles,
+  BadgeCheck,
+  QrCode
 } from 'lucide-react';
 
 const Sidebar = ({ role }) => {
@@ -27,30 +29,35 @@ const Sidebar = ({ role }) => {
           { to: '/student', label: 'Overview', icon: Compass, exact: true },
           { to: '/student/new-request', label: 'Submit Request', icon: FilePlus },
           { to: '/student/requests', label: 'My Applications', icon: Files },
+          { to: '/student/permissions', label: 'My Permissions', icon: BadgeCheck },
           { to: '/student/track', label: 'Live Tracking', icon: Activity }
         ];
       case 'FACULTY':
         return [
           { to: '/faculty', label: 'Review Desk', icon: CheckSquare, exact: true },
           { to: '/faculty/history', label: 'Processed History', icon: Files },
+          { to: '/verify-pass', label: 'Verify Pass', icon: QrCode },
           { to: '/faculty/analytics', label: 'Department Stats', icon: BarChart3 }
         ];
       case 'MENTOR':
         return [
           { to: '/mentor', label: 'Mentee Verification', icon: ShieldCheck, exact: true },
           { to: '/mentor/mentees', label: 'Assigned Mentees', icon: Users },
+          { to: '/verify-pass', label: 'Verify Pass', icon: QrCode },
           { to: '/mentor/history', label: 'Verification Logs', icon: BookOpen }
         ];
       case 'HOD':
         return [
           { to: '/hod', label: 'Department Overview', icon: Compass, exact: true },
           { to: '/hod/sanctions', label: 'Final Sanctions', icon: Award },
+          { to: '/verify-pass', label: 'Verify Pass', icon: QrCode },
           { to: '/hod/analytics', label: 'Analytics & Reports', icon: BarChart3 },
           { to: '/hod/faculty', label: 'Faculty & Mentors', icon: Users }
         ];
       case 'ADMIN':
         return [
           { to: '/admin', label: 'Admin Dashboard', icon: Compass, exact: true },
+          { to: '/verify-pass', label: 'Verify Pass', icon: QrCode },
           { to: '/admin/offices', label: 'University Offices', icon: Building2 },
           { to: '/admin/users', label: 'User Directory', icon: Users },
           { to: '/admin/workflows', label: 'Workflow Config', icon: Sliders },
@@ -58,8 +65,10 @@ const Sidebar = ({ role }) => {
           { to: '/admin/reports', label: 'Audit Reports', icon: BarChart3 }
         ];
       case 'OFFICE_ADMIN':
+      case 'OFFICE_STAFF':
         return [
           { to: '/office', label: 'Office Review Desk', icon: Building2, exact: true },
+          { to: '/verify-pass', label: 'Verify Pass', icon: QrCode },
           { to: '/office?tab=processed', label: 'Processed Applications', icon: Files }
         ];
       default:

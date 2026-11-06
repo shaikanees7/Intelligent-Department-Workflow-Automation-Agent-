@@ -8,10 +8,12 @@ const StatusBadge = ({ status, size = 'md' }) => {
 
   switch (normalized) {
     case 'APPROVED':
+    case 'ACTIVE':
+    case 'APPROVED AND VALID':
       return (
         <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#E8F7F0] text-[#1E9A68] border border-[#B7E8D3] shadow-2xs ${sizeClasses}`}>
           <CheckCircle2 className="w-3.5 h-3.5 text-[#1E9A68]" />
-          Approved
+          {normalized === 'ACTIVE' ? 'Active Pass' : normalized === 'APPROVED AND VALID' ? 'Approved & Valid' : 'Approved'}
         </span>
       );
     case 'REJECTED':
@@ -19,6 +21,27 @@ const StatusBadge = ({ status, size = 'md' }) => {
         <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#FDEEF1] text-[#E04F69] border border-[#F9CAD3] shadow-2xs ${sizeClasses}`}>
           <XCircle className="w-3.5 h-3.5 text-[#E04F69]" />
           Rejected
+        </span>
+      );
+    case 'EXPIRED':
+      return (
+        <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#F4F1F6] text-[#7E7492] border border-[#DDD5E5] shadow-2xs ${sizeClasses}`}>
+          <Clock className="w-3.5 h-3.5 text-[#7E7492]" />
+          Expired
+        </span>
+      );
+    case 'REVOKED':
+      return (
+        <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#FDE8EC] text-[#C92A4B] border border-[#F5B4C2] shadow-2xs ${sizeClasses}`}>
+          <XCircle className="w-3.5 h-3.5 text-[#C92A4B]" />
+          Revoked
+        </span>
+      );
+    case 'INVALID QR':
+      return (
+        <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#FDE8EC] text-[#C92A4B] border border-[#F5B4C2] shadow-2xs ${sizeClasses}`}>
+          <AlertCircle className="w-3.5 h-3.5 text-[#C92A4B]" />
+          Invalid QR
         </span>
       );
     case 'UNDER_REVIEW':

@@ -1,6 +1,7 @@
 const db = require('../../database/db');
 const { generatePermissionPdf } = require('./pdfGenerator.service');
 const { sendNotificationEmail } = require('./email.service');
+const PassGeneratorService = require('./passGenerator.service');
 const Notification = require('../models/Notification');
 const logger = require('../utils/logger');
 
@@ -122,12 +123,21 @@ class WorkflowEngine {
         );
         await connection.commit();
 
+        // Automatic Digital Permission Pass Generation upon final approval
+        let digitalPass = null;
+        try {
+          digitalPass = await PassGeneratorService.generatePassForRequest(requestId);
+          logger.info(`[WorkflowEngine] Automatically generated Digital Permission Pass for request ${reqData.request_code}: ${digitalPass?.pass_reference}`);
+        } catch (passErr) {
+          logger.error(`[WorkflowEngine] Digital pass generation error for request #${requestId}: ${passErr.message}`);
+        }
+
         // Notify Student
         await Notification.create({
           user_id: reqData.student_user_id,
           request_id: requestId,
           title: `Permission Sanctioned! (${reqData.request_code})`,
-          message: `Congratulations! Your ${reqData.request_type} request (${reqData.request_code}) has received final institutional approval. Your digital gate pass is ready to download.`,
+          message: `Congratulations! Your ${reqData.request_type} request (${reqData.request_code}) has received final institutional approval. Your digital QR gate pass is ready in "My Permissions".`,
           type: 'APPROVAL'
         });
 
@@ -135,7 +145,7 @@ class WorkflowEngine {
         sendNotificationEmail(
           reqData.student_email,
           `Official Permission Sanctioned - ${reqData.request_code}`,
-          `Your ${reqData.request_type} request (${reqData.request_code}) has received final sanction. You may now download your pass from the student dashboard.`
+          `Your ${reqData.request_type} request (${reqData.request_code}) has received final sanction. You may now access your digital QR pass and download your permission pass from your student dashboard.`
         );
 
         logger.info(`[WorkflowEngine] Request ${reqData.request_code} fully APPROVED. PDF generated at ${pdfPath}.`);
@@ -143,7 +153,8 @@ class WorkflowEngine {
           status: 'APPROVED',
           requestId,
           requestCode: reqData.request_code,
-          pdfUrl: pdfPath
+          pdfUrl: pdfPath,
+          pass: digitalPass
         };
       }
 

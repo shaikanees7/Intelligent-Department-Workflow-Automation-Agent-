@@ -15,6 +15,7 @@ import NotFound from './pages/common/NotFound';
 import StudentDashboard from './pages/student/StudentDashboard';
 import NewRequest from './pages/student/NewRequest';
 import MyRequests from './pages/student/MyRequests';
+import MyPermissions from './pages/student/MyPermissions';
 import TrackRequest from './pages/student/TrackRequest';
 
 import FacultyDashboard from './pages/faculty/FacultyDashboard';
@@ -23,6 +24,7 @@ import HODDashboard from './pages/hod/HODDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UniversityOffices from './pages/admin/UniversityOffices';
 import OfficeDashboard from './pages/office/OfficeDashboard';
+import VerifyPass from './pages/staff/VerifyPass';
 
 function App() {
   return (
@@ -58,6 +60,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['STUDENT']}>
                   <MyRequests />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/permissions"
+              element={
+                <ProtectedRoute allowedRoles={['STUDENT']}>
+                  <MyPermissions />
                 </ProtectedRoute>
               }
             />
@@ -175,6 +185,9 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            {/* Real-time Digital Permission Pass Verification */}
+            <Route path="/verify-pass" element={<VerifyPass />} />
 
             {/* 404 Fallback */}
             <Route path="*" element={<NotFound />} />
