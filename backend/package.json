@@ -8,6 +8,7 @@
     "dev": "nodemon server.js",
     "db:seed": "node database/seed.js",
     "db:seed:offices": "node database/seed_offices.js",
+    "db:view": "node database/view_data.js",
     "test": "node tests/api.test.js",
     "test:ai": "node tests/groq_routing.test.js"
   },

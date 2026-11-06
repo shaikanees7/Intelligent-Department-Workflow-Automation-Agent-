@@ -8,6 +8,7 @@
     "client": "cd frontend && npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "db:setup": "cd backend && node database/seed.js",
+    "db:view": "cd backend && node database/view_data.js",
     "test:backend": "cd backend && npm test"
   },
   "devDependencies": {
