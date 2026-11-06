@@ -12,17 +12,18 @@ import {
   Users,
   CheckCheck,
   Shield,
-  Layers
+  Layers,
+  Sparkles,
+  UserCheck
 } from 'lucide-react';
 
 const DEMO_ACCOUNTS = [
-  { role: 'STUDENT', email: 'student1@institution.edu', label: 'Student (Anees Shaik)' },
-  { role: 'OFFICE_ADMIN', email: 'office.exam@institution.edu', label: 'Exam Cell Office Admin' },
-  { role: 'OFFICE_ADMIN', email: 'office.hostel@institution.edu', label: 'Hostel Office Admin' },
-  { role: 'MENTOR', email: 'mentor.cse@institution.edu', label: 'Academic Mentor (Prof. Suresh Reddy)' },
-  { role: 'FACULTY', email: 'faculty.cse@institution.edu', label: 'Faculty Coordinator (Prof. Anitha Sharma)' },
-  { role: 'HOD', email: 'hod.cse@institution.edu', label: 'Head of Dept (Dr. Ramesh Kumar)' },
-  { role: 'ADMIN', email: 'admin@institution.edu', label: 'System Administrator' },
+  { role: 'STUDENT', email: 'student1@institution.edu', label: 'Student (Anees Shaik)', desc: 'Submit requests & track live gate pass' },
+  { role: 'MENTOR', email: 'mentor.cse@institution.edu', label: 'Mentor (Prof. Suresh Reddy)', desc: 'Academic attendance & authenticity verify' },
+  { role: 'FACULTY', email: 'faculty.cse@institution.edu', label: 'Faculty Coordinator (Prof. Anitha)', desc: 'Departmental curriculum & OD review' },
+  { role: 'HOD', email: 'hod.cse@institution.edu', label: 'Head of Dept (Dr. Ramesh Kumar)', desc: 'Institutional authority & final sanction' },
+  { role: 'OFFICE_ADMIN', email: 'office.exam@institution.edu', label: 'Office Admin (Exam Cell)', desc: 'Administrative office processing desk' },
+  { role: 'ADMIN', email: 'admin@institution.edu', label: 'System Administrator', desc: 'University-wide workflows & user control' },
 ];
 
 const Navbar = () => {
@@ -61,12 +62,7 @@ const Navbar = () => {
         login(newUser, token);
         setShowRoleSwitcher(false);
         try { fetchNotifications(); } catch {}
-        if (newUser.role === 'STUDENT') navigate('/student');
-        else if (newUser.role === 'OFFICE_ADMIN') navigate('/office');
-        else if (newUser.role === 'FACULTY') navigate('/faculty');
-        else if (newUser.role === 'MENTOR') navigate('/mentor');
-        else if (newUser.role === 'HOD') navigate('/hod');
-        else navigate('/admin');
+        redirectToRole(newUser.role);
         return;
       }
     } catch (err) {
@@ -86,12 +82,28 @@ const Navbar = () => {
     const targetUser = demoProfiles[roleKey] || demoProfiles.STUDENT;
     login(targetUser, 'demo_jwt_token_12345');
     setShowRoleSwitcher(false);
-    if (targetUser.role === 'STUDENT') navigate('/student');
-    else if (targetUser.role === 'OFFICE_ADMIN') navigate('/office');
-    else if (targetUser.role === 'FACULTY') navigate('/faculty');
-    else if (targetUser.role === 'MENTOR') navigate('/mentor');
-    else if (targetUser.role === 'HOD') navigate('/hod');
+    redirectToRole(targetUser.role);
+  };
+
+  const redirectToRole = (role) => {
+    if (role === 'STUDENT') navigate('/student');
+    else if (role === 'OFFICE_ADMIN') navigate('/office');
+    else if (role === 'FACULTY') navigate('/faculty');
+    else if (role === 'MENTOR') navigate('/mentor');
+    else if (role === 'HOD') navigate('/hod');
     else navigate('/admin');
+  };
+
+  const getDashboardRoute = () => {
+    switch (user?.role) {
+      case 'STUDENT': return '/student';
+      case 'OFFICE_ADMIN': return '/office';
+      case 'FACULTY': return '/faculty';
+      case 'MENTOR': return '/mentor';
+      case 'HOD': return '/hod';
+      case 'ADMIN': return '/admin';
+      default: return '/student';
+    }
   };
 
   const formatRoleLabel = (role) => {
@@ -100,81 +112,92 @@ const Navbar = () => {
       case 'MENTOR': return 'Academic Mentor';
       case 'FACULTY': return 'Faculty Coordinator';
       case 'HOD': return 'Head of Department';
-      case 'OFFICE_ADMIN': return 'Office Admin';
-      case 'ADMIN': return 'Administrator';
-      default: return role;
+      case 'OFFICE_ADMIN': return 'Office Administrator';
+      case 'ADMIN': return 'System Administrator';
+      default: return role || 'User';
     }
   };
 
   return (
-    <header className="bg-[#F3F5F7]/95 backdrop-blur-md px-6 lg:px-8 py-3.5 flex items-center justify-between sticky top-0 z-40 border-b border-slate-200/80">
-      {/* Brand: IDWAA Logo & Identity */}
+    <header className="bg-[#FAF5F7]/85 backdrop-blur-xl px-6 lg:px-8 py-3.5 flex items-center justify-between sticky top-0 z-40 border-b border-[#EAE0E8]/90 transition-all duration-200">
+      {/* Brand Identity: IDWAA Logo & Title */}
       <div className="flex items-center space-x-3.5">
-        <Link
-          to={
-            user?.role === 'STUDENT'
-              ? '/student'
-              : user?.role === 'OFFICE_ADMIN'
-              ? '/office'
-              : user?.role === 'FACULTY'
-              ? '/faculty'
-              : user?.role === 'MENTOR'
-              ? '/mentor'
-              : user?.role === 'HOD'
-              ? '/hod'
-              : '/admin'
-          }
-          className="flex items-center space-x-3 group"
-        >
-          <div className="relative overflow-hidden rounded-xl border border-slate-200/90 shadow-xs bg-white/90 p-1 group-hover:border-teal-500 group-hover:shadow-sm transition-all duration-200 flex items-center justify-center">
+        <Link to={getDashboardRoute()} className="flex items-center space-x-3 group">
+          <div className="relative overflow-hidden rounded-2xl border border-[#EAE0E8] shadow-xs bg-white p-1 group-hover:border-[#B95BD5] group-hover:shadow-[0_4px_16px_rgba(185,91,213,0.25)] transition-all duration-200 flex items-center justify-center">
             <img
               src={idwaaLogo}
               alt="IDWAA Logo"
-              className="h-10 sm:h-11 w-auto max-w-[90px] sm:max-w-[110px] object-contain rounded-lg"
+              className="h-9 sm:h-10 w-auto max-w-[90px] sm:max-w-[105px] object-contain rounded-xl"
             />
           </div>
-          <span className="font-serif text-xl sm:text-2xl font-bold text-slate-900 tracking-wider leading-none group-hover:text-teal-700 transition">
-            IDWAA
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="font-sans text-xl sm:text-2xl font-black text-[#261B50] tracking-tight leading-none group-hover:text-[#B95BD5] transition-colors">
+              IDWAA
+            </span>
+            <span className="hidden sm:inline-flex items-center text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#F4EBF7] text-[#8E32A8] border border-[#E8D1ED] tracking-wide">
+              Workflow Platform
+            </span>
+          </div>
         </Link>
       </div>
 
       {/* Right Controls: Role Switcher & User Profile Widget */}
-      <div className="flex items-center space-x-3.5">
-        {/* Role Switcher Pill (Matching Reference Image) */}
+      <div className="flex items-center space-x-3 sm:space-x-4">
+        {/* Role Switcher Pill */}
         <div className="relative" ref={roleRef}>
           <button
             onClick={() => setShowRoleSwitcher(!showRoleSwitcher)}
-            className="flex items-center space-x-2 px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-medium text-xs rounded-xl border border-slate-200 shadow-xs hover:shadow-sm transition select-none cursor-pointer"
+            className="flex items-center space-x-2 px-3.5 sm:px-4 py-2 bg-white hover:bg-[#FAF5FB] text-[#261B50] font-bold text-xs rounded-full border border-[#EAE0E8] shadow-xs hover:border-[#B95BD5] hover:shadow-[0_4px_14px_rgba(185,91,213,0.18)] transition-all cursor-pointer"
             title="Instant Role Switching for Testing"
           >
-            <ArrowLeftRight className="w-3.5 h-3.5 text-slate-500" />
-            <span className="font-semibold text-slate-800">Role Switcher</span>
+            <ArrowLeftRight className="w-3.5 h-3.5 text-[#B95BD5]" />
+            <span className="font-bold text-[#261B50] hidden sm:inline">Role Switcher</span>
+            <ChevronDown className="w-3 h-3 text-[#7C7390]" />
           </button>
 
           {showRoleSwitcher && (
-            <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-slate-200 py-2.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-              <div className="px-3.5 py-1.5 border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                Instant Role Switching (Demo)
+            <div className="absolute right-0 mt-2.5 w-80 bg-white rounded-3xl shadow-2xl border border-[#EAE0E8] p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="px-3 py-2 border-b border-[#F0E8EE] flex items-center justify-between">
+                <div>
+                  <div className="text-xs font-black text-[#261B50] uppercase tracking-wider">
+                    Role Switcher (Live Demo)
+                  </div>
+                  <div className="text-[10px] text-[#7C7390]">
+                    Select any role to test workflow permissions
+                  </div>
+                </div>
+                <Sparkles className="w-4 h-4 text-[#B95BD5]" />
               </div>
-              <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
-                {DEMO_ACCOUNTS.map((acc) => (
-                  <button
-                    key={acc.email}
-                    onClick={() => handleQuickSwitch(acc.email, acc.role)}
-                    className={`w-full text-left px-3.5 py-2 hover:bg-slate-50 flex items-center justify-between text-xs transition ${
-                      user?.role === acc.role ? 'bg-teal-50 text-teal-900 font-semibold' : 'text-slate-700'
-                    }`}
-                  >
-                    <div>
-                      <div className="font-semibold">{acc.label}</div>
-                      <div className="text-[10px] text-slate-400">{acc.email}</div>
-                    </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
-                      {acc.role}
-                    </span>
-                  </button>
-                ))}
+
+              <div className="divide-y divide-[#F0E8EE] max-h-84 overflow-y-auto pt-1">
+                {DEMO_ACCOUNTS.map((acc) => {
+                  const isCurrent = user?.role === acc.role;
+                  return (
+                    <button
+                      key={acc.role + acc.email}
+                      onClick={() => handleQuickSwitch(acc.email, acc.role)}
+                      className={`w-full text-left p-2.5 rounded-2xl flex items-center justify-between transition group ${
+                        isCurrent ? 'bg-[#F7EDFA] border border-[#E8D1ED]' : 'hover:bg-[#FAF5F7]'
+                      }`}
+                    >
+                      <div className="space-y-0.5">
+                        <div className="text-xs font-bold text-[#261B50] group-hover:text-[#B95BD5] transition-colors">
+                          {acc.label}
+                        </div>
+                        <div className="text-[10px] text-[#7C7390] leading-tight">
+                          {acc.desc}
+                        </div>
+                      </div>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                        isCurrent
+                          ? 'bg-[#B95BD5] text-white'
+                          : 'bg-[#F4EBF7] text-[#8E32A8]'
+                      }`}>
+                        {acc.role}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -184,28 +207,28 @@ const Navbar = () => {
         <div className="relative" ref={notifRef}>
           <button
             onClick={() => setShowNotifs(!showNotifs)}
-            className="relative p-2 text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-xs transition"
+            className="relative w-9 h-9 bg-white hover:bg-[#FAF5FB] rounded-full border border-[#EAE0E8] flex items-center justify-center text-[#261B50] hover:text-[#B95BD5] hover:border-[#B95BD5] shadow-xs transition cursor-pointer"
             title="Notifications"
           >
             <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#B95BD5] text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-xs animate-pulse">
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
             )}
           </button>
 
           {showNotifs && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 py-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-              <div className="px-4 pb-2 border-b border-slate-100 flex items-center justify-between">
+            <div className="absolute right-0 mt-2.5 w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-[#EAE0E8] p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="pb-3 border-b border-[#F0E8EE] flex items-center justify-between">
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm">Notifications</h4>
-                  <p className="text-[11px] text-slate-500">{unreadCount} unread messages</p>
+                  <h4 className="font-black text-[#261B50] text-sm">Notifications</h4>
+                  <p className="text-[11px] text-[#7C7390]">{unreadCount} unread automated updates</p>
                 </div>
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="text-xs text-teal-600 hover:text-teal-800 font-semibold flex items-center gap-1"
+                    className="text-xs font-bold text-[#B95BD5] hover:text-[#8E32A8] transition flex items-center gap-1 cursor-pointer"
                   >
                     <CheckCheck className="w-3.5 h-3.5" />
                     Mark all read
@@ -213,9 +236,9 @@ const Navbar = () => {
                 )}
               </div>
 
-              <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
+              <div className="max-h-80 overflow-y-auto divide-y divide-[#F0E8EE] pt-1">
                 {notifications.length === 0 ? (
-                  <div className="py-8 text-center text-xs text-slate-400">
+                  <div className="py-8 text-center text-xs text-[#7C7390]">
                     No notifications yet.
                   </div>
                 ) : (
@@ -223,18 +246,18 @@ const Navbar = () => {
                     <div
                       key={n.notification_id}
                       onClick={() => !n.is_read && markAsRead(n.notification_id)}
-                      className={`p-3.5 text-xs transition cursor-pointer hover:bg-slate-50 ${
-                        !n.is_read ? 'bg-teal-50/50' : ''
+                      className={`p-3 text-xs transition rounded-2xl cursor-pointer ${
+                        !n.is_read ? 'bg-[#F7EDFA]/60 hover:bg-[#F7EDFA]' : 'hover:bg-[#FAF5F7]'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="font-semibold text-slate-800">{n.title}</span>
+                        <span className="font-bold text-[#261B50]">{n.title}</span>
                         {!n.is_read && (
-                          <span className="w-2 h-2 rounded-full bg-teal-600 shrink-0 mt-1" />
+                          <span className="w-2 h-2 rounded-full bg-[#B95BD5] shrink-0 mt-1" />
                         )}
                       </div>
-                      <p className="text-slate-600 mt-1 leading-relaxed">{n.message}</p>
-                      <div className="text-[10px] text-slate-400 mt-1.5">
+                      <p className="text-[#4F4665] mt-1 text-[11px] leading-relaxed">{n.message}</p>
+                      <div className="text-[10px] text-[#7C7390] mt-1.5 font-medium">
                         {new Date(n.created_at).toLocaleString()}
                       </div>
                     </div>
@@ -245,56 +268,59 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* User Profile Widget (Matching Reference Image) */}
+        {/* User Identity Chip with Dropdown */}
         {user && (
           <div className="relative" ref={userMenuRef}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="bg-white border border-slate-200/90 rounded-xl px-3 py-1.5 flex items-center space-x-2.5 shadow-xs hover:shadow-sm hover:border-slate-300 transition cursor-pointer select-none"
+              className="flex items-center space-x-2.5 px-3 py-1.5 bg-white hover:bg-[#FAF5FB] rounded-full border border-[#EAE0E8] shadow-xs hover:border-[#B95BD5] hover:shadow-[0_4px_14px_rgba(185,91,213,0.18)] transition-all cursor-pointer"
             >
-              <div className="w-7 h-7 rounded-full bg-[#5A646E] text-white flex items-center justify-center font-bold text-xs uppercase shadow-inner">
-                {user.first_name ? user.first_name[0] : 'A'}
+              <div className="w-7 h-7 rounded-full bg-[#261B50] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                {user.first_name ? user.first_name[0] : 'U'}
               </div>
-              <div className="text-left pr-1">
-                <div className="text-xs font-bold text-slate-800 leading-tight flex items-center gap-1">
-                  <span>{user.first_name || 'Anees'} {user.last_name || 'Shaik'}</span>
-                  <ChevronDown className="w-3 h-3 text-slate-400" />
+              <div className="hidden md:block text-left pr-1">
+                <div className="text-xs font-bold text-[#261B50] leading-none">
+                  {user.first_name} {user.last_name}
                 </div>
-                <div className="text-[10px] text-slate-500 font-medium flex items-center gap-1 mt-0.5">
-                  <span>{formatRoleLabel(user.role)}</span>
-                  <Users className="w-3 h-3 text-slate-400" />
+                <div className="text-[10px] text-[#8E32A8] font-bold mt-0.5">
+                  {formatRoleLabel(user.role)}
                 </div>
               </div>
+              <ChevronDown className="w-3 h-3 text-[#7C7390]" />
             </button>
 
-            {/* Profile Dropdown */}
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-xs">
-                <div className="px-4 py-2 border-b border-slate-100">
-                  <p className="font-bold text-slate-900">{user.first_name} {user.last_name}</p>
-                  <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
+              <div className="absolute right-0 mt-2.5 w-64 bg-white rounded-3xl shadow-2xl border border-[#EAE0E8] py-2.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="px-4 py-2.5 border-b border-[#F0E8EE]">
+                  <p className="text-xs font-black text-[#261B50]">
+                    {user.first_name} {user.last_name}
+                  </p>
+                  <p className="text-[11px] text-[#7C7390] truncate">{user.email}</p>
                   {user.registration_number && (
-                    <p className="text-[10px] font-mono text-teal-700 mt-0.5">Reg: {user.registration_number}</p>
+                    <p className="text-[10px] font-mono text-[#8E32A8] font-bold mt-0.5">
+                      Reg: {user.registration_number}
+                    </p>
                   )}
                 </div>
 
-                <div className="py-1">
+                <div className="p-1 space-y-0.5">
                   <Link
-                    to={user.role === 'STUDENT' ? '/student' : '/office'}
+                    to={getDashboardRoute()}
                     onClick={() => setShowUserMenu(false)}
-                    className="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium"
+                    className="flex items-center gap-2.5 px-3.5 py-2 text-xs text-[#261B50] hover:bg-[#F7EDFA] hover:text-[#B95BD5] rounded-xl font-bold transition"
                   >
-                    <Layers className="w-3.5 h-3.5 text-slate-400" />
+                    <Layers className="w-4 h-4 text-[#7C7390]" />
                     Dashboard Overview
                   </Link>
+
                   <button
                     onClick={() => {
                       setShowUserMenu(false);
                       logout();
                     }}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-rose-600 hover:bg-rose-50 font-semibold transition"
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs text-[#E04F69] hover:bg-[#FDEEF1] rounded-xl font-bold transition cursor-pointer"
                   >
-                    <LogOut className="w-3.5 h-3.5" />
+                    <LogOut className="w-4 h-4" />
                     Sign Out
                   </button>
                 </div>

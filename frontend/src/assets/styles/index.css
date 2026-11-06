@@ -2,11 +2,116 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #F6EFF2;
+    color: #261B50;
+  }
+}
+
+/* Atmospheric Blush & Pale Lavender Background Glows */
+.bg-saas-radial {
+  background: radial-gradient(circle at 10% 15%, rgba(185, 91, 213, 0.08) 0%, transparent 45%),
+              radial-gradient(circle at 90% 85%, rgba(52, 38, 95, 0.07) 0%, transparent 50%),
+              linear-gradient(135deg, #F8F2F4 0%, #F5ECF0 50%, #EFE5EB 100%);
+}
+
+/* Premium Card Glass & Elevation */
+.saas-card {
+  background: #FFFFFF;
+  border: 1px solid #EAE0E8;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px -5px rgba(38, 27, 80, 0.05);
+  transition: all 0.25s ease;
+}
+
+.saas-card:hover {
+  box-shadow: 0 18px 40px -10px rgba(38, 27, 80, 0.1);
+  border-color: #D8B8E8;
+}
+
+/* Featured Dark Navy-Purple Card (from Reference Image) */
+.saas-dark-card {
+  background: #1E163B;
+  border: 1px solid #362B5E;
+  border-radius: 24px;
+  color: #FFFFFF;
+  box-shadow: 0 20px 45px -10px rgba(22, 15, 44, 0.35);
+}
+
+/* Pill Buttons */
+.saas-pill-btn-primary {
+  background-color: #B95BD5;
+  color: #FFFFFF;
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.65rem 1.5rem;
+  box-shadow: 0 4px 14px rgba(185, 91, 213, 0.3);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.saas-pill-btn-primary:hover {
+  background-color: #A847C5;
+  box-shadow: 0 6px 20px rgba(185, 91, 213, 0.45);
+  transform: translateY(-1px);
+}
+
+.saas-pill-btn-secondary {
+  background-color: #5B5072;
+  color: #FFFFFF;
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.65rem 1.5rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.saas-pill-btn-secondary:hover {
+  background-color: #493E60;
+  transform: translateY(-1px);
+}
+
+.saas-pill-btn-outline {
+  background-color: #FFFFFF;
+  color: #261B50;
+  border: 1px solid #EAE0E8;
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  box-shadow: 0 2px 8px rgba(38, 27, 80, 0.04);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.saas-pill-btn-outline:hover {
+  border-color: #B95BD5;
+  color: #B95BD5;
+  background-color: #FAF5FB;
+  transform: translateY(-1px);
+}
+
+/* Status Badges */
+.badge-pill {
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }

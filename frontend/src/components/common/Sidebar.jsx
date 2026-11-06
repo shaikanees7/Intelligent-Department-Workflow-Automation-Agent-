@@ -13,7 +13,8 @@ import {
   BarChart3,
   ShieldCheck,
   Award,
-  BookOpen
+  BookOpen,
+  Sparkles
 } from 'lucide-react';
 
 const Sidebar = ({ role }) => {
@@ -24,7 +25,7 @@ const Sidebar = ({ role }) => {
       case 'STUDENT':
         return [
           { to: '/student', label: 'Overview', icon: Compass, exact: true },
-          { to: '/student/new-request', label: 'Submit New Request', icon: FilePlus },
+          { to: '/student/new-request', label: 'Submit Request', icon: FilePlus },
           { to: '/student/requests', label: 'My Applications', icon: Files },
           { to: '/student/track', label: 'Live Tracking', icon: Activity }
         ];
@@ -32,7 +33,7 @@ const Sidebar = ({ role }) => {
         return [
           { to: '/faculty', label: 'Review Desk', icon: CheckSquare, exact: true },
           { to: '/faculty/history', label: 'Processed History', icon: Files },
-          { to: '/faculty/analytics', label: 'Department OD Stats', icon: BarChart3 }
+          { to: '/faculty/analytics', label: 'Department Stats', icon: BarChart3 }
         ];
       case 'MENTOR':
         return [
@@ -69,34 +70,57 @@ const Sidebar = ({ role }) => {
   const links = getLinks();
 
   return (
-    <aside className="w-56 sm:w-60 p-4 sm:p-6 shrink-0 relative z-10">
-      <nav className="space-y-3.5">
-        {links.map((item) => {
-          const Icon = item.icon;
-          const isActive = item.exact
-            ? location.pathname === item.to
-            : location.pathname.startsWith(item.to);
+    <aside className="w-56 sm:w-64 p-4 sm:p-6 shrink-0 relative z-10 hidden md:block">
+      <div className="space-y-6">
+        <div className="text-[11px] font-black text-[#837B96] uppercase tracking-wider px-3">
+          Navigation
+        </div>
 
-          return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={`flex items-center justify-between px-5 py-3.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all duration-200 select-none ${
-                isActive
-                  ? 'bg-[#6B9FA3] text-white shadow-md shadow-[#6B9FA3]/25 font-bold border border-[#5E9CA0]'
-                  : 'bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-200/80 shadow-xs hover:shadow-sm'
-              }`}
-            >
-              <span>{item.label}</span>
-              {isActive && (
-                <div className="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center shrink-0 -mr-1">
-                  <Icon className="w-3.5 h-3.5 text-white" />
+        <nav className="space-y-2.5">
+          {links.map((item) => {
+            const Icon = item.icon;
+            const isActive = item.exact
+              ? location.pathname === item.to
+              : location.pathname.startsWith(item.to);
+
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={`flex items-center justify-between px-4 sm:px-5 py-3 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 select-none group ${
+                  isActive
+                    ? 'bg-[#261B50] text-white shadow-md shadow-[#261B50]/20 font-bold border border-[#34265F]'
+                    : 'bg-white/90 hover:bg-white text-[#4F4665] hover:text-[#261B50] border border-[#EAE0E8] shadow-xs hover:border-[#D8B8E8] hover:shadow-sm'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Icon className={`w-4 h-4 transition-colors ${
+                    isActive ? 'text-[#B95BD5]' : 'text-[#837B96] group-hover:text-[#B95BD5]'
+                  }`} />
+                  <span>{item.label}</span>
                 </div>
-              )}
-            </NavLink>
-          );
-        })}
-      </nav>
+                {isActive && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#B95BD5] shadow-xs" />
+                )}
+              </NavLink>
+            );
+          })}
+        </nav>
+
+        {/* Small Ambient Status Box */}
+        <div className="p-4 rounded-3xl bg-gradient-to-br from-[#1E163B] to-[#2B1D50] text-white shadow-xl border border-[#3A2A69] space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-[#D8B8E8] uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3 text-[#B95BD5]" />
+              Groq AI Agent
+            </span>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          </div>
+          <p className="text-[11px] text-[#D4CEE4] leading-relaxed">
+            Neural office routing & policy validation active
+          </p>
+        </div>
+      </div>
     </aside>
   );
 };

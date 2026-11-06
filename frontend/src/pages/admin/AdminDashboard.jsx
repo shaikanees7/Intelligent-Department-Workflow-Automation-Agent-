@@ -148,31 +148,38 @@ const AdminDashboard = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#F3F5F7] relative flex flex-col font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-transparent relative flex flex-col font-sans overflow-x-hidden text-saas-textDark">
       <BlueprintWatermark />
       <Navbar />
-      <div className="flex flex-1 relative z-10">
+      <div className="flex flex-1 relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role="ADMIN" />
 
-        <main className="flex-1 p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+        <main className="flex-1 w-full space-y-6">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-4">
+          <div className="saas-card rounded-3xl p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 bg-purple-100 text-purple-800 rounded-lg">
+              <div className="flex items-center gap-3">
+                <span className="p-2.5 bg-saas-primary/15 text-saas-primary rounded-2xl shadow-xs">
                   <Shield className="w-5 h-5" />
                 </span>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                  System Administration Hub
-                </h1>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-2xl font-extrabold text-saas-textDark tracking-tight">
+                      System Administration Hub
+                    </h1>
+                    <span className="badge-pill bg-[#EAE0F0] text-saas-navy text-[11px] font-bold">
+                      Root Control
+                    </span>
+                  </div>
+                  <p className="text-xs text-saas-textMuted mt-0.5">
+                    Configure approval sequences, manage users, and supervise department workflows
+                  </p>
+                </div>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
-                Configure approval sequences, manage users, and supervise department workflows
-              </p>
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 border border-purple-200">
+              <span className="badge-pill bg-saas-canvas text-saas-navy border border-[#EAE0E8] text-xs font-bold py-1.5 px-3.5">
                 Institutional Root Authority
               </span>
             </div>
@@ -180,21 +187,21 @@ const AdminDashboard = () => {
 
           {/* System Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Enrolled Users</p>
-              <h3 className="text-2xl font-black text-slate-900 mt-1">{usersList.length}</h3>
+            <div className="saas-card rounded-3xl p-5">
+              <p className="text-xs font-bold text-saas-textMuted uppercase tracking-wider">Total Enrolled Users</p>
+              <h3 className="text-3xl font-black text-saas-textDark mt-1">{usersList.length}</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Workflows</p>
-              <h3 className="text-2xl font-black text-primary-600 mt-1">3</h3>
+            <div className="saas-card rounded-3xl p-5">
+              <p className="text-xs font-bold text-saas-primary uppercase tracking-wider">Active Workflows</p>
+              <h3 className="text-3xl font-black text-saas-primary mt-1">4</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Requests Processed</p>
-              <h3 className="text-2xl font-black text-slate-900 mt-1">{stats.total_requests || 18}</h3>
+            <div className="saas-card rounded-3xl p-5">
+              <p className="text-xs font-bold text-saas-textMuted uppercase tracking-wider">Total Requests Processed</p>
+              <h3 className="text-3xl font-black text-saas-textDark mt-1">{stats.total_requests || 18}</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sanction Rate</p>
-              <h3 className="text-2xl font-black text-emerald-600 mt-1">
+            <div className="saas-card rounded-3xl p-5">
+              <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Sanction Rate</p>
+              <h3 className="text-3xl font-black text-emerald-600 mt-1">
                 {stats.total_requests ? Math.round((stats.approved_count / stats.total_requests) * 100) : 92}%
               </h3>
             </div>
@@ -212,17 +219,17 @@ const AdminDashboard = () => {
                 {
                   label: 'Approved & Gate Pass Issued',
                   count: stats.approved_count || 14,
-                  color: '#22C55E'
+                  color: '#238B62'
                 },
                 {
                   label: 'In Active Review Queue',
                   count: stats.pending_count || 3,
-                  color: '#F59E0B'
+                  color: '#D69B35'
                 },
                 {
                   label: 'Rejected with Remarks',
                   count: stats.rejected_count || 1,
-                  color: '#EF4444'
+                  color: '#D65B70'
                 }
               ]}
               showWaveform={true}
@@ -238,17 +245,17 @@ const AdminDashboard = () => {
                 {
                   label: 'Students',
                   count: usersList.filter((u) => u.role === 'STUDENT').length || 4,
-                  color: '#0284C7'
+                  color: '#B95BD5'
                 },
                 {
                   label: 'Academic Mentors & Faculty',
                   count: usersList.filter((u) => u.role === 'MENTOR' || u.role === 'FACULTY').length || 3,
-                  color: '#6366F1'
+                  color: '#261B50'
                 },
                 {
                   label: 'Office Admins & HODs',
                   count: usersList.filter((u) => u.role === 'OFFICE_ADMIN' || u.role === 'HOD' || u.role === 'ADMIN').length || 3,
-                  color: '#A855F7'
+                  color: '#D8B8E8'
                 }
               ]}
               showWaveform={true}
@@ -256,13 +263,13 @@ const AdminDashboard = () => {
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => setActiveTab('users')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-2 ${
                 activeTab === 'users'
-                  ? 'bg-primary-600 text-white shadow-xs'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-saas-navy text-white shadow-xs'
+                  : 'bg-white text-saas-textDark hover:bg-[#EAE0F0] border border-[#EAE0E8]'
               }`}
             >
               <Users className="w-4 h-4" />
@@ -271,34 +278,34 @@ const AdminDashboard = () => {
 
             <button
               onClick={() => setActiveTab('workflows')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-2 ${
                 activeTab === 'workflows'
-                  ? 'bg-primary-600 text-white shadow-xs'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-saas-navy text-white shadow-xs'
+                  : 'bg-white text-saas-textDark hover:bg-[#EAE0F0] border border-[#EAE0E8]'
               }`}
             >
               <Sliders className="w-4 h-4" />
-              Workflow Sequences (3)
+              Workflow Sequences (4)
             </button>
 
             <button
               onClick={() => setActiveTab('ai_offices')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-2 ${
                 activeTab === 'ai_offices'
-                  ? 'bg-primary-600 text-white shadow-xs'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-saas-navy text-white shadow-xs'
+                  : 'bg-white text-saas-textDark hover:bg-[#EAE0F0] border border-[#EAE0E8]'
               }`}
             >
-              <Sparkles className="w-4 h-4 text-amber-300" />
+              <Sparkles className="w-4 h-4 text-saas-primary" />
               AI Routing & Offices ({aiStats.total_offices || 9})
             </button>
 
             <button
               onClick={() => setActiveTab('reports')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-2 ${
                 activeTab === 'reports'
-                  ? 'bg-primary-600 text-white shadow-xs'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-saas-navy text-white shadow-xs'
+                  : 'bg-white text-saas-textDark hover:bg-[#EAE0F0] border border-[#EAE0E8]'
               }`}
             >
               <BarChart3 className="w-4 h-4" />
@@ -308,16 +315,16 @@ const AdminDashboard = () => {
 
           {/* Tab 1: User Management */}
           {activeTab === 'users' && (
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden space-y-4">
-              <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-100">
-                <div className="relative w-full sm:w-72">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <div className="saas-card rounded-3xl overflow-hidden space-y-4">
+              <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[#EAE0E8]">
+                <div className="relative w-full sm:w-80">
+                  <Search className="w-4 h-4 text-saas-textMuted absolute left-3.5 top-3" />
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search user name or email..."
-                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                    className="w-full pl-9 pr-3.5 py-2 bg-white border border-[#EAE0E8] rounded-full text-xs text-saas-textDark focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition"
                   />
                 </div>
 
@@ -325,7 +332,7 @@ const AdminDashboard = () => {
                   <select
                     value={roleFilter}
                     onChange={(e) => setRoleFilter(e.target.value)}
-                    className="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-primary-500"
+                    className="px-4 py-2 bg-white border border-[#EAE0E8] rounded-full text-xs font-semibold text-saas-textDark focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition"
                   >
                     <option value="ALL">All Roles</option>
                     <option value="STUDENT">Student</option>
@@ -339,7 +346,7 @@ const AdminDashboard = () => {
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 uppercase tracking-wider text-[11px]">
+                  <thead className="bg-saas-canvas/60 text-saas-textMuted font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                     <tr>
                       <th className="py-3.5 px-6">User ID</th>
                       <th className="py-3.5 px-6">Full Name</th>
@@ -349,24 +356,24 @@ const AdminDashboard = () => {
                       <th className="py-3.5 px-6 text-right">Account Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 text-slate-700">
+                  <tbody className="divide-y divide-[#F1E8EE] text-saas-textDark">
                     {filteredUsers.map((u) => (
-                      <tr key={u.user_id} className="hover:bg-slate-50/70 transition">
-                        <td className="py-4 px-6 font-mono font-bold text-slate-500">#{u.user_id}</td>
-                        <td className="py-4 px-6 font-bold text-slate-900">
+                      <tr key={u.user_id} className="hover:bg-saas-canvas/40 transition">
+                        <td className="py-4 px-6 font-mono font-bold text-saas-textMuted">#{u.user_id}</td>
+                        <td className="py-4 px-6 font-bold text-saas-textDark">
                           {u.first_name} {u.last_name}
                         </td>
-                        <td className="py-4 px-6 font-mono text-slate-600">{u.email}</td>
+                        <td className="py-4 px-6 font-mono text-saas-textMuted">{u.email}</td>
                         <td className="py-4 px-6">
-                          <span className="font-bold px-2 py-0.5 rounded text-[10px] bg-slate-100 text-slate-800 border border-slate-200">
+                          <span className="badge-pill font-bold px-2.5 py-0.5 bg-saas-canvas text-saas-navy border border-[#EAE0E8] text-[10px]">
                             {u.role}
                           </span>
                         </td>
-                        <td className="py-4 px-6 text-slate-500">
+                        <td className="py-4 px-6 text-saas-textMuted">
                           {u.department_id === 1 ? 'Computer Science' : 'Engineering'}
                         </td>
                         <td className="py-4 px-6 text-right">
-                          <span className="inline-flex items-center gap-1 font-bold text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                          <span className="inline-flex items-center gap-1 font-bold text-[11px] text-emerald-700 bg-[#E8F7F0] px-2.5 py-0.5 rounded-full border border-[#B3E8CE]">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                             Active
                           </span>
@@ -382,25 +389,25 @@ const AdminDashboard = () => {
           {/* Tab 2: Workflow Matrix Builder */}
           {activeTab === 'workflows' && (
             <div className="space-y-6">
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-                <h3 className="font-bold text-slate-900 text-base">Multi-Level Approval Matrix</h3>
-                <p className="text-xs text-slate-500 mt-1">
+              <div className="saas-card rounded-3xl p-6 sm:p-7">
+                <h3 className="font-bold text-saas-textDark text-base">Multi-Level Approval Matrix</h3>
+                <p className="text-xs text-saas-textMuted mt-1">
                   Each permission type follows a rule-based sequence. Reviewers must approve before automatic progression to the next authority.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 gap-6">
                 {WORKFLOWS_DATA.map((wf) => (
-                  <div key={wf.type} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div key={wf.type} className="saas-card rounded-3xl p-6 sm:p-7 space-y-4">
+                    <div className="flex items-center justify-between border-b border-[#EAE0E8] pb-3">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-slate-900 text-sm">{wf.title}</span>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-100 text-primary-800">
+                          <span className="font-bold text-saas-textDark text-sm">{wf.title}</span>
+                          <span className="badge-pill text-[10px] font-bold px-2.5 py-0.5 bg-saas-primary/10 text-saas-primary">
                             {wf.type}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 mt-0.5">{wf.description}</p>
+                        <p className="text-xs text-saas-textMuted mt-0.5">{wf.description}</p>
                       </div>
                       <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
                         <CheckCircle2 className="w-4 h-4" /> Active Sequence
@@ -409,16 +416,16 @@ const AdminDashboard = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
                       {wf.steps.map((st) => (
-                        <div key={st.step} className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                        <div key={st.step} className="p-3.5 bg-saas-canvas/60 rounded-2xl border border-[#EAE0E8] space-y-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase">
+                            <span className="text-[10px] font-bold text-saas-textMuted uppercase">
                               Step {st.step}
                             </span>
-                            <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-200 text-slate-700">
+                            <span className="badge-pill text-[10px] font-bold px-2 py-0.2 bg-white text-saas-navy border border-[#EAE0E8]">
                               {st.role}
                             </span>
                           </div>
-                          <p className="text-xs font-semibold text-slate-800">{st.label}</p>
+                          <p className="text-xs font-semibold text-saas-textDark">{st.label}</p>
                         </div>
                       ))}
                     </div>
@@ -431,32 +438,34 @@ const AdminDashboard = () => {
           {/* Tab: AI Routing & University Offices */}
           {activeTab === 'ai_offices' && (
             <div className="space-y-6">
-              {/* Header Banner */}
-              <div className="bg-gradient-to-r from-slate-900 via-primary-950 to-slate-900 rounded-2xl p-6 sm:p-8 text-white border border-slate-800 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary-500/20 text-sky-300 border border-primary-500/30 rounded-full text-xs font-semibold">
+              {/* Header Banner - Deep Navy-Purple SaaS Featured */}
+              <div className="saas-dark-card rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-saas-primary/25 to-transparent blur-3xl pointer-events-none -mr-24 -mt-24"></div>
+
+                <div className="space-y-2 relative z-10">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-saas-primary/20 text-saas-accent border border-saas-primary/30 rounded-full text-xs font-semibold">
                     <Sparkles className="w-3.5 h-3.5" /> Groq AI Ultra-Fast LPU Routing Engine (openai/gpt-oss-120b)
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
                     University Office Registration & Intelligent Routing
                   </h3>
-                  <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                  <p className="text-xs text-white/70 max-w-2xl leading-relaxed">
                     Student permission requests are dynamically classified into institutional categories and dispatched
                     to active registered offices without hardcoded logic.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 relative z-10">
                   <Link
                     to="/admin/offices"
-                    className="inline-flex items-center gap-2 bg-white text-slate-900 hover:bg-slate-100 font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition"
+                    className="saas-pill-btn-outline border-white/20 text-white hover:bg-white/10 text-xs px-5 py-2.5 inline-flex items-center gap-2"
                   >
-                    <Building2 className="w-4 h-4 text-primary-600" />
+                    <Building2 className="w-4 h-4 text-saas-accent" />
                     Manage University Offices
                   </Link>
                   <Link
                     to="/office"
-                    className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition"
+                    className="saas-pill-btn-primary text-xs px-5 py-2.5 inline-flex items-center gap-2"
                   >
                     <Layers className="w-4 h-4" />
                     Office Desk
@@ -466,122 +475,123 @@ const AdminDashboard = () => {
 
               {/* AI Statistics Cards */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                <div className="saas-card rounded-3xl p-5">
+                  <span className="text-[11px] font-bold text-saas-textMuted uppercase tracking-wider block">
                     Registered Offices
                   </span>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <h4 className="text-2xl font-black text-slate-900">{aiStats.total_offices || 0}</h4>
+                    <h4 className="text-3xl font-black text-saas-textDark">{aiStats.total_offices || 0}</h4>
                     <span className="text-xs font-semibold text-emerald-600">
                       ({aiStats.active_offices || 0} active)
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1">
+                  <p className="text-[11px] text-saas-textMuted mt-1">
                     {aiStats.inactive_offices || 0} suspended
                   </p>
                 </div>
 
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                <div className="saas-card rounded-3xl p-5">
+                  <span className="text-[11px] font-bold text-saas-textMuted uppercase tracking-wider block">
                     AI Classified Requests
                   </span>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <h4 className="text-2xl font-black text-primary-600">{aiStats.total_ai_classified || 0}</h4>
-                    <span className="text-xs font-semibold text-sky-600">Total</span>
+                    <h4 className="text-3xl font-black text-saas-primary">{aiStats.total_ai_classified || 0}</h4>
+                    <span className="text-xs font-semibold text-saas-navy">Total</span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1">Groq AI LPU neural classification</p>
+                  <p className="text-[11px] text-saas-textMuted mt-1">Groq AI LPU neural classification</p>
                 </div>
 
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                <div className="saas-card rounded-3xl p-5">
+                  <span className="text-[11px] font-bold text-saas-textMuted uppercase tracking-wider block">
                     Successfully Routed
                   </span>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <h4 className="text-2xl font-black text-emerald-600">{aiStats.routed_requests || 0}</h4>
-                    <span className="text-xs font-semibold text-slate-500">Auto-assigned</span>
+                    <h4 className="text-3xl font-black text-emerald-600">{aiStats.routed_requests || 0}</h4>
+                    <span className="text-xs font-semibold text-saas-textMuted">Auto-assigned</span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1">Matched with registered desks</p>
+                  <p className="text-[11px] text-saas-textMuted mt-1">Matched with registered desks</p>
                 </div>
 
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                <div className="saas-card rounded-3xl p-5">
+                  <span className="text-[11px] font-bold text-saas-textMuted uppercase tracking-wider block">
                     Classification Quality
                   </span>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <h4 className="text-2xl font-black text-purple-600">
+                    <h4 className="text-3xl font-black text-saas-primary">
                       {aiStats.avg_confidence ? `${Math.round(aiStats.avg_confidence * 100)}%` : '96%'}
                     </h4>
-                    <span className="text-xs font-semibold text-purple-600">Avg Confidence</span>
+                    <span className="text-xs font-semibold text-saas-primary">Avg Match</span>
                   </div>
                   <p className="text-[11px] text-amber-600 mt-1 font-semibold">
-                    {aiStats.needs_manual_review || 0} need review / clarification
+                    {aiStats.needs_manual_review || 0} need clarification
                   </p>
                 </div>
               </div>
 
               {/* Office Distribution Table */}
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-                <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+              <div className="saas-card rounded-3xl overflow-hidden">
+                <div className="p-5 sm:p-6 border-b border-[#EAE0E8] flex items-center justify-between">
                   <div>
-                    <h4 className="font-bold text-slate-900 text-sm">Active Office Routing Directory</h4>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <h4 className="font-bold text-saas-textDark text-sm">Active Office Routing Directory</h4>
+                    <p className="text-xs text-saas-textMuted mt-0.5">
                       Real-time request routing distribution across institutional offices
                     </p>
                   </div>
                   <Link
                     to="/admin/offices"
-                    className="text-xs font-bold text-primary-600 hover:text-primary-800 flex items-center gap-1"
+                    className="saas-pill-btn-outline text-xs px-3.5 py-1.5 inline-flex items-center gap-1.5"
                   >
-                    View All Details <ArrowRight className="w-3.5 h-3.5" />
+                    <span>View All Details</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                    <thead className="bg-saas-canvas/60 text-saas-textMuted font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                       <tr>
-                        <th className="px-5 py-3.5">Office Name & Code</th>
-                        <th className="px-5 py-3.5">Category</th>
-                        <th className="px-5 py-3.5">Responsible Officer</th>
-                        <th className="px-5 py-3.5">Campus Location</th>
-                        <th className="px-5 py-3.5 text-center">Status</th>
-                        <th className="px-5 py-3.5 text-center">Routed Requests</th>
-                        <th className="px-5 py-3.5 text-right">Action</th>
+                        <th className="px-6 py-3.5">Office Name & Code</th>
+                        <th className="px-6 py-3.5">Category</th>
+                        <th className="px-6 py-3.5">Responsible Officer</th>
+                        <th className="px-6 py-3.5">Campus Location</th>
+                        <th className="px-6 py-3.5 text-center">Status</th>
+                        <th className="px-6 py-3.5 text-center">Routed Requests</th>
+                        <th className="px-6 py-3.5 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                    <tbody className="divide-y divide-[#F1E8EE] text-saas-textDark">
                       {aiStats.office_distribution && aiStats.office_distribution.length > 0 ? (
                         aiStats.office_distribution.map((office) => (
-                          <tr key={office.office_id} className="hover:bg-slate-50/80 transition">
-                            <td className="px-5 py-3.5">
-                              <div className="font-bold text-slate-900">{office.name}</div>
-                              <span className="text-[10px] font-mono text-primary-600">[{office.code}]</span>
+                          <tr key={office.office_id} className="hover:bg-saas-canvas/40 transition">
+                            <td className="px-6 py-3.5">
+                              <div className="font-bold text-saas-textDark">{office.name}</div>
+                              <span className="text-[10px] font-mono text-saas-primary">[{office.code}]</span>
                             </td>
-                            <td className="px-5 py-3.5">
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                            <td className="px-6 py-3.5">
+                              <span className="badge-pill text-[10px] font-bold px-2.5 py-0.5 bg-saas-canvas text-saas-navy border border-[#EAE0E8]">
                                 {office.category}
                               </span>
                             </td>
-                            <td className="px-5 py-3.5 text-slate-600">{office.responsible_officer}</td>
-                            <td className="px-5 py-3.5 text-slate-500">{office.location}</td>
-                            <td className="px-5 py-3.5 text-center">
+                            <td className="px-6 py-3.5 text-saas-textMuted">{office.responsible_officer}</td>
+                            <td className="px-6 py-3.5 text-saas-textMuted">{office.location}</td>
+                            <td className="px-6 py-3.5 text-center">
                               <span
-                                className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                className={`badge-pill text-[10px] font-bold px-2.5 py-0.5 ${
                                   office.status === 'ACTIVE'
-                                    ? 'bg-emerald-100 text-emerald-700'
-                                    : 'bg-slate-100 text-slate-500'
+                                    ? 'bg-[#E8F7F0] text-emerald-700 border border-[#B3E8CE]'
+                                    : 'bg-saas-canvas text-saas-textMuted border border-[#EAE0E8]'
                                 }`}
                               >
                                 {office.status}
                               </span>
                             </td>
-                            <td className="px-5 py-3.5 text-center font-bold text-slate-900">
+                            <td className="px-6 py-3.5 text-center font-bold text-saas-textDark">
                               {office.total_routed || 0}
                             </td>
-                            <td className="px-5 py-3.5 text-right">
+                            <td className="px-6 py-3.5 text-right">
                               <Link
                                 to={`/office?office_id=${office.office_id}`}
-                                className="font-bold text-primary-600 hover:text-primary-800"
+                                className="font-bold text-saas-primary hover:text-saas-navy transition"
                               >
                                 Open Desk →
                               </Link>
@@ -590,7 +600,7 @@ const AdminDashboard = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="7" className="px-5 py-8 text-center text-slate-400">
+                          <td colSpan="7" className="px-6 py-8 text-center text-saas-textMuted">
                             No office distribution records found.
                           </td>
                         </tr>
@@ -604,34 +614,34 @@ const AdminDashboard = () => {
 
           {/* Tab 3: Reports & Audit */}
           {activeTab === 'reports' && (
-            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+            <div className="saas-card rounded-3xl p-6 sm:p-8 space-y-6">
               <div>
-                <h3 className="font-bold text-slate-900 text-base">Department Audit & Compliance Reports</h3>
-                <p className="text-xs text-slate-500 mt-1">
+                <h3 className="font-bold text-saas-textDark text-base">Department Audit & Compliance Reports</h3>
+                <p className="text-xs text-saas-textMuted mt-1">
                   Export institutional reports across On-Duty, Leave, and Event permission requests
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">From Date</label>
+                  <label className="block text-xs font-bold text-saas-textDark mb-1">From Date</label>
                   <input
                     type="date"
                     defaultValue="2026-11-01"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#EAE0E8] rounded-2xl text-xs text-saas-textDark focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">To Date</label>
+                  <label className="block text-xs font-bold text-saas-textDark mb-1">To Date</label>
                   <input
                     type="date"
                     defaultValue="2026-11-30"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#EAE0E8] rounded-2xl text-xs text-saas-textDark focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Department</label>
-                  <select className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500 font-semibold text-slate-700">
+                  <label className="block text-xs font-bold text-saas-textDark mb-1">Department</label>
+                  <select className="w-full px-3.5 py-2.5 bg-white border border-[#EAE0E8] rounded-2xl text-xs focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition font-semibold text-saas-textDark">
                     <option>Computer Science & Engineering (CSE)</option>
                     <option>Electronics & Communication (ECE)</option>
                     <option>Mechanical Engineering (MECH)</option>
@@ -639,11 +649,11 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center gap-3 pt-4 border-t border-[#EAE0E8]">
                 <button
                   type="button"
                   onClick={() => alert('Exporting departmental audit summary as CSV...')}
-                  className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition"
+                  className="saas-pill-btn-primary text-xs px-5 py-2.5 inline-flex items-center gap-2"
                 >
                   <Download className="w-4 h-4" />
                   Export Audit Summary (CSV)

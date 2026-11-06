@@ -143,32 +143,39 @@ const FacultyDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#F3F5F7] relative flex flex-col font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-transparent relative flex flex-col font-sans overflow-x-hidden text-saas-textDark">
       <BlueprintWatermark />
       <Navbar />
-      <div className="flex flex-1 relative z-10">
+      <div className="flex flex-1 relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role="FACULTY" />
 
-        <main className="flex-1 p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+        <main className="flex-1 w-full space-y-6">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-4">
+          <div className="saas-card rounded-3xl p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 bg-blue-100 text-blue-800 rounded-lg">
+              <div className="flex items-center gap-3">
+                <span className="p-2.5 bg-saas-primary/15 text-saas-primary rounded-2xl shadow-xs">
                   <CheckSquare className="w-5 h-5" />
                 </span>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                  Faculty Review & Sanction Desk
-                </h1>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-2xl font-extrabold text-saas-textDark tracking-tight">
+                      Faculty Review & Sanction Desk
+                    </h1>
+                    <span className="badge-pill bg-[#EAE0F0] text-saas-navy text-[11px] font-bold">
+                      Step 2 of 4
+                    </span>
+                  </div>
+                  <p className="text-xs text-saas-textMuted mt-0.5">
+                    Welcome, {user?.first_name || 'Faculty Coordinator'} • Department of Computer Science & Engineering
+                  </p>
+                </div>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
-                Welcome, {user?.first_name || 'Faculty Coordinator'} • Computer Science Department
-              </p>
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5" />
+              <span className="badge-pill bg-[#FEF6EB] text-amber-900 border border-[#F7E1B5] text-xs font-bold py-1.5 px-3 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-amber-700" />
                 {pendingRequests.length} Pending Actions
               </span>
             </div>
@@ -176,50 +183,50 @@ const FacultyDashboard = () => {
 
           {/* Quick Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+            <div className="saas-card rounded-3xl p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Awaiting Verification</p>
-                <h3 className="text-2xl font-black text-amber-600 mt-1">{pendingRequests.length}</h3>
+                <p className="text-xs font-bold text-saas-textMuted uppercase tracking-wider">Awaiting Verification</p>
+                <h3 className="text-3xl font-black text-amber-600 mt-1">{pendingRequests.length}</h3>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+              <div className="w-12 h-12 rounded-2xl bg-[#FEF6EB] text-amber-600 flex items-center justify-center font-bold">
                 <Clock className="w-6 h-6" />
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+            <div className="saas-card rounded-3xl p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Approved & Forwarded</p>
-                <h3 className="text-2xl font-black text-emerald-600 mt-1">
+                <p className="text-xs font-bold text-saas-textMuted uppercase tracking-wider">Approved & Forwarded</p>
+                <h3 className="text-3xl font-black text-emerald-600 mt-1">
                   {queue.filter((r) => r.overall_status === 'APPROVED').length}
                 </h3>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+              <div className="w-12 h-12 rounded-2xl bg-[#E8F7F0] text-emerald-600 flex items-center justify-center font-bold">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+            <div className="saas-card rounded-3xl p-5 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Rejected</p>
-                <h3 className="text-2xl font-black text-rose-600 mt-1">
+                <p className="text-xs font-bold text-saas-textMuted uppercase tracking-wider">Rejected</p>
+                <h3 className="text-3xl font-black text-rose-600 mt-1">
                   {queue.filter((r) => r.overall_status === 'REJECTED').length}
                 </h3>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
+              <div className="w-12 h-12 rounded-2xl bg-[#FDEEF1] text-rose-600 flex items-center justify-center font-bold">
                 <XCircle className="w-6 h-6" />
               </div>
             </div>
           </div>
 
           {/* Tabs & Search */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="saas-card rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <button
                 onClick={() => setActiveTab('pending')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                className={`px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 ${
                   activeTab === 'pending'
-                    ? 'bg-primary-600 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-saas-navy text-white shadow-xs'
+                    : 'bg-saas-canvas text-saas-textDark hover:bg-[#EAE0F0]'
                 }`}
               >
                 <Clock className="w-3.5 h-3.5" />
@@ -228,10 +235,10 @@ const FacultyDashboard = () => {
 
               <button
                 onClick={() => setActiveTab('history')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                className={`px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 ${
                   activeTab === 'history'
-                    ? 'bg-primary-600 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-saas-navy text-white shadow-xs'
+                    : 'bg-saas-canvas text-saas-textDark hover:bg-[#EAE0F0]'
                 }`}
               >
                 <FileCheck2 className="w-3.5 h-3.5" />
@@ -240,27 +247,27 @@ const FacultyDashboard = () => {
             </div>
 
             <div className="relative w-full sm:w-72">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Search className="w-4 h-4 text-saas-textMuted absolute left-3.5 top-3" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search student or request..."
-                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                className="w-full pl-9 pr-3.5 py-2 bg-white border border-[#EAE0E8] rounded-full text-xs text-saas-textDark focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition"
               />
             </div>
           </div>
 
           {/* Applications List */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div className="saas-card rounded-3xl overflow-hidden">
             {displayedList.length === 0 ? (
-              <div className="p-12 text-center text-xs text-slate-400">
+              <div className="p-12 text-center text-xs text-saas-textMuted">
                 No applications in this view.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 uppercase tracking-wider text-[11px]">
+                  <thead className="bg-saas-canvas/60 text-saas-textMuted font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                     <tr>
                       <th className="py-3.5 px-6">Request ID</th>
                       <th className="py-3.5 px-6">Student Details</th>
@@ -271,20 +278,20 @@ const FacultyDashboard = () => {
                       <th className="py-3.5 px-6 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 text-slate-700">
+                  <tbody className="divide-y divide-[#F1E8EE] text-saas-textDark">
                     {displayedList.map((req) => (
-                      <tr key={req.request_id} className="hover:bg-slate-50/70 transition">
-                        <td className="py-4 px-6 font-bold text-slate-900 whitespace-nowrap">
+                      <tr key={req.request_id} className="hover:bg-saas-canvas/40 transition">
+                        <td className="py-4 px-6 font-bold text-saas-textDark whitespace-nowrap">
                           {req.request_code}
                           {Boolean(req.is_urgent) && (
-                            <span className="block mt-1 text-[9px] font-bold text-red-700 bg-red-100 px-1.5 py-0.5 rounded border border-red-200 text-center">
+                            <span className="block mt-1 text-[9px] font-bold text-rose-700 bg-[#FDEEF1] px-2 py-0.5 rounded-full border border-rose-200 text-center">
                               URGENT
                             </span>
                           )}
                         </td>
                         <td className="py-4 px-6 whitespace-nowrap">
-                          <div className="font-bold text-slate-900">{req.student_name}</div>
-                          <div className="text-[11px] font-semibold text-slate-700">
+                          <div className="font-bold text-saas-textDark">{req.student_name}</div>
+                          <div className="text-[11px] font-semibold text-saas-textMuted">
                             Reg: {req.registration_number || 'N/A'}
                           </div>
                           {(req.phone || req.student_phone) && (
@@ -293,24 +300,24 @@ const FacultyDashboard = () => {
                               <span>{req.phone || req.student_phone}</span>
                             </div>
                           )}
-                          <div className="text-[10px] text-slate-400">Sec {req.section || 'A'}</div>
+                          <div className="text-[10px] text-saas-textMuted">Sec {req.section || 'A'}</div>
                         </td>
                         <td className="py-4 px-6">
-                          <span className="font-bold px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-800">
+                          <span className="badge-pill font-bold px-2.5 py-0.5 bg-saas-canvas text-saas-navy border border-[#EAE0E8]">
                             {req.request_type}
                           </span>
                         </td>
                         <td className="py-4 px-6 max-w-xs">
-                          <p className="text-slate-800 font-medium truncate" title={req.reason}>
+                          <p className="text-saas-textDark font-medium truncate" title={req.reason}>
                             "{req.reason}"
                           </p>
                           {req.mentor_remarks && (
-                            <p className="text-[11px] text-indigo-700 mt-1 truncate" title={req.mentor_remarks}>
+                            <p className="text-[11px] text-saas-primary mt-1 truncate" title={req.mentor_remarks}>
                               ↳ {req.mentor_remarks}
                             </p>
                           )}
                         </td>
-                        <td className="py-4 px-6 text-slate-500 whitespace-nowrap">
+                        <td className="py-4 px-6 text-saas-textMuted whitespace-nowrap">
                           {new Date(req.start_date).toLocaleDateString()} - {new Date(req.end_date).toLocaleDateString()}
                         </td>
                         <td className="py-4 px-6 whitespace-nowrap">
@@ -321,21 +328,21 @@ const FacultyDashboard = () => {
                             <>
                               <button
                                 onClick={() => handleOpenActionModal(req, 'APPROVED')}
-                                className="inline-flex items-center gap-1 font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg shadow-2xs transition"
+                                className="inline-flex items-center gap-1 font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-full shadow-2xs transition"
                               >
                                 <Check className="w-3.5 h-3.5" />
                                 Approve
                               </button>
                               <button
                                 onClick={() => handleOpenActionModal(req, 'REJECTED')}
-                                className="inline-flex items-center gap-1 font-bold text-xs bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg shadow-2xs transition"
+                                className="inline-flex items-center gap-1 font-bold text-xs bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-1.5 rounded-full shadow-2xs transition"
                               >
                                 <X className="w-3.5 h-3.5" />
                                 Reject
                               </button>
                             </>
                           ) : (
-                            <span className="text-[11px] text-slate-400 font-medium">Processed</span>
+                            <span className="text-[11px] text-saas-textMuted font-medium">Processed</span>
                           )}
                         </td>
                       </tr>
@@ -358,17 +365,17 @@ const FacultyDashboard = () => {
                 {
                   label: 'Approved & Forwarded to HOD',
                   count: queue.filter((r) => r.overall_status === 'APPROVED').length || 8,
-                  color: '#22C55E'
+                  color: '#238B62'
                 },
                 {
                   label: 'Awaiting Coordinator Action',
                   count: pendingRequests.length || 5,
-                  color: '#F59E0B'
+                  color: '#D69B35'
                 },
                 {
                   label: 'Rejected',
                   count: queue.filter((r) => r.overall_status === 'REJECTED').length || 1,
-                  color: '#EF4444'
+                  color: '#D65B70'
                 }
               ]}
               showWaveform={true}
@@ -381,9 +388,9 @@ const FacultyDashboard = () => {
               totalLabel="Categories"
               badge="CSE Department"
               items={[
-                { label: 'On-Duty (OD) Hackathons & Conferences', count: 8, color: '#0284C7' },
-                { label: 'Student Leave & Medical Emergencies', count: 4, color: '#6366F1' },
-                { label: 'Event Participation & Competitions', count: 2, color: '#A855F7' }
+                { label: 'On-Duty (OD) Hackathons & Conferences', count: 8, color: '#B95BD5' },
+                { label: 'Student Leave & Medical Emergencies', count: 4, color: '#261B50' },
+                { label: 'Event Participation & Competitions', count: 2, color: '#D8B8E8' }
               ]}
               showWaveform={true}
             />
@@ -391,62 +398,62 @@ const FacultyDashboard = () => {
 
           {/* Action Review Modal */}
           {selectedRequest && (
-            <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-              <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-6 space-y-5 animate-in zoom-in-95 duration-150">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="fixed inset-0 z-50 bg-[#1E163B]/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="saas-card rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-7 space-y-5 animate-in zoom-in-95 duration-150">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EAE0E8]">
                   <div className="flex items-center gap-2">
                     {actionType === 'APPROVED' ? (
-                      <span className="p-2 rounded-xl bg-emerald-100 text-emerald-700 font-bold">
+                      <span className="p-2 rounded-2xl bg-[#E8F7F0] text-emerald-700 font-bold">
                         <CheckCircle2 className="w-5 h-5" />
                       </span>
                     ) : (
-                      <span className="p-2 rounded-xl bg-rose-100 text-rose-700 font-bold">
+                      <span className="p-2 rounded-2xl bg-[#FDEEF1] text-rose-700 font-bold">
                         <XCircle className="w-5 h-5" />
                       </span>
                     )}
                     <div>
-                      <h3 className="font-bold text-slate-900 text-base">
+                      <h3 className="font-bold text-saas-textDark text-base">
                         {actionType === 'APPROVED' ? 'Approve & Forward Request' : 'Reject Request'}
                       </h3>
-                      <p className="text-[11px] text-slate-500">{selectedRequest.request_code}</p>
+                      <p className="text-[11px] text-saas-textMuted">{selectedRequest.request_code}</p>
                     </div>
                   </div>
                   <button
                     onClick={() => setSelectedRequest(null)}
-                    className="text-slate-400 hover:text-slate-600 p-1"
+                    className="p-1.5 text-saas-textMuted hover:text-saas-textDark rounded-full hover:bg-saas-canvas transition"
                   >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
 
                 {actionSuccess ? (
-                  <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 text-center font-bold">
+                  <div className="p-4 bg-[#E8F7F0] border border-[#B3E8CE] rounded-2xl text-xs text-emerald-800 text-center font-bold">
                     {actionSuccess}
                   </div>
                 ) : (
                   <div className="space-y-4 text-xs">
-                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-                      <div className="font-bold text-slate-900">
+                    <div className="p-4 bg-saas-canvas/60 rounded-2xl border border-[#EAE0E8] space-y-1">
+                      <div className="font-bold text-saas-textDark">
                         {selectedRequest.student_name} (Reg: {selectedRequest.registration_number || 'N/A'}{(selectedRequest.phone || selectedRequest.student_phone) ? ` • Mob: ${selectedRequest.phone || selectedRequest.student_phone}` : ''})
                       </div>
-                      <div className="text-slate-500">
+                      <div className="text-saas-textMuted">
                         Type: {selectedRequest.request_type} • Section {selectedRequest.section}
                       </div>
-                      <div className="text-slate-700 mt-2 italic bg-white p-2 rounded border border-slate-200">
+                      <div className="text-saas-textDark mt-2 italic bg-white p-3 rounded-xl border border-[#EAE0E8]">
                         "{selectedRequest.reason}"
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
-                        Coordinator Remarks / Decision Notes {actionType === 'REJECTED' && <span className="text-red-500">*</span>}
+                      <label className="block text-xs font-bold text-saas-textDark mb-1">
+                        Coordinator Remarks / Decision Notes {actionType === 'REJECTED' && <span className="text-rose-500">*</span>}
                       </label>
                       <textarea
                         rows={3}
                         value={remarks}
                         onChange={(e) => setRemarks(e.target.value)}
                         placeholder="Add remarks or justification..."
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-3.5 py-2.5 bg-white border border-[#EAE0E8] rounded-2xl text-xs text-saas-textDark focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition"
                       />
                     </div>
 
@@ -454,7 +461,7 @@ const FacultyDashboard = () => {
                       <button
                         type="button"
                         onClick={() => setSelectedRequest(null)}
-                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition"
+                        className="saas-pill-btn-outline text-xs px-4 py-2"
                       >
                         Cancel
                       </button>
@@ -463,7 +470,7 @@ const FacultyDashboard = () => {
                         type="button"
                         disabled={submitting}
                         onClick={handleExecuteAction}
-                        className={`px-5 py-2 font-bold text-white rounded-xl shadow-sm transition disabled:opacity-50 ${
+                        className={`px-5 py-2 font-bold text-white rounded-full shadow-xs transition disabled:opacity-50 text-xs ${
                           actionType === 'APPROVED'
                             ? 'bg-emerald-600 hover:bg-emerald-700'
                             : 'bg-rose-600 hover:bg-rose-700'

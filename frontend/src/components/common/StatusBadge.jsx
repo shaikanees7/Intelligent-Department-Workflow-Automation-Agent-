@@ -1,64 +1,65 @@
 import React from 'react';
-import { CheckCircle2, Clock, XCircle, AlertCircle, Send, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, Clock, XCircle, AlertCircle, Send, ShieldCheck, HelpCircle } from 'lucide-react';
 
 const StatusBadge = ({ status, size = 'md' }) => {
   const normalized = (status || '').toUpperCase();
 
-  const sizeClasses = size === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-3 py-1 text-xs';
+  const sizeClasses = size === 'sm' ? 'px-2.5 py-0.5 text-[11px]' : 'px-3.5 py-1 text-xs';
 
   switch (normalized) {
     case 'APPROVED':
       return (
-        <span className={`inline-flex items-center gap-1.5 font-medium rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 ${sizeClasses}`}>
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+        <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#E8F7F0] text-[#1E9A68] border border-[#B7E8D3] shadow-2xs ${sizeClasses}`}>
+          <CheckCircle2 className="w-3.5 h-3.5 text-[#1E9A68]" />
           Approved
         </span>
       );
     case 'REJECTED':
       return (
-        <span className={`inline-flex items-center gap-1.5 font-medium rounded-full bg-rose-50 text-rose-700 border border-rose-200 ${sizeClasses}`}>
-          <XCircle className="w-3.5 h-3.5 text-rose-600" />
+        <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#FDEEF1] text-[#E04F69] border border-[#F9CAD3] shadow-2xs ${sizeClasses}`}>
+          <XCircle className="w-3.5 h-3.5 text-[#E04F69]" />
           Rejected
         </span>
       );
     case 'UNDER_REVIEW':
       return (
-        <span className={`inline-flex items-center gap-1.5 font-medium rounded-full bg-amber-50 text-amber-700 border border-amber-200 ${sizeClasses}`}>
-          <Clock className="w-3.5 h-3.5 text-amber-600 animate-spin" style={{ animationDuration: '3s' }} />
+        <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#FEF6EB] text-[#E58B24] border border-[#FCE1C2] shadow-2xs ${sizeClasses}`}>
+          <Clock className="w-3.5 h-3.5 text-[#E58B24] animate-spin" style={{ animationDuration: '4s' }} />
           Under Review
         </span>
       );
     case 'PENDING':
       return (
-        <span className={`inline-flex items-center gap-1.5 font-medium rounded-full bg-amber-50 text-amber-700 border border-amber-200 ${sizeClasses}`}>
-          <Clock className="w-3.5 h-3.5 text-amber-600" />
+        <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#F4EBF7] text-[#8E32A8] border border-[#E8D1ED] shadow-2xs ${sizeClasses}`}>
+          <Clock className="w-3.5 h-3.5 text-[#8E32A8]" />
           Pending
         </span>
       );
     case 'SUBMITTED':
       return (
-        <span className={`inline-flex items-center gap-1.5 font-medium rounded-full bg-sky-50 text-sky-700 border border-sky-200 ${sizeClasses}`}>
-          <Send className="w-3.5 h-3.5 text-sky-600" />
+        <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#EEF2FC] text-[#4F6FB7] border border-[#D1DDF9] shadow-2xs ${sizeClasses}`}>
+          <Send className="w-3.5 h-3.5 text-[#4F6FB7]" />
           Submitted
         </span>
       );
     case 'VERIFIED':
       return (
-        <span className={`inline-flex items-center gap-1.5 font-medium rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 ${sizeClasses}`}>
-          <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" />
+        <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#F5EDFA] text-[#A847C5] border border-[#EAD1F3] shadow-2xs ${sizeClasses}`}>
+          <ShieldCheck className="w-3.5 h-3.5 text-[#A847C5]" />
           Verified
         </span>
       );
     case 'URGENT':
       return (
-        <span className={`inline-flex items-center gap-1.5 font-semibold rounded-full bg-red-100 text-red-800 border border-red-300 animate-pulse ${sizeClasses}`}>
-          <AlertCircle className="w-3.5 h-3.5 text-red-600" />
+        <span className={`inline-flex items-center gap-1.5 font-bold rounded-full bg-[#FDEEF1] text-[#E04F69] border border-[#E04F69] shadow-2xs animate-pulse ${sizeClasses}`}>
+          <AlertCircle className="w-3.5 h-3.5 text-[#E04F69]" />
           Urgent
         </span>
       );
     default:
       return (
-        <span className={`inline-flex items-center gap-1.5 font-medium rounded-full bg-slate-100 text-slate-700 border border-slate-200 ${sizeClasses}`}>
+        <span className={`inline-flex items-center gap-1.5 font-semibold rounded-full bg-[#F8F3F6] text-[#7C7390] border border-[#EAE0E8] ${sizeClasses}`}>
+          <HelpCircle className="w-3.5 h-3.5 text-[#7C7390]" />
           {status || 'Unknown'}
         </span>
       );

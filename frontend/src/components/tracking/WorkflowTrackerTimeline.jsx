@@ -32,10 +32,6 @@ const WorkflowTrackerTimeline = ({ request, history = [], assignedOffice = null,
   const isAssignedToSpecialOffice = Boolean(officeName && officeCode !== 'DEPT_OFFICE');
 
   // Dynamic 4-step workflow sequence:
-  // Step 1: Submission (Student)
-  // Step 2: Mentor Verification (Academic Mentor)
-  // Step 3: Faculty Coordinator Approval (Department Faculty)
-  // Step 4: Final Sanction (Routes to Assigned University Office e.g. Academic Office, Hostel Office, Exam Cell, Sports Dept, etc. instead of HOD!)
   const stages = [
     {
       stepOrder: 1,
@@ -68,52 +64,63 @@ const WorkflowTrackerTimeline = ({ request, history = [], assignedOffice = null,
         : 'HOD',
       icon: isAssignedToSpecialOffice ? Landmark : CheckCircle2,
       description: isAssignedToSpecialOffice
-        ? `Final institutional authorization and digital gate pass sanction by ${responsibleOfficer ? `${responsibleOfficer} (${officeName})` : officeName}${officeLocation ? ` • ${officeLocation}` : ''}`
-        : 'Final institutional authorization and digital gate pass sanction by Head of Department'
+        ? `Final authorization processed by ${officeName} (${responsibleOfficer || 'University Officer'})`
+        : 'Final institutional authorization and digital gate pass sanction'
     }
   ];
 
-  const isRejected = request.overall_status === 'REJECTED';
-  const isApproved = request.overall_status === 'APPROVED';
   const currentStep = request.current_step_order || 1;
+  const isApproved = request.overall_status === 'APPROVED';
+  const isRejected = request.overall_status === 'REJECTED';
 
-  // Helper to find history for a specific step or action
   const findHistoryForStep = (stepOrder) => {
-    return history.find((h) => h.step_order === stepOrder) || null;
+    return history.find((h) => h.step_order === stepOrder);
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-8">
-      {/* Header Info Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-100 gap-4">
+    <div className="space-y-6">
+      {/* Request Header Banner */}
+      <div className="bg-[#FAF5F7] rounded-3xl p-6 border border-[#EAE0E8] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3">
-            <h3 className="text-xl font-bold text-slate-900 tracking-tight">
-              Application Tracker: {request.request_code}
-            </h3>
-            <StatusBadge status={request.overall_status} />
-            {Boolean(request.is_urgent) && <StatusBadge status="URGENT" />}
+          <div className="flex flex-wrap items-center gap-2 mb-1.5">
+            <span className="text-xs font-mono font-black text-[#261B50] bg-white px-3 py-1 rounded-full border border-[#EAE0E8] shadow-2xs">
+              {request.request_code}
+            </span>
+            <span className="font-bold px-3 py-1 rounded-full text-xs bg-[#F4EBF7] text-[#8E32A8] border border-[#E8D1ED]">
+              {request.request_type}
+            </span>
+            {Boolean(request.is_urgent) && (
+              <span className="font-black px-2.5 py-0.5 rounded-full text-[10px] bg-[#FDEEF1] text-[#E04F69] border border-[#F9CAD3] animate-pulse">
+                URGENT
+              </span>
+            )}
+            <StatusBadge status={request.overall_status} size="sm" />
           </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Student: <span className="font-semibold text-slate-800">{request.student_name || 'Applicant'}</span>
+
+          <h2 className="text-xl font-black text-[#261B50] tracking-tight">
+            {request.reason}
+          </h2>
+
+          <p className="text-xs text-[#7C7390] mt-1.5 leading-relaxed">
+            Student: <span className="font-bold text-[#261B50]">{request.student_name}</span>
             {request.registration_number && (
-              <> • Reg: <span className="font-semibold text-slate-800 font-mono">{request.registration_number}</span></>
+              <> • Reg: <span className="font-bold text-[#261B50] font-mono">{request.registration_number}</span></>
             )}
             {(request.phone || request.student_phone) && (
-              <> • Mob: <span className="font-semibold text-emerald-700">{request.phone || request.student_phone}</span></>
+              <> • Phone: <span className="font-bold text-[#1E9A68]">{request.phone || request.student_phone}</span></>
             )}
-            {' '}• Type: <span className="font-semibold text-slate-700">{request.request_type} Request</span> •{' '}
+            {' '}•{' '}
             {isAssignedToSpecialOffice && (
               <>
                 Routed Authority:{' '}
-                <span className="font-semibold text-primary-700 bg-primary-50 px-2 py-0.5 rounded border border-primary-200">
+                <span className="font-bold text-[#8E32A8] bg-[#F4EBF7] px-2.5 py-0.5 rounded-full border border-[#E8D1ED]">
                   {officeName}
                 </span>{' '}
                 •{' '}
               </>
             )}
-            Submitted: <span className="font-semibold text-slate-700">{new Date(request.created_at).toLocaleDateString()}</span> •{' '}
-            Duration: <span className="font-semibold text-slate-700">{new Date(request.start_date).toLocaleDateString()} to {new Date(request.end_date).toLocaleDateString()}</span>
+            Submitted: <span className="font-bold text-[#261B50]">{new Date(request.created_at).toLocaleDateString()}</span> •{' '}
+            Validity: <span className="font-bold text-[#261B50]">{new Date(request.start_date).toLocaleDateString()} to {new Date(request.end_date).toLocaleDateString()}</span>
           </p>
         </div>
 
@@ -123,21 +130,21 @@ const WorkflowTrackerTimeline = ({ request, history = [], assignedOffice = null,
             href={request.pdf_letter_url ? `http://localhost:5000${request.pdf_letter_url}` : '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-sm transition"
+            className="saas-pill-btn-primary whitespace-nowrap"
           >
             <Download className="w-4 h-4" />
-            Download Digital Gate Pass (PDF)
+            <span>Download Gate Pass (PDF)</span>
           </a>
         )}
       </div>
 
       {/* Rejection Notice Banner */}
       {isRejected && (
-        <div className="bg-rose-50 border border-rose-200 rounded-xl p-4 flex items-start gap-3 text-rose-900">
-          <XCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+        <div className="bg-[#FDEEF1] border border-[#F9CAD3] rounded-3xl p-5 flex items-start gap-3.5 text-[#E04F69]">
+          <XCircle className="w-5 h-5 text-[#E04F69] shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-bold text-sm">Application Rejected</h4>
-            <p className="text-xs text-rose-700 mt-0.5">
+            <h4 className="font-black text-sm">Application Rejected</h4>
+            <p className="text-xs text-[#B7334C] mt-0.5 leading-relaxed">
               This request was rejected and will not progress further through the department workflow.
               Please check reviewer remarks below.
             </p>
@@ -146,21 +153,21 @@ const WorkflowTrackerTimeline = ({ request, history = [], assignedOffice = null,
       )}
 
       {/* Visual Step Timeline */}
-      <div className="relative pl-6 sm:pl-8 border-l-2 border-slate-200 space-y-10 my-4">
+      <div className="relative pl-6 sm:pl-8 border-l-2 border-[#EAE0E8] space-y-8 my-4 ml-3">
         {stages.map((stage) => {
           const stepHist = findHistoryForStep(stage.stepOrder);
           const isDone = isApproved || stage.stepOrder < currentStep || (stage.stepOrder === 1);
           const isCurrent = !isApproved && !isRejected && stage.stepOrder === currentStep;
           const isStoppedHere = isRejected && stage.stepOrder === currentStep;
 
-          let nodeStyle = 'bg-white border-slate-300 text-slate-400';
+          let nodeStyle = 'bg-white border-[#EAE0E8] text-[#837B96]';
 
           if (isDone) {
-            nodeStyle = 'bg-emerald-500 border-emerald-500 text-white';
+            nodeStyle = 'bg-[#1E9A68] border-[#1E9A68] text-white shadow-xs';
           } else if (isCurrent) {
-            nodeStyle = 'bg-amber-500 border-amber-500 text-white ring-4 ring-amber-100 animate-pulse';
+            nodeStyle = 'bg-[#B95BD5] border-[#B95BD5] text-white ring-4 ring-[#F4EBF7] animate-pulse';
           } else if (isStoppedHere) {
-            nodeStyle = 'bg-rose-500 border-rose-500 text-white ring-4 ring-rose-100';
+            nodeStyle = 'bg-[#E04F69] border-[#E04F69] text-white ring-4 ring-[#FDEEF1]';
           }
 
           const StageIcon = stage.icon;
@@ -183,64 +190,56 @@ const WorkflowTrackerTimeline = ({ request, history = [], assignedOffice = null,
               </div>
 
               {/* Step Card */}
-              <div className="bg-slate-50/70 hover:bg-slate-50 rounded-xl p-4 border border-slate-200/80 transition">
+              <div className="bg-[#FAF5F7] hover:bg-white rounded-3xl p-5 border border-[#EAE0E8] hover:border-[#D8B8E8] shadow-card-soft hover:shadow-card-hover transition-all duration-200">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm text-slate-900">
+                    <span className="font-black text-sm text-[#261B50]">
                       Step {stage.stepOrder}: {stage.name}
                     </span>
-                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${
+                    <span className={`text-[10px] uppercase font-bold px-2.5 py-0.5 rounded-full ${
                       stage.stepOrder === 4 && isAssignedToSpecialOffice
-                        ? 'bg-sky-100 text-sky-800 border border-sky-200 font-mono'
-                        : 'bg-slate-200 text-slate-700'
+                        ? 'bg-[#F4EBF7] text-[#8E32A8] border border-[#E8D1ED] font-mono'
+                        : 'bg-white text-[#7C7390] border border-[#EAE0E8]'
                     }`}>
                       {stage.role}
                     </span>
                   </div>
 
-                  <div className="text-xs">
-                    {isDone ? (
-                      <span className="font-semibold text-emerald-600 flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        {stage.stepOrder === 4 && isAssignedToSpecialOffice ? `Sanctioned by ${officeName}` : 'Completed'}
-                      </span>
-                    ) : isCurrent ? (
-                      <span className="font-semibold text-amber-600 flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
-                        {stage.stepOrder === 4 && isAssignedToSpecialOffice ? `Pending ${officeName} Review` : 'Pending Review'}
-                      </span>
-                    ) : isStoppedHere ? (
-                      <span className="font-semibold text-rose-600 flex items-center gap-1">
-                        <XCircle className="w-3.5 h-3.5" /> Rejected at this stage
-                      </span>
-                    ) : (
-                      <span className="text-slate-400">
-                        {stage.stepOrder === 4 && isAssignedToSpecialOffice ? `Upcoming (${officeName})` : 'Upcoming Stage'}
-                      </span>
-                    )}
-                  </div>
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+                    isDone
+                      ? 'text-[#1E9A68] bg-[#E8F7F0] border border-[#B7E8D3]'
+                      : isCurrent
+                      ? 'text-[#E58B24] bg-[#FEF6EB] border border-[#FCE1C2]'
+                      : isStoppedHere
+                      ? 'text-[#E04F69] bg-[#FDEEF1] border border-[#F9CAD3]'
+                      : 'text-[#837B96] bg-white border border-[#EAE0E8]'
+                  }`}>
+                    {isDone
+                      ? 'Completed'
+                      : isCurrent
+                      ? 'Under Review'
+                      : isStoppedHere
+                      ? 'Rejected at this stage'
+                      : 'Upcoming Stage'}
+                  </span>
                 </div>
 
-                <p className="text-xs text-slate-500 mt-1">{stage.description}</p>
+                <p className="text-xs text-[#7C7390] mt-1.5">{stage.description}</p>
 
-                {/* Audit Details if step has reviewer entry */}
+                {/* Audit remarks from reviewer */}
                 {stepHist && (
-                  <div className="mt-3 pt-3 border-t border-slate-200/60 bg-white/70 p-3 rounded-lg text-xs space-y-1">
-                    <div className="flex items-center justify-between text-slate-600">
-                      <span className="font-medium">
-                        Reviewed by: <strong className="text-slate-800">{stepHist.first_name} {stepHist.last_name}</strong>{' '}
-                        <span className="text-slate-500">
-                          ({stage.stepOrder === 4 && isAssignedToSpecialOffice ? officeName : stepHist.role})
-                        </span>
+                  <div className="mt-3 p-3.5 bg-white rounded-2xl border border-[#EAE0E8] space-y-1.5 shadow-2xs">
+                    <div className="flex items-center justify-between text-[11px] text-[#7C7390]">
+                      <span className="font-bold text-[#261B50] flex items-center gap-1.5">
+                        <UserCheck className="w-3.5 h-3.5 text-[#B95BD5]" />
+                        {stepHist.reviewer_name || 'Department Officer'} ({stepHist.action})
                       </span>
-                      <span className="text-slate-400 text-[11px]">
-                        {new Date(stepHist.action_timestamp).toLocaleString()}
-                      </span>
+                      <span className="font-medium">{new Date(stepHist.action_timestamp || stepHist.created_at).toLocaleString()}</span>
                     </div>
                     {stepHist.remarks && (
-                      <div className="mt-2 text-slate-700 bg-slate-100/80 p-2.5 rounded border border-slate-200 italic">
+                      <p className="text-xs font-medium text-[#4F4665] italic bg-[#FAF5F7] p-2.5 rounded-xl border border-[#F0E8EE]">
                         "{stepHist.remarks}"
-                      </div>
+                      </p>
                     )}
                   </div>
                 )}
@@ -250,15 +249,15 @@ const WorkflowTrackerTimeline = ({ request, history = [], assignedOffice = null,
         })}
       </div>
 
-      {/* Request Reason & Attached Details */}
-      <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 text-xs space-y-3">
-        <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-          <FileText className="w-4 h-4 text-primary-600" />
+      {/* Request Justification & Document Box */}
+      <div className="bg-[#FAF5F7] rounded-3xl p-6 border border-[#EAE0E8] space-y-3">
+        <h4 className="font-black text-sm text-[#261B50] flex items-center gap-2">
+          <FileText className="w-4 h-4 text-[#B95BD5]" />
           Request Justification & Documentation
         </h4>
-        <p className="text-slate-700 leading-relaxed bg-white p-3.5 rounded-lg border border-slate-200">
+        <div className="p-4 bg-white rounded-2xl border border-[#EAE0E8] text-xs text-[#4F4665] leading-relaxed font-medium">
           "{request.reason}"
-        </p>
+        </div>
       </div>
     </div>
   );

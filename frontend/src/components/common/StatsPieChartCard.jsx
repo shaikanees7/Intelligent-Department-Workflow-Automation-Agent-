@@ -1,10 +1,10 @@
 import React from 'react';
-import { PieChart, MoreHorizontal, TrendingUp } from 'lucide-react';
+import { PieChart, MoreHorizontal } from 'lucide-react';
 
 /**
  * StatsPieChartCard
  * Renders an institutional multi-slice Donut / Pie Chart with clean legend,
- * percentage breakdown, and optional waveform histogram bars matching the IDWAA theme.
+ * percentage breakdown, and optional waveform histogram bars matching the IDWAA SaaS theme.
  */
 const StatsPieChartCard = ({
   title = 'Status Distribution Ratio',
@@ -35,30 +35,30 @@ const StatsPieChartCard = ({
 
   return (
     <div
-      className={`bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-5 transition-all duration-200 hover:shadow-md ${className}`}
+      className={`bg-white rounded-3xl border border-[#EAE0E8] p-5 sm:p-6 shadow-card-soft flex flex-col justify-between space-y-5 transition-all duration-300 hover:shadow-card-hover hover:border-[#D8B8E8] ${className}`}
     >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-teal-50 text-teal-700">
+            <span className="p-1.5 rounded-xl bg-[#F4EBF7] text-[#B95BD5]">
               <PieChart className="w-4 h-4" />
             </span>
-            <h4 className="font-bold text-slate-900 text-sm sm:text-base tracking-tight">
+            <h4 className="font-black text-[#261B50] text-sm sm:text-base tracking-tight">
               {title}
             </h4>
             {badge && (
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-100/70 text-teal-800 border border-teal-200/80">
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#F4EBF7] text-[#8E32A8] border border-[#E8D1ED]">
                 {badge}
               </span>
             )}
           </div>
           {subtitle && (
-            <p className="text-xs text-slate-500 mt-1">{subtitle}</p>
+            <p className="text-xs text-[#7C7390] mt-1">{subtitle}</p>
           )}
         </div>
         <button
-          className="p-1 text-slate-400 hover:text-slate-600 rounded-lg transition"
+          className="p-1 text-[#837B96] hover:text-[#261B50] rounded-xl transition cursor-pointer"
           title="Chart Options"
         >
           <MoreHorizontal className="w-4 h-4" />
@@ -78,10 +78,10 @@ const StatsPieChartCard = ({
           </div>
 
           {/* Histogram bar sequence */}
-          <div className="bg-[#FAFBFB] p-2 rounded-xl border border-slate-100 flex items-end justify-between gap-1 h-11">
+          <div className="bg-[#FAF5F7] p-2 rounded-2xl border border-[#F0E8EE] flex items-end justify-between gap-1 h-11">
             {Array.from({ length: totalBars }).map((_, i) => {
               // Determine slice bucket for this bar
-              let barColor = items[0]?.color || '#5E9CA0';
+              let barColor = items[0]?.color || '#B95BD5';
               let acc = 0;
               for (const item of items) {
                 const share = (item.count / (displayTotal || 1)) * totalBars;
@@ -127,7 +127,7 @@ const StatsPieChartCard = ({
               cy="60"
               r={radius}
               fill="transparent"
-              stroke="#F1F5F9"
+              stroke="#F4ECF2"
               strokeWidth="14"
             />
 
@@ -167,7 +167,7 @@ const StatsPieChartCard = ({
                 cy="60"
                 r={radius}
                 fill="transparent"
-                stroke="#E2E8F0"
+                stroke="#EAE0E8"
                 strokeWidth="14"
               />
             )}
@@ -175,10 +175,10 @@ const StatsPieChartCard = ({
 
           {/* Center Text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-none">
+            <span className="text-2xl sm:text-3xl font-black text-[#261B50] tracking-tight leading-none">
               {displayTotal}
             </span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">
+            <span className="text-[10px] font-bold text-[#837B96] uppercase tracking-wider mt-1">
               {totalLabel}
             </span>
           </div>
@@ -196,23 +196,23 @@ const StatsPieChartCard = ({
                 <div className="flex items-center justify-between text-xs mb-1">
                   <div className="flex items-center gap-2">
                     <span
-                      className="w-2.5 h-2.5 rounded-sm shrink-0"
+                      className="w-2.5 h-2.5 rounded-full shrink-0"
                       style={{ backgroundColor: item.color }}
                     />
-                    <span className="font-medium text-slate-700 group-hover:text-slate-900 transition">
+                    <span className="font-semibold text-[#4F4665] group-hover:text-[#261B50] transition">
                       {item.label}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 font-bold">
-                    <span className="text-slate-900">{count}</span>
-                    <span className="text-slate-400 text-[11px] font-normal w-9 text-right">
+                    <span className="text-[#261B50]">{count}</span>
+                    <span className="text-[#837B96] text-[11px] font-normal w-9 text-right">
                       {percentage}%
                     </span>
                   </div>
                 </div>
 
                 {/* Mini progress bar */}
-                <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                <div className="w-full bg-[#FAF5F7] h-1.5 rounded-full overflow-hidden border border-[#F0E8EE]">
                   <div
                     className="h-full rounded-full transition-all duration-500 ease-out"
                     style={{
@@ -231,4 +231,3 @@ const StatsPieChartCard = ({
 };
 
 export default StatsPieChartCard;
-

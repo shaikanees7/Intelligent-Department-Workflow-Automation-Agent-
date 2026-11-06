@@ -157,27 +157,29 @@ const OfficeDashboard = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#F3F5F7] relative flex flex-col font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-transparent relative flex flex-col font-sans overflow-x-hidden text-saas-textDark">
       <BlueprintWatermark />
       <Navbar />
-      <div className="flex flex-1 relative z-10">
+      <div className="flex flex-1 relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role={user?.role === 'ADMIN' ? 'ADMIN' : 'OFFICE_ADMIN'} />
 
-        <main className="flex-1 p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
-          {/* Header Banner */}
-          <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 border border-white/10">
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-sky-300 text-xs font-semibold backdrop-blur-xs">
-                <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+        <main className="flex-1 w-full space-y-6">
+          {/* Header Banner - Deep Navy-Purple SaaS Featured */}
+          <div className="saas-dark-card rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-radial from-saas-primary/25 to-transparent blur-3xl pointer-events-none -mr-24 -mt-24"></div>
+
+            <div className="space-y-2 relative z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-saas-primary/20 text-saas-accent text-xs font-bold border border-saas-primary/30">
+                <Sparkles className="w-3.5 h-3.5" />
                 University Administrative Section Desk
               </div>
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
                 {officeData?.name || 'University Office Review Desk'}
               </h1>
-              <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              <p className="text-xs text-white/70 max-w-2xl leading-relaxed">
                 {officeData?.description || 'Automated AI routing of student permission applications.'}
               </p>
-              <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-slate-300">
+              <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-white/80">
                 <span><strong>Officer:</strong> {officeData?.responsible_officer}</span>
                 <span>•</span>
                 <span><strong>Location:</strong> {officeData?.location}</span>
@@ -187,17 +189,17 @@ const OfficeDashboard = () => {
             </div>
 
             {/* Office Switcher for Admin/Reviewers */}
-            <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 space-y-2 w-full md:w-72">
-              <label className="text-[11px] font-bold text-sky-300 uppercase tracking-wider block">
+            <div className="bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10 space-y-2 w-full md:w-72 relative z-10">
+              <label className="text-[11px] font-bold text-saas-accent uppercase tracking-wider block">
                 Select Administrative Office
               </label>
               <select
                 value={selectedOfficeId}
                 onChange={(e) => setSelectedOfficeId(parseInt(e.target.value))}
-                className="w-full px-3 py-2 bg-slate-900/80 border border-white/20 rounded-xl text-xs text-white font-semibold focus:ring-2 focus:ring-sky-400"
+                className="w-full px-3.5 py-2.5 bg-[#1E163B] border border-white/20 rounded-xl text-xs text-white font-semibold focus:ring-2 focus:ring-saas-primary focus:outline-none"
               >
                 {offices.map((o) => (
-                  <option key={o.office_id} value={o.office_id} className="bg-slate-900 text-white">
+                  <option key={o.office_id} value={o.office_id} className="bg-[#1E163B] text-white">
                     {o.name} ({o.code})
                   </option>
                 ))}
@@ -207,27 +209,27 @@ const OfficeDashboard = () => {
 
           {/* Office Quick Metric Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Routed</p>
-              <h3 className="text-2xl font-black text-slate-900 mt-1">{stats.total_routed || applications.length}</h3>
-              <span className="text-[10px] text-slate-400 mt-1 block">AI-routed to this desk</span>
+            <div className="saas-card rounded-3xl p-5">
+              <p className="text-xs font-bold text-saas-textMuted uppercase tracking-wider">Total Routed</p>
+              <h3 className="text-3xl font-black text-saas-textDark mt-1">{stats.total_routed || applications.length}</h3>
+              <span className="text-[10px] text-saas-textMuted mt-1 block">AI-routed to this desk</span>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+            <div className="saas-card rounded-3xl p-5">
               <p className="text-xs font-bold text-amber-600 uppercase tracking-wider">Awaiting Action</p>
-              <h3 className="text-2xl font-black text-amber-600 mt-1">{stats.pending_count || 0}</h3>
+              <h3 className="text-3xl font-black text-amber-600 mt-1">{stats.pending_count || 0}</h3>
               <span className="text-[10px] text-amber-700/80 mt-1 block">Pending initial review</span>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
-              <p className="text-xs font-bold text-indigo-600 uppercase tracking-wider">In Processing</p>
-              <h3 className="text-2xl font-black text-indigo-600 mt-1">{stats.accepted_count || 0}</h3>
-              <span className="text-[10px] text-indigo-700/80 mt-1 block">Accepted by office staff</span>
+            <div className="saas-card rounded-3xl p-5">
+              <p className="text-xs font-bold text-saas-primary uppercase tracking-wider">In Processing</p>
+              <h3 className="text-3xl font-black text-saas-primary mt-1">{stats.accepted_count || 0}</h3>
+              <span className="text-[10px] text-saas-primary/80 mt-1 block">Accepted by office staff</span>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+            <div className="saas-card rounded-3xl p-5">
               <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Processed & Sanctioned</p>
-              <h3 className="text-2xl font-black text-emerald-600 mt-1">{stats.processed_count || 0}</h3>
+              <h3 className="text-3xl font-black text-emerald-600 mt-1">{stats.processed_count || 0}</h3>
               <span className="text-[10px] text-emerald-700/80 mt-1 block">Decisions formalized</span>
             </div>
           </div>
@@ -244,17 +246,17 @@ const OfficeDashboard = () => {
                 {
                   label: 'Processed & Sanctioned',
                   count: stats.processed_count || (applications.filter((a) => a.status === 'PROCESSED').length || 6),
-                  color: '#22C55E'
+                  color: '#238B62'
                 },
                 {
                   label: 'Awaiting Action',
                   count: stats.pending_count || (applications.filter((a) => a.status === 'PENDING').length || 4),
-                  color: '#F59E0B'
+                  color: '#D69B35'
                 },
                 {
                   label: 'In Processing / Accepted',
                   count: stats.accepted_count || (applications.filter((a) => a.status === 'ACCEPTED').length || 2),
-                  color: '#6366F1'
+                  color: '#B95BD5'
                 }
               ]}
               showWaveform={true}
@@ -270,17 +272,17 @@ const OfficeDashboard = () => {
                 {
                   label: 'Academic Condonation & OD',
                   count: 6,
-                  color: '#0284C7'
+                  color: '#B95BD5'
                 },
                 {
                   label: 'Examinations & Hall Ticket',
                   count: 4,
-                  color: '#8B5CF6'
+                  color: '#261B50'
                 },
                 {
                   label: 'Hostel & Facility Clearance',
                   count: 2,
-                  color: '#EC4899'
+                  color: '#D8B8E8'
                 }
               ]}
               showWaveform={true}
@@ -288,15 +290,15 @@ const OfficeDashboard = () => {
           </div>
 
           {/* Search & Filter Toolbar */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="saas-card rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="relative w-full sm:w-80">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              <Search className="w-4 h-4 text-saas-textMuted absolute left-3.5 top-3" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search by student, ID, reason, or AI category..."
-                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                placeholder="Search by student, ID, reason, or category..."
+                className="w-full pl-9 pr-3.5 py-2 bg-white border border-[#EAE0E8] rounded-full text-xs text-saas-textDark focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition"
               />
             </div>
 
@@ -304,7 +306,7 @@ const OfficeDashboard = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-primary-500"
+                className="px-4 py-2 bg-white border border-[#EAE0E8] rounded-full text-xs font-semibold text-saas-textDark focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition"
               >
                 <option value="ALL">All Statuses</option>
                 <option value="PENDING">Pending Action</option>
@@ -317,30 +319,30 @@ const OfficeDashboard = () => {
           </div>
 
           {/* Applications Queue Table */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+          <div className="saas-card rounded-3xl overflow-hidden">
+            <div className="p-5 sm:p-6 border-b border-[#EAE0E8] flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-slate-900 text-sm">
+                <h3 className="font-bold text-saas-textDark text-sm">
                   Routed Applications Queue ({filteredApplications.length})
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-saas-textMuted mt-0.5">
                   Applications categorized and routed to this university office by Groq AI (openai/gpt-oss-120b)
                 </p>
               </div>
             </div>
 
             {loading ? (
-              <div className="p-12 text-center text-xs text-slate-400">Loading office applications...</div>
+              <div className="p-12 text-center text-xs text-saas-textMuted">Loading office applications...</div>
             ) : filteredApplications.length === 0 ? (
-              <div className="p-12 text-center text-xs text-slate-400 space-y-2">
-                <Building2 className="w-10 h-10 text-slate-300 mx-auto" />
-                <p className="font-bold text-slate-600">No applications found in this queue</p>
+              <div className="p-12 text-center text-xs text-saas-textMuted space-y-2">
+                <Building2 className="w-10 h-10 text-saas-textMuted/40 mx-auto" />
+                <p className="font-bold text-saas-textDark">No applications found in this queue</p>
                 <p>New applications routed by Groq AI will automatically appear here.</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 uppercase tracking-wider text-[11px]">
+                  <thead className="bg-saas-canvas/60 text-saas-textMuted font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                     <tr>
                       <th className="py-3.5 px-6">Request ID</th>
                       <th className="py-3.5 px-6">Student Information</th>
@@ -351,21 +353,21 @@ const OfficeDashboard = () => {
                       <th className="py-3.5 px-6 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 text-slate-700">
+                  <tbody className="divide-y divide-[#F1E8EE] text-saas-textDark">
                     {filteredApplications.map((app) => (
-                      <tr key={app.assignment_id || app.request_id} className="hover:bg-slate-50/70 transition">
-                        <td className="py-4 px-6 font-bold text-slate-900 whitespace-nowrap">
+                      <tr key={app.assignment_id || app.request_id} className="hover:bg-saas-canvas/40 transition">
+                        <td className="py-4 px-6 font-bold text-saas-textDark whitespace-nowrap">
                           {app.request_code}
                           {Boolean(app.is_urgent) && (
-                            <span className="block mt-1 text-[9px] font-bold text-red-700 bg-red-100 px-1.5 py-0.5 rounded border border-red-200 text-center">
+                            <span className="block mt-1 text-[9px] font-bold text-rose-700 bg-[#FDEEF1] px-2 py-0.5 rounded-full border border-rose-200 text-center">
                               URGENT
                             </span>
                           )}
                         </td>
 
                         <td className="py-4 px-6 whitespace-nowrap">
-                          <div className="font-bold text-slate-900">{app.student_name}</div>
-                          <div className="text-[11px] font-semibold text-slate-700">
+                          <div className="font-bold text-saas-textDark">{app.student_name}</div>
+                          <div className="text-[11px] font-semibold text-saas-textMuted">
                             Reg: {app.registration_number || 'N/A'}
                           </div>
                           {(app.phone || app.student_phone) && (
@@ -374,12 +376,12 @@ const OfficeDashboard = () => {
                               <span>{app.phone || app.student_phone}</span>
                             </div>
                           )}
-                          <div className="text-[10px] text-slate-400">{app.department_name} • Sec {app.section || 'A'}</div>
+                          <div className="text-[10px] text-saas-textMuted">{app.department_name} • Sec {app.section || 'A'}</div>
                         </td>
 
                         <td className="py-4 px-6">
-                          <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 font-bold text-[11px] border border-sky-200">
-                            <Sparkles className="w-3 h-3 text-sky-600" />
+                          <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#EAE0F0] text-saas-navy font-bold text-[11px] border border-[#D8B8E8]">
+                            <Sparkles className="w-3 h-3 text-saas-primary" />
                             {app.permission_category || 'General Permission'}
                           </div>
                           {app.ai_confidence && (
@@ -393,22 +395,22 @@ const OfficeDashboard = () => {
                           "{app.reason}"
                         </td>
 
-                        <td className="py-4 px-6 text-slate-500 whitespace-nowrap">
+                        <td className="py-4 px-6 text-saas-textMuted whitespace-nowrap">
                           {new Date(app.start_date).toLocaleDateString()} - {new Date(app.end_date).toLocaleDateString()}
                         </td>
 
                         <td className="py-4 px-6 whitespace-nowrap">
                           <span
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+                            className={`badge-pill font-bold py-1 px-2.5 ${
                               app.status === 'ACCEPTED'
-                                ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                                ? 'bg-[#EAE0F0] text-saas-navy border border-[#D8B8E8]'
                                 : app.status === 'PROCESSED'
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                ? 'bg-[#E8F7F0] text-emerald-700 border border-[#B3E8CE]'
                                 : app.status === 'FORWARDED'
-                                ? 'bg-purple-50 text-purple-700 border-purple-200'
+                                ? 'bg-purple-50 text-purple-700 border border-purple-200'
                                 : app.status === 'REJECTED'
-                                ? 'bg-rose-50 text-rose-700 border-rose-200'
-                                : 'bg-amber-50 text-amber-700 border-amber-200'
+                                ? 'bg-[#FDEEF1] text-rose-700 border border-rose-200'
+                                : 'bg-[#FEF6EB] text-amber-900 border border-[#F7E1B5]'
                             }`}
                           >
                             {app.status || 'PENDING'}
@@ -423,7 +425,7 @@ const OfficeDashboard = () => {
                                 setActionType('ACCEPT');
                                 setRemarks('Accepted by office administrator for departmental verification.');
                               }}
-                              className="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-xs transition"
+                              className="px-3 py-1.5 bg-saas-navy hover:bg-saas-darkCard text-white font-bold rounded-full text-xs transition"
                             >
                               Accept
                             </button>
@@ -435,7 +437,7 @@ const OfficeDashboard = () => {
                               setActionType('FORWARD');
                               setRemarks('');
                             }}
-                            className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs transition"
+                            className="px-3 py-1.5 bg-saas-canvas hover:bg-[#EAE0F0] text-saas-textDark font-bold rounded-full text-xs border border-[#EAE0E8] transition"
                           >
                             Forward
                           </button>
@@ -446,7 +448,7 @@ const OfficeDashboard = () => {
                               setActionType('APPROVE');
                               setRemarks(`Approved by ${officeData?.name || 'Office'}. Official clearance granted.`);
                             }}
-                            className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs transition"
+                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-full text-xs transition"
                           >
                             Approve
                           </button>
@@ -457,7 +459,7 @@ const OfficeDashboard = () => {
                               setActionType('REJECT');
                               setRemarks('');
                             }}
-                            className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-xs transition"
+                            className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-full text-xs transition"
                           >
                             Reject
                           </button>
@@ -472,43 +474,43 @@ const OfficeDashboard = () => {
 
           {/* Action Modal */}
           {activeModalReq && (
-            <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-              <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-lg w-full p-6 space-y-5">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="fixed inset-0 z-50 bg-[#1E163B]/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="saas-card rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-7 space-y-5">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EAE0E8]">
                   <div className="flex items-center gap-2">
-                    <span className="p-2 rounded-xl bg-indigo-100 text-indigo-700 font-bold">
+                    <span className="p-2 rounded-2xl bg-saas-primary/15 text-saas-primary font-bold">
                       <Building2 className="w-5 h-5" />
                     </span>
                     <div>
-                      <h3 className="font-bold text-slate-900 text-base">
+                      <h3 className="font-bold text-saas-textDark text-base">
                         {actionType === 'ACCEPT' && 'Accept Application for Review'}
                         {actionType === 'FORWARD' && 'Forward to Another University Office'}
                         {actionType === 'APPROVE' && 'Approve & Sanction Permission'}
                         {actionType === 'REJECT' && 'Reject Application'}
                       </h3>
-                      <p className="text-[11px] text-slate-500">{activeModalReq.request_code}</p>
+                      <p className="text-[11px] text-saas-textMuted">{activeModalReq.request_code}</p>
                     </div>
                   </div>
-                  <button onClick={() => setActiveModalReq(null)} className="text-slate-400 hover:text-slate-600 p-1">
-                    <X className="w-5 h-5" />
+                  <button onClick={() => setActiveModalReq(null)} className="p-1.5 text-saas-textMuted hover:text-saas-textDark rounded-full hover:bg-saas-canvas transition">
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
 
                 {successMsg ? (
-                  <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 text-center font-bold">
+                  <div className="p-4 bg-[#E8F7F0] border border-[#B3E8CE] rounded-2xl text-xs text-emerald-800 text-center font-bold">
                     {successMsg}
                   </div>
                 ) : (
                   <div className="space-y-4 text-xs">
                     {/* AI Info Preview */}
-                    <div className="p-3.5 bg-sky-50 rounded-2xl border border-sky-200 space-y-1">
+                    <div className="p-4 bg-saas-canvas/60 rounded-2xl border border-[#EAE0E8] space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-sky-900">AI Routing Classification</span>
-                        <span className="text-[10px] font-bold text-sky-700 bg-white px-2 py-0.5 rounded-full border border-sky-300">
+                        <span className="font-bold text-saas-navy">AI Routing Classification</span>
+                        <span className="badge-pill bg-white text-saas-primary border border-[#EAE0E8] text-[10px] font-bold">
                           {activeModalReq.permission_category}
                         </span>
                       </div>
-                      <p className="text-sky-800 text-[11px] mt-1 leading-relaxed">
+                      <p className="text-saas-textDark text-[11px] mt-1 leading-relaxed">
                         Student: <strong>{activeModalReq.student_name}</strong> (Reg: {activeModalReq.registration_number || 'N/A'}{(activeModalReq.phone || activeModalReq.student_phone) ? ` • Mob: ${activeModalReq.phone || activeModalReq.student_phone}` : ''}) • "{activeModalReq.reason}"
                       </p>
                     </div>
@@ -516,14 +518,14 @@ const OfficeDashboard = () => {
                     {/* Forward Target Selection */}
                     {actionType === 'FORWARD' && (
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 mb-1">
-                          Select Destination University Office <span className="text-red-500">*</span>
+                        <label className="block text-xs font-bold text-saas-textDark mb-1">
+                          Select Destination University Office <span className="text-rose-500">*</span>
                         </label>
                         <select
                           value={targetOfficeId}
                           onChange={(e) => setTargetOfficeId(e.target.value)}
                           required
-                          className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                          className="w-full px-3.5 py-2.5 bg-white border border-[#EAE0E8] rounded-2xl text-xs text-saas-textDark focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition"
                         >
                           <option value="">-- Choose Target Office --</option>
                           {offices
@@ -539,15 +541,15 @@ const OfficeDashboard = () => {
 
                     {/* Remarks Input */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
-                        Office Review Remarks {actionType === 'REJECT' && <span className="text-red-500">*</span>}
+                      <label className="block text-xs font-bold text-saas-textDark mb-1">
+                        Office Review Remarks {actionType === 'REJECT' && <span className="text-rose-500">*</span>}
                       </label>
                       <textarea
                         rows={3}
                         value={remarks}
                         onChange={(e) => setRemarks(e.target.value)}
                         placeholder="Add office verification notes and instructions..."
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-3.5 py-2.5 bg-white border border-[#EAE0E8] rounded-2xl text-xs text-saas-textDark focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition"
                       />
                     </div>
 
@@ -555,7 +557,7 @@ const OfficeDashboard = () => {
                       <button
                         type="button"
                         onClick={() => setActiveModalReq(null)}
-                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition"
+                        className="saas-pill-btn-outline text-xs px-4 py-2"
                       >
                         Cancel
                       </button>
@@ -563,12 +565,12 @@ const OfficeDashboard = () => {
                         type="button"
                         disabled={submitting || (actionType === 'FORWARD' && !targetOfficeId)}
                         onClick={handleExecuteAction}
-                        className={`px-5 py-2 font-bold text-white rounded-xl shadow-sm transition disabled:opacity-50 ${
+                        className={`px-5 py-2 font-bold text-white rounded-full shadow-xs transition disabled:opacity-50 text-xs ${
                           actionType === 'REJECT'
                             ? 'bg-rose-600 hover:bg-rose-700'
                             : actionType === 'APPROVE'
                             ? 'bg-emerald-600 hover:bg-emerald-700'
-                            : 'bg-indigo-600 hover:bg-indigo-700'
+                            : 'bg-saas-navy hover:bg-saas-darkCard'
                         }`}
                       >
                         {submitting ? 'Executing...' : 'Confirm Action'}

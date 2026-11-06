@@ -7,24 +7,63 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'Roboto', 'sans-serif'],
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
         serif: ['"Playfair Display"', 'Georgia', 'serif'],
         cinzel: ['"Cinzel"', 'serif'],
       },
       colors: {
-        portal: {
-          bg: '#F3F5F7',
+        // SaaS Purple & Deep Navy Design System (From Reference)
+        saas: {
+          canvas: '#F6EFF2',
+          surface: '#FAF5F7',
           card: '#FFFFFF',
-          border: '#E2E8F0',
+          border: '#EAE0E8',
+          borderSubtle: '#F0E8EE',
+          darkCard: '#1E163B',
+          darkCardBorder: '#362B5E',
+          textDark: '#261B50',
+          textMuted: '#7C7390',
+          textLight: '#9F97B0',
+          primary: '#B95BD5',
+          primaryHover: '#A847C5',
+          primaryActive: '#9534B2',
+          primaryLight: '#F7EDFA',
+          secondary: '#5B5072',
+          secondaryHover: '#493E60',
+          accent: '#D8B8E8',
+          accentMuted: '#EAE0F0',
+          navy: '#261B50',
+          navyHover: '#34265F',
         },
-        teal: {
-          50: '#F0F7F7',
-          100: '#DCEAEB',
-          200: '#C3DFE1',
-          500: '#629A9E',
-          600: '#5E9CA0',
-          700: '#4D868A',
-          800: '#3D6E72',
+        portal: {
+          bg: '#F6EFF2',
+          card: '#FFFFFF',
+          border: '#EAE0E8',
+        },
+        purple: {
+          50: '#FAF5FB',
+          100: '#F3E8F6',
+          200: '#E6CFF0',
+          300: '#D8B8E8',
+          400: '#C775DE',
+          500: '#B95BD5',
+          600: '#A847C5',
+          700: '#8E32A8',
+          800: '#6C2182',
+          900: '#4B165C',
+        },
+        navy: {
+          50: '#F5F4F9',
+          100: '#EBE9F3',
+          200: '#D4CEE4',
+          300: '#B3A9CE',
+          400: '#8474AA',
+          500: '#5F4F8B',
+          600: '#4A3B78',
+          700: '#34265F',
+          800: '#261B50',
+          900: '#1A1238',
+          950: '#120C26',
         },
         softAmber: {
           50: '#FDF7ED',
@@ -42,28 +81,29 @@ module.exports = {
           700: '#1B7A4B',
           800: '#065F46',
         },
-        royal: {
-          400: '#3b82f6',
-          500: '#1d68ff',
-          600: '#155dfc',
-          700: '#004fe6',
-          800: '#003eb8'
-        },
         primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          500: '#629A9E',
-          600: '#5E9CA0',
-          700: '#4D868A',
-          800: '#075985',
-          900: '#0c4a6e'
+          50: '#F7EDFA',
+          100: '#F3E8F6',
+          500: '#B95BD5',
+          600: '#A847C5',
+          700: '#8E32A8',
+          800: '#261B50',
+          900: '#1A1238'
         }
       },
       boxShadow: {
-        'card-soft': '0 4px 14px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02)',
-        'card-hover': '0 8px 24px rgba(94, 156, 160, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04)',
+        'card-soft': '0 10px 30px -5px rgba(38, 27, 80, 0.05)',
+        'card-hover': '0 20px 40px -10px rgba(38, 27, 80, 0.1)',
+        'dark-card': '0 20px 45px -10px rgba(22, 15, 44, 0.35)',
+        'purple-glow': '0 4px 20px rgba(185, 91, 213, 0.35)',
+        'pill': '0 2px 10px rgba(38, 27, 80, 0.06)'
+      },
+      borderRadius: {
+        '2xl': '16px',
+        '3xl': '24px',
+        '4xl': '32px'
       }
     },
   },
   plugins: [],
-}
+};

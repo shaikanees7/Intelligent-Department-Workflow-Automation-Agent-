@@ -136,32 +136,39 @@ const HODDashboard = () => {
   const pendingList = queue.filter((r) => r.overall_status === 'UNDER_REVIEW' || r.overall_status === 'PENDING');
 
   return (
-    <div className="min-h-screen bg-[#F3F5F7] relative flex flex-col font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-transparent relative flex flex-col font-sans overflow-x-hidden text-saas-textDark">
       <BlueprintWatermark />
       <Navbar />
-      <div className="flex flex-1 relative z-10">
+      <div className="flex flex-1 relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 py-6 gap-6 items-start">
         <Sidebar role="HOD" />
 
-        <main className="flex-1 p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+        <main className="flex-1 w-full space-y-6">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-4">
+          <div className="saas-card rounded-3xl p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 bg-rose-100 text-rose-800 rounded-lg">
+              <div className="flex items-center gap-3">
+                <span className="p-2.5 bg-saas-primary/15 text-saas-primary rounded-2xl shadow-xs">
                   <Award className="w-5 h-5" />
                 </span>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                  Head of Department (HOD) Sanctions Portal
-                </h1>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-2xl font-extrabold text-saas-textDark tracking-tight">
+                      Head of Department (HOD) Sanctions Portal
+                    </h1>
+                    <span className="badge-pill bg-[#EAE0F0] text-saas-navy text-[11px] font-bold">
+                      Step 3 of 4
+                    </span>
+                  </div>
+                  <p className="text-xs text-saas-textMuted mt-0.5">
+                    Dr. Ramesh Kumar • Department of Computer Science & Engineering • Final Institutional Authority
+                  </p>
+                </div>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
-                Dr. Ramesh Kumar • Department of Computer Science & Engineering
-              </p>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5" />
+              <span className="badge-pill bg-[#E8F7F0] text-emerald-800 border border-[#B3E8CE] text-xs font-bold py-1.5 px-3.5 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                 Final Institutional Authority
               </span>
             </div>
@@ -169,48 +176,48 @@ const HODDashboard = () => {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Department Requests</p>
-              <h3 className="text-2xl font-black text-slate-900 mt-1">{stats.total_requests || 18}</h3>
+            <div className="saas-card rounded-3xl p-5">
+              <p className="text-xs font-bold text-saas-textMuted uppercase tracking-wider">Total Department Requests</p>
+              <h3 className="text-3xl font-black text-saas-textDark mt-1">{stats.total_requests || 18}</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <div className="saas-card rounded-3xl p-5">
               <p className="text-xs font-bold text-amber-600 uppercase tracking-wider">Awaiting HOD Sanction</p>
-              <h3 className="text-2xl font-black text-amber-600 mt-1">{stats.pending_count || 3}</h3>
+              <h3 className="text-3xl font-black text-amber-600 mt-1">{stats.pending_count || 3}</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <div className="saas-card rounded-3xl p-5">
               <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Sanctioned & Generated</p>
-              <h3 className="text-2xl font-black text-emerald-600 mt-1">{stats.approved_count || 14}</h3>
+              <h3 className="text-3xl font-black text-emerald-600 mt-1">{stats.approved_count || 14}</h3>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <div className="saas-card rounded-3xl p-5">
               <p className="text-xs font-bold text-rose-600 uppercase tracking-wider">Rejected</p>
-              <h3 className="text-2xl font-black text-rose-600 mt-1">{stats.rejected_count || 1}</h3>
+              <h3 className="text-3xl font-black text-rose-600 mt-1">{stats.rejected_count || 1}</h3>
             </div>
           </div>
 
           {/* Final Sanctions Queue */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+          <div className="saas-card rounded-3xl overflow-hidden">
+            <div className="p-5 sm:p-6 border-b border-[#EAE0E8] flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-slate-900 text-sm">
+                <h3 className="font-bold text-saas-textDark text-sm">
                   Final Approval Queue (Step 3/4 in Workflow)
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-saas-textMuted mt-0.5">
                   Applications verified by Mentor and approved by Faculty Coordinator awaiting final sanction
                 </p>
               </div>
-              <span className="text-xs font-bold px-2.5 py-1 rounded bg-amber-50 text-amber-800 border border-amber-200">
+              <span className="badge-pill bg-[#FEF6EB] text-amber-900 border border-[#F7E1B5] text-xs font-bold py-1 px-3">
                 {pendingList.length} Action Needed
               </span>
             </div>
 
             {pendingList.length === 0 ? (
-              <div className="p-12 text-center text-xs text-slate-400">
+              <div className="p-12 text-center text-xs text-saas-textMuted">
                 No applications currently waiting for HOD final sanction.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 uppercase tracking-wider text-[11px]">
+                  <thead className="bg-saas-canvas/60 text-saas-textMuted font-bold border-b border-[#EAE0E8] uppercase tracking-wider text-[11px]">
                     <tr>
                       <th className="py-3.5 px-6">Request ID</th>
                       <th className="py-3.5 px-6">Student</th>
@@ -220,20 +227,20 @@ const HODDashboard = () => {
                       <th className="py-3.5 px-6 text-right">Final Decision</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 text-slate-700">
+                  <tbody className="divide-y divide-[#F1E8EE] text-saas-textDark">
                     {pendingList.map((req) => (
-                      <tr key={req.request_id} className="hover:bg-slate-50/70 transition">
-                        <td className="py-4 px-6 font-bold text-slate-900 whitespace-nowrap">
+                      <tr key={req.request_id} className="hover:bg-saas-canvas/40 transition">
+                        <td className="py-4 px-6 font-bold text-saas-textDark whitespace-nowrap">
                           {req.request_code}
                           {Boolean(req.is_urgent) && (
-                            <span className="block mt-1 text-[9px] font-bold text-red-700 bg-red-100 px-1.5 py-0.5 rounded border border-red-200 text-center">
+                            <span className="block mt-1 text-[9px] font-bold text-rose-700 bg-[#FDEEF1] px-2 py-0.5 rounded-full border border-rose-200 text-center">
                               URGENT
                             </span>
                           )}
                         </td>
                         <td className="py-4 px-6 whitespace-nowrap">
-                          <div className="font-bold text-slate-900">{req.student_name}</div>
-                          <div className="text-[11px] font-semibold text-slate-700">
+                          <div className="font-bold text-saas-textDark">{req.student_name}</div>
+                          <div className="text-[11px] font-semibold text-saas-textMuted">
                             Reg: {req.registration_number || 'N/A'}
                           </div>
                           {(req.phone || req.student_phone) && (
@@ -242,42 +249,42 @@ const HODDashboard = () => {
                               <span>{req.phone || req.student_phone}</span>
                             </div>
                           )}
-                          <div className="text-[10px] text-slate-400">Sec {req.section || 'A'}</div>
+                          <div className="text-[10px] text-saas-textMuted">Sec {req.section || 'A'}</div>
                         </td>
                         <td className="py-4 px-6">
-                          <span className="font-bold px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-800">
+                          <span className="badge-pill font-bold px-2.5 py-0.5 bg-saas-canvas text-saas-navy border border-[#EAE0E8]">
                             {req.request_type}
                           </span>
                         </td>
                         <td className="py-4 px-6 max-w-sm space-y-1">
-                          <p className="font-medium text-slate-800 truncate" title={req.reason}>
+                          <p className="font-medium text-saas-textDark truncate" title={req.reason}>
                             "{req.reason}"
                           </p>
                           {req.mentor_remarks && (
-                            <p className="text-[10px] text-indigo-700 truncate" title={req.mentor_remarks}>
+                            <p className="text-[10px] text-saas-primary truncate" title={req.mentor_remarks}>
                               ✓ Mentor: {req.mentor_remarks}
                             </p>
                           )}
                           {req.faculty_remarks && (
-                            <p className="text-[10px] text-blue-700 truncate" title={req.faculty_remarks}>
+                            <p className="text-[10px] text-saas-navy font-semibold truncate" title={req.faculty_remarks}>
                               ✓ Coordinator: {req.faculty_remarks}
                             </p>
                           )}
                         </td>
-                        <td className="py-4 px-6 text-slate-500 whitespace-nowrap">
+                        <td className="py-4 px-6 text-saas-textMuted whitespace-nowrap">
                           {new Date(req.start_date).toLocaleDateString()} - {new Date(req.end_date).toLocaleDateString()}
                         </td>
                         <td className="py-4 px-6 text-right whitespace-nowrap space-x-2">
                           <button
                             onClick={() => handleOpenModal(req, 'APPROVED')}
-                            className="inline-flex items-center gap-1 font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg shadow-2xs transition"
+                            className="inline-flex items-center gap-1 font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-full shadow-2xs transition"
                           >
                             <Check className="w-3.5 h-3.5" />
                             Final Sanction
                           </button>
                           <button
                             onClick={() => handleOpenModal(req, 'REJECTED')}
-                            className="inline-flex items-center gap-1 font-bold text-xs bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg shadow-2xs transition"
+                            className="inline-flex items-center gap-1 font-bold text-xs bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-1.5 rounded-full shadow-2xs transition"
                           >
                             <X className="w-3.5 h-3.5" />
                             Reject
@@ -303,17 +310,17 @@ const HODDashboard = () => {
                 {
                   label: 'Sanctioned & Generated',
                   count: stats.approved_count || 19,
-                  color: '#22C55E'
+                  color: '#238B62'
                 },
                 {
                   label: 'Awaiting HOD Sanction',
                   count: stats.pending_count || 63,
-                  color: '#F59E0B'
+                  color: '#D69B35'
                 },
                 {
                   label: 'Rejected',
                   count: stats.rejected_count || 1,
-                  color: '#EF4444'
+                  color: '#D65B70'
                 }
               ]}
               showWaveform={true}
@@ -329,17 +336,17 @@ const HODDashboard = () => {
                 {
                   label: 'On-Duty (OD) Requests',
                   count: 10,
-                  color: '#0284C7'
+                  color: '#B95BD5'
                 },
                 {
                   label: 'Student Leave Requests',
                   count: 5,
-                  color: '#6366F1'
+                  color: '#261B50'
                 },
                 {
                   label: 'Event Participation',
                   count: 3,
-                  color: '#A855F7'
+                  color: '#D8B8E8'
                 }
               ]}
               showWaveform={true}
@@ -347,26 +354,26 @@ const HODDashboard = () => {
           </div>
 
           {/* Turnaround & Automated Compliance Card */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="space-y-1 max-w-xl">
+          <div className="saas-card rounded-3xl p-6 sm:p-7 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="space-y-1.5 max-w-xl">
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
+                <span className="p-2 rounded-2xl bg-[#E8F7F0] text-emerald-700">
                   <TrendingUp className="w-4 h-4" />
                 </span>
-                <h4 className="font-bold text-slate-900 text-sm">
+                <h4 className="font-bold text-saas-textDark text-sm">
                   Approval Turnaround Efficiency
                 </h4>
-                <span className="text-xs text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                <span className="badge-pill bg-[#E8F7F0] text-emerald-800 border border-[#B3E8CE] text-xs font-bold py-0.5 px-2.5">
                   92% On-Time
                 </span>
               </div>
-              <p className="text-xs text-slate-600 leading-relaxed pt-1">
+              <p className="text-xs text-saas-textMuted leading-relaxed pt-1">
                 With IDWAA (Intelligent Department Workflow Automation Agent), average departmental approval turnaround time has dropped from 3.5 days to 4.2 hours.
               </p>
             </div>
-            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-700 w-full md:w-80">
-              <div className="font-bold text-slate-800">Automated Audit Compliance:</div>
-              <div className="text-[11px] text-slate-500 mt-0.5">
+            <div className="p-4 bg-saas-canvas/60 rounded-2xl border border-[#EAE0E8] text-xs text-saas-textDark w-full md:w-80">
+              <div className="font-bold text-saas-navy">Automated Audit Compliance</div>
+              <div className="text-[11px] text-saas-textMuted mt-1 leading-relaxed">
                 All approvals maintain digital timestamps, reviewer signatures, and cryptographically verifiable PDF gate passes.
               </div>
             </div>
@@ -374,59 +381,59 @@ const HODDashboard = () => {
 
           {/* Modal */}
           {selectedReq && (
-            <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-              <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-6 space-y-5 animate-in zoom-in-95 duration-150">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="fixed inset-0 z-50 bg-[#1E163B]/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="saas-card rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-7 space-y-5 animate-in zoom-in-95 duration-150">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EAE0E8]">
                   <div className="flex items-center gap-2">
                     {actionType === 'APPROVED' ? (
-                      <span className="p-2 rounded-xl bg-emerald-100 text-emerald-700 font-bold">
+                      <span className="p-2 rounded-2xl bg-[#E8F7F0] text-emerald-700 font-bold">
                         <Award className="w-5 h-5" />
                       </span>
                     ) : (
-                      <span className="p-2 rounded-xl bg-rose-100 text-rose-700 font-bold">
+                      <span className="p-2 rounded-2xl bg-[#FDEEF1] text-rose-700 font-bold">
                         <XCircle className="w-5 h-5" />
                       </span>
                     )}
                     <div>
-                      <h3 className="font-bold text-slate-900 text-base">
+                      <h3 className="font-bold text-saas-textDark text-base">
                         {actionType === 'APPROVED' ? 'Grant Final HOD Sanction' : 'Reject Application'}
                       </h3>
-                      <p className="text-[11px] text-slate-500">{selectedReq.request_code}</p>
+                      <p className="text-[11px] text-saas-textMuted">{selectedReq.request_code}</p>
                     </div>
                   </div>
                   <button
                     onClick={() => setSelectedReq(null)}
-                    className="text-slate-400 hover:text-slate-600 p-1"
+                    className="p-1.5 text-saas-textMuted hover:text-saas-textDark rounded-full hover:bg-saas-canvas transition"
                   >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
 
                 {successMsg ? (
-                  <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 text-center font-bold">
+                  <div className="p-4 bg-[#E8F7F0] border border-[#B3E8CE] rounded-2xl text-xs text-emerald-800 text-center font-bold">
                     {successMsg}
                   </div>
                 ) : (
                   <div className="space-y-4 text-xs">
-                    <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-                      <div className="font-bold text-slate-900">
+                    <div className="p-4 bg-saas-canvas/60 rounded-2xl border border-[#EAE0E8] space-y-1">
+                      <div className="font-bold text-saas-textDark">
                         {selectedReq.student_name} (Reg: {selectedReq.registration_number || 'N/A'}{(selectedReq.phone || selectedReq.student_phone) ? ` • Mob: ${selectedReq.phone || selectedReq.student_phone}` : ''})
                       </div>
-                      <div className="text-slate-700 mt-1 italic bg-white p-2 rounded border border-slate-200">
+                      <div className="text-saas-textDark mt-1 italic bg-white p-3 rounded-xl border border-[#EAE0E8]">
                         "{selectedReq.reason}"
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
-                        HOD Official Sanction Remarks {actionType === 'REJECTED' && <span className="text-red-500">*</span>}
+                      <label className="block text-xs font-bold text-saas-textDark mb-1">
+                        HOD Official Sanction Remarks {actionType === 'REJECTED' && <span className="text-rose-500">*</span>}
                       </label>
                       <textarea
                         rows={3}
                         value={remarks}
                         onChange={(e) => setRemarks(e.target.value)}
                         placeholder="Add HOD sanction order note..."
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-3.5 py-2.5 bg-white border border-[#EAE0E8] rounded-2xl text-xs text-saas-textDark focus:ring-2 focus:ring-saas-primary/20 focus:border-saas-primary focus:outline-none transition"
                       />
                     </div>
 
@@ -434,7 +441,7 @@ const HODDashboard = () => {
                       <button
                         type="button"
                         onClick={() => setSelectedReq(null)}
-                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition"
+                        className="saas-pill-btn-outline text-xs px-4 py-2"
                       >
                         Cancel
                       </button>
@@ -443,7 +450,7 @@ const HODDashboard = () => {
                         type="button"
                         disabled={submitting}
                         onClick={handleExecuteSanction}
-                        className={`px-5 py-2 font-bold text-white rounded-xl shadow-sm transition disabled:opacity-50 ${
+                        className={`px-5 py-2 font-bold text-white rounded-full shadow-xs transition disabled:opacity-50 text-xs ${
                           actionType === 'APPROVED'
                             ? 'bg-emerald-600 hover:bg-emerald-700'
                             : 'bg-rose-600 hover:bg-rose-700'
