@@ -26,48 +26,12 @@ import {
   Phone
 } from 'lucide-react';
 
-const INITIAL_FACULTY_QUEUE = [
-  {
-    request_id: 1,
-    request_code: 'REQ-842104',
-    student_name: 'Anees Shaik',
-    registration_number: 'REG2024CSE001',
-    section: 'A',
-    department: 'Computer Science',
-    request_type: 'OD',
-    reason: 'Selected for National Smart India Hackathon Grand Finale in Bangalore. Need 3 days On-Duty permission to travel and compete.',
-    start_date: '2026-11-08',
-    end_date: '2026-11-10',
-    is_urgent: 1,
-    mentor_remarks: 'Verified by Prof. Suresh Reddy: Attendance is 88%, student is an active participant in coding club.',
-    overall_status: 'UNDER_REVIEW',
-    current_step_order: 2,
-    created_at: '2026-11-04T09:30:00Z'
-  },
-  {
-    request_id: 2,
-    request_code: 'REQ-842109',
-    student_name: 'Rahul Varma',
-    registration_number: 'REG2024CSE042',
-    section: 'B',
-    department: 'Computer Science',
-    request_type: 'EVENT',
-    reason: 'Paper presentation on AI-Driven Automation at IEEE International Conference.',
-    start_date: '2026-11-15',
-    end_date: '2026-11-16',
-    is_urgent: 0,
-    mentor_remarks: 'Verified by Prof. Suresh Reddy: Certificate of acceptance reviewed.',
-    overall_status: 'UNDER_REVIEW',
-    current_step_order: 2,
-    created_at: '2026-11-04T14:15:00Z'
-  }
-];
-
 const FacultyDashboard = () => {
   const { user } = useContext(AuthContext);
   const { fetchNotifications } = useContext(NotificationContext);
 
-  const [queue, setQueue] = useState(INITIAL_FACULTY_QUEUE);
+  const [queue, setQueue] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('pending'); // 'pending' | 'history'
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [actionType, setActionType] = useState('APPROVED'); // 'APPROVED' | 'REJECTED'
@@ -75,6 +39,24 @@ const FacultyDashboard = () => {
   const [submitting, setSubmitting] = useState(false);
   const [actionSuccess, setActionSuccess] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+
+  const fetchFacultyQueue = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get('/requests/pending');
+      if (res.data?.success && Array.isArray(res.data.data)) {
+        setQueue(res.data.data);
+      }
+    } catch (err) {
+      console.warn('[FacultyDashboard] Fetch error:', err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFacultyQueue();
+  }, []);
 
   const handleOpenActionModal = (req, type) => {
     setSelectedRequest(req);
@@ -93,40 +75,20 @@ const FacultyDashboard = () => {
     try {
       setSubmitting(true);
       // Calls real backend API
-      const res = await api.post(`/requests/${selectedRequest.request_id}/action`, {
+      await api.post(`/requests/${selectedRequest.request_id}/action`, {
         action: actionType,
         remarks: remarks
       });
-
-      // Update local state
-      setQueue((prev) =>
-        prev.map((item) =>
-          item.request_id === selectedRequest.request_id
-            ? { ...item, overall_status: actionType, faculty_remarks: remarks }
-            : item
-        )
-      );
 
       setActionSuccess(`Application ${selectedRequest.request_code} successfully marked as ${actionType}.`);
       fetchNotifications();
       setTimeout(() => {
         setSelectedRequest(null);
         setActionSuccess('');
+        fetchFacultyQueue();
       }, 1500);
     } catch (err) {
-      // Even if network or id not matching DB, gracefully update the UI state
-      setQueue((prev) =>
-        prev.map((item) =>
-          item.request_id === selectedRequest.request_id
-            ? { ...item, overall_status: actionType, faculty_remarks: remarks }
-            : item
-        )
-      );
-      setActionSuccess(`Application marked as ${actionType}.`);
-      setTimeout(() => {
-        setSelectedRequest(null);
-        setActionSuccess('');
-      }, 1500);
+      setActionSuccess(`Error: ${err.response?.data?.message || err.message}`);
     } finally {
       setSubmitting(false);
     }
@@ -358,23 +320,23 @@ const FacultyDashboard = () => {
             <StatsPieChartCard
               title="Faculty Review & Clearance Distribution"
               subtitle="Live breakdown of student applications routed to Faculty Review Desk"
-              total={queue.length || 14}
+              total={queue.length}
               totalLabel="Requests"
               badge="Faculty Queue"
               items={[
                 {
                   label: 'Approved & Forwarded to HOD',
-                  count: queue.filter((r) => r.overall_status === 'APPROVED').length || 8,
+                  count: queue.filter((r) => r.overall_status === 'APPROVED').length,
                   color: '#238B62'
                 },
                 {
                   label: 'Awaiting Coordinator Action',
-                  count: pendingRequests.length || 5,
+                  count: pendingRequests.length,
                   color: '#D69B35'
                 },
                 {
                   label: 'Rejected',
-                  count: queue.filter((r) => r.overall_status === 'REJECTED').length || 1,
+                  count: queue.filter((r) => r.overall_status === 'REJECTED').length,
                   color: '#D65B70'
                 }
               ]}
@@ -384,13 +346,13 @@ const FacultyDashboard = () => {
             <StatsPieChartCard
               title="Requests by Academic Purpose"
               subtitle="Distribution of student permission categories verified by department"
-              total={14}
+              total={queue.length}
               totalLabel="Categories"
-              badge="CSE Department"
+              badge={`${user?.department_name || 'CSE'} Department`}
               items={[
-                { label: 'On-Duty (OD) Hackathons & Conferences', count: 8, color: '#B95BD5' },
-                { label: 'Student Leave & Medical Emergencies', count: 4, color: '#261B50' },
-                { label: 'Event Participation & Competitions', count: 2, color: '#D8B8E8' }
+                { label: 'On-Duty (OD)', count: queue.filter(r => r.request_type === 'OD').length, color: '#B95BD5' },
+                { label: 'Student Leave & Medical', count: queue.filter(r => r.request_type === 'LEAVE' || r.request_type === 'MEDICAL').length, color: '#261B50' },
+                { label: 'Event & Workshop', count: queue.filter(r => r.request_type !== 'OD' && r.request_type !== 'LEAVE' && r.request_type !== 'MEDICAL').length, color: '#D8B8E8' }
               ]}
               showWaveform={true}
             />

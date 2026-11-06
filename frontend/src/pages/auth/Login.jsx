@@ -14,93 +14,46 @@ import {
   Award,
   Users,
   CheckCircle2,
-  Sparkles,
-  Info
+  AlertCircle,
+  KeyRound,
+  Loader2,
+  X
 } from 'lucide-react';
 
-const DEMO_PRESETS = {
-  STUDENT: {
-    userId: 5,
-    email: 'student1@institution.edu',
-    firstName: 'Anees',
-    lastName: 'Shaik',
-    role: 'STUDENT',
-    departmentId: 1,
-    departmentName: 'Computer Science and Engineering',
-    registrationNumber: 'REG2024CSE001',
-    section: 'A'
-  },
-  MENTOR: {
-    userId: 4,
-    email: 'mentor.cse@institution.edu',
-    firstName: 'Prof. Suresh',
-    lastName: 'Reddy',
-    role: 'MENTOR',
-    departmentId: 1,
-    departmentName: 'Computer Science and Engineering',
-    designation: 'Senior Assistant Professor'
-  },
-  FACULTY: {
-    userId: 3,
-    email: 'faculty.cse@institution.edu',
-    firstName: 'Prof. Anitha',
-    lastName: 'Sharma',
-    role: 'FACULTY',
-    departmentId: 1,
-    departmentName: 'Computer Science and Engineering',
-    designation: 'Assistant Professor'
-  },
-  HOD: {
-    userId: 2,
-    email: 'hod.cse@institution.edu',
-    firstName: 'Dr. Ramesh',
-    lastName: 'Kumar',
-    role: 'HOD',
-    departmentId: 1,
-    departmentName: 'Computer Science and Engineering',
-    designation: 'Head of Department'
-  },
-  ADMIN: {
-    userId: 1,
-    email: 'admin@institution.edu',
-    firstName: 'System',
-    lastName: 'Administrator',
-    role: 'ADMIN',
-    departmentId: 1,
-    departmentName: 'Central Administration'
-  }
-};
-
 const QUICK_ROLES = [
-  { role: 'STUDENT', label: 'Student', email: 'student1@institution.edu', icon: GraduationCap, color: 'hover:border-emerald-400 bg-white/10 hover:bg-emerald-500/20' },
-  { role: 'MENTOR', label: 'Mentor', email: 'mentor.cse@institution.edu', icon: ShieldCheck, color: 'hover:border-indigo-400 bg-white/10 hover:bg-indigo-500/20' },
-  { role: 'FACULTY', label: 'Faculty', email: 'faculty.cse@institution.edu', icon: Building, color: 'hover:border-blue-400 bg-white/10 hover:bg-blue-500/20' },
-  { role: 'HOD', label: 'HOD', email: 'hod.cse@institution.edu', icon: Award, color: 'hover:border-rose-400 bg-white/10 hover:bg-rose-500/20' },
-  { role: 'ADMIN', label: 'Admin', email: 'admin@institution.edu', icon: Users, color: 'hover:border-purple-400 bg-white/10 hover:bg-purple-500/20' }
+  { role: 'STUDENT', label: 'Student', email: 'student1@institution.edu', icon: GraduationCap },
+  { role: 'MENTOR', label: 'Mentor', email: 'mentor.cse@institution.edu', icon: ShieldCheck },
+  { role: 'FACULTY', label: 'Faculty', email: 'faculty.cse@institution.edu', icon: Building },
+  { role: 'HOD', label: 'HOD', email: 'hod.cse@institution.edu', icon: Award },
+  { role: 'OFFICE_ADMIN', label: 'Office Staff', email: 'office.exam@institution.edu', icon: Building2 },
+  { role: 'ADMIN', label: 'Admin', email: 'admin@institution.edu', icon: Users }
 ];
 
 const Login = () => {
   const [email, setEmail] = useState('student1@institution.edu');
   const [password, setPassword] = useState('password123');
-  const [selectedRole, setSelectedRole] = useState('STUDENT');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // First Login Mandatory Password Change Modal State
+  const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(false);
+  const [pendingAuthData, setPendingAuthData] = useState(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [passwordChangeError, setPasswordChangeError] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
 
   const { login } = useContext(AuthContext);
   const { fetchNotifications } = useContext(NotificationContext);
   const navigate = useNavigate();
 
-  // Helper to establish session
-  const performLogin = (userData, token = 'demo_jwt_token_secret_12345') => {
-    login(userData, token);
-    try {
-      fetchNotifications();
-    } catch {}
-
-    if (userData.role === 'STUDENT') navigate('/student');
-    else if (userData.role === 'FACULTY') navigate('/faculty');
-    else if (userData.role === 'MENTOR') navigate('/mentor');
-    else if (userData.role === 'HOD') navigate('/hod');
+  // Route dispatcher by role
+  const navigateByRole = (role) => {
+    if (role === 'STUDENT') navigate('/student');
+    else if (role === 'FACULTY') navigate('/faculty');
+    else if (role === 'MENTOR') navigate('/mentor');
+    else if (role === 'HOD') navigate('/hod');
+    else if (role === 'OFFICE_ADMIN' || role === 'OFFICE_STAFF') navigate('/office');
     else navigate('/admin');
   };
 
@@ -110,52 +63,94 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // 1. Try real backend authorization first
-      const res = await api.post('/auth/login', { email, password });
-      if (res.data?.success) {
-        const { user, token } = res.data.data;
-        performLogin(user, token);
-        return;
+      // Authenticate strictly with real database backend
+      const res = await api.post('/auth/login', {
+        email: email.trim(),
+        password: password
+      });
+
+      if (res.data?.success && res.data?.data) {
+        const { user, token, must_change_password } = res.data.data;
+
+        // If staff account has temporary password, enforce password change
+        if (must_change_password || user?.must_change_password) {
+          setPendingAuthData({ user, token, temporaryPassword: password });
+          setShowPasswordChangeModal(true);
+          setLoading(false);
+          return;
+        }
+
+        // Establish real session
+        login(user, token);
+        try {
+          fetchNotifications();
+        } catch {}
+
+        navigateByRole(user.role);
+      } else {
+        setError(res.data?.message || 'Invalid institutional credentials.');
       }
     } catch (err) {
-      console.warn('[Login] Backend auth unavailable or rejected, using demo fallback:', err.message);
+      console.error('[Login] Authentication error:', err);
+      setError(
+        err.response?.data?.message ||
+        'Authentication failed. Please verify your institutional email and password.'
+      );
+    } finally {
+      setLoading(false);
     }
-
-    // 2. Demo fallback: Determine role from presets or selected role
-    let demoUser = null;
-    const lowerEmail = email.toLowerCase();
-
-    if (lowerEmail.includes('mentor')) demoUser = DEMO_PRESETS.MENTOR;
-    else if (lowerEmail.includes('faculty')) demoUser = DEMO_PRESETS.FACULTY;
-    else if (lowerEmail.includes('hod')) demoUser = DEMO_PRESETS.HOD;
-    else if (lowerEmail.includes('admin')) demoUser = DEMO_PRESETS.ADMIN;
-    else if (DEMO_PRESETS[selectedRole]) {
-      demoUser = {
-        ...DEMO_PRESETS[selectedRole],
-        email: email || DEMO_PRESETS[selectedRole].email,
-        firstName: email.split('@')[0] || DEMO_PRESETS[selectedRole].firstName
-      };
-    } else {
-      demoUser = {
-        ...DEMO_PRESETS.STUDENT,
-        email: email,
-        firstName: email.split('@')[0]
-      };
-    }
-
-    // Successfully log in with demo profile
-    performLogin(demoUser);
-    setLoading(false);
   };
 
-  const handleQuickDemoClick = (roleKey) => {
-    const preset = DEMO_PRESETS[roleKey];
-    if (preset) {
-      setEmail(preset.email);
-      setPassword('password123');
-      setSelectedRole(roleKey);
-      performLogin(preset);
+  const handlePasswordChangeSubmit = async (e) => {
+    e.preventDefault();
+    setPasswordChangeError('');
+
+    if (newPassword.length < 8) {
+      setPasswordChangeError('New password must be at least 8 characters long.');
+      return;
     }
+
+    if (newPassword !== confirmNewPassword) {
+      setPasswordChangeError('New passwords do not match.');
+      return;
+    }
+
+    try {
+      setChangingPassword(true);
+      // Change password with token
+      const res = await api.post(
+        '/auth/change-password',
+        {
+          current_password: pendingAuthData.temporaryPassword,
+          new_password: newPassword
+        },
+        {
+          headers: { Authorization: `Bearer ${pendingAuthData.token}` }
+        }
+      );
+
+      if (res.data?.success) {
+        setShowPasswordChangeModal(false);
+        const updatedUser = { ...pendingAuthData.user, must_change_password: false };
+        login(updatedUser, pendingAuthData.token);
+        try {
+          fetchNotifications();
+        } catch {}
+        navigateByRole(updatedUser.role);
+      } else {
+        setPasswordChangeError(res.data?.message || 'Password update failed.');
+      }
+    } catch (err) {
+      setPasswordChangeError(err.response?.data?.message || 'Failed to update password. Try again.');
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
+  const handleQuickRoleSelect = (quickEmail) => {
+    setEmail(quickEmail);
+    setPassword('password123');
+    setError('');
   };
 
   return (
@@ -165,142 +160,203 @@ const Login = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50 scale-100 transition-all duration-700 pointer-events-none"
         style={{ backgroundImage: "url('/campus-bg.jpg')" }}
       />
-      {/* Light ambient tint to keep university building vibrant & visible */}
-      <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/35 pointer-events-none" />
 
       {/* Brand Header */}
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md">
         <Link to="/" className="flex items-center justify-center space-x-3 mb-6 group">
-          <div className="w-12 h-12 bg-black/20 backdrop-blur-sm text-white rounded-2xl flex items-center justify-center font-black shadow-xl border border-white/20 group-hover:bg-primary-600 transition">
-            <Building2 className="w-6 h-6 text-sky-400 group-hover:text-white transition" />
+          <div className="w-12 h-12 bg-black/20 backdrop-blur-sm text-white rounded-2xl flex items-center justify-center font-black shadow-xl border border-white/20 group-hover:bg-[#B95BD5] transition">
+            <Building2 className="w-6 h-6 text-[#D8B8E8] group-hover:text-white transition" />
           </div>
           <div>
-            <span className="text-xl font-black text-white tracking-tight block drop-shadow-lg">IDWAA</span>
-            <span className="text-xs font-semibold text-slate-200 uppercase tracking-wider block drop-shadow-md">
-              Workflow Automation Agent
+            <span className="text-xl font-black text-white tracking-tight block drop-shadow-xs">IDWAA</span>
+            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider block">
+              University Permission Platform
             </span>
           </div>
         </Link>
       </div>
 
-      {/* Balanced Intensity Frosted Glass Login Box (-5% Sheer) */}
+      {/* Login Card */}
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-slate-950/35 backdrop-blur-md py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/15 space-y-6 text-white">
+        <div className="bg-slate-950/25 backdrop-blur-xs py-8 px-6 sm:px-10 rounded-3xl shadow-2xl border border-white/10 space-y-6 text-white">
           <div className="text-center">
-            <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-lg">Institutional Login</h2>
-            <p className="text-xs text-slate-200 mt-1 drop-shadow-md">Sign in to test demo or department account</p>
+            <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-md">Institutional Login</h2>
+            <p className="text-xs text-slate-200 mt-1 drop-shadow-sm">
+              Sign in with your verified institutional account credentials
+            </p>
           </div>
 
-          {/* Notice Banner */}
-          <div className="p-3 bg-sky-500/15 border border-sky-400/25 rounded-2xl flex items-start gap-2.5 text-xs text-sky-100 backdrop-blur-xs">
-            <Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-bold text-white drop-shadow-sm">Instant Demo Login Ready:</span>
-              <p className="text-[11px] text-slate-200 mt-0.5 drop-shadow-xs">
-                Click any role card below or sign in with your email to launch the dashboard.
-              </p>
-            </div>
-          </div>
-
-          {/* 1-Click Role Login Cards */}
-          <div>
-            <label className="block text-[11px] font-bold text-slate-200 uppercase tracking-wider mb-2 text-center drop-shadow-sm">
-              1-Click Demo Login (Select Role)
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {/* Quick Role Fill Presets */}
+          <div className="space-y-1.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300 block">
+              Quick Role Credentials
+            </span>
+            <div className="grid grid-cols-3 gap-1.5">
               {QUICK_ROLES.map((r) => {
-                const Icon = r.icon;
+                const IconComponent = r.icon;
+                const isSelected = email === r.email;
                 return (
                   <button
                     key={r.role}
                     type="button"
-                    onClick={() => handleQuickDemoClick(r.role)}
-                    className={`p-2.5 border border-white/10 rounded-2xl flex flex-col items-center justify-center text-center transition hover:scale-[1.02] shadow-sm bg-black/30 hover:bg-black/50 backdrop-blur-xs ${r.color}`}
+                    onClick={() => handleQuickRoleSelect(r.email)}
+                    className={`p-2 rounded-xl border text-left transition flex items-center gap-1.5 cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#B95BD5]/30 border-[#B95BD5] text-white shadow-xs'
+                        : 'bg-white/10 border-white/15 text-slate-300 hover:bg-white/20 hover:text-white'
+                    }`}
                   >
-                    <Icon className="w-4 h-4 text-white mb-1" />
-                    <span className="text-xs font-bold text-white drop-shadow-sm">{r.label}</span>
-                    <span className="text-[10px] text-sky-300 font-semibold mt-0.5 drop-shadow-xs">Log In →</span>
+                    <IconComponent className="w-3.5 h-3.5 shrink-0 text-[#D8B8E8]" />
+                    <span className="text-[11px] font-bold truncate">{r.label}</span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          <div className="relative flex py-1 items-center">
-            <div className="flex-grow border-t border-white/10"></div>
-            <span className="shrink-0 mx-3 text-slate-200 text-xs uppercase font-semibold drop-shadow-sm">Or enter credentials</span>
-            <div className="flex-grow border-t border-white/10"></div>
-          </div>
+          {error && (
+            <div className="p-3.5 bg-rose-500/20 border border-rose-500/40 rounded-xl flex items-start gap-2.5 text-xs text-rose-200">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-200 mb-1 drop-shadow-sm">Email Address</label>
+              <label className="block text-xs font-bold text-slate-200 mb-1">Official Institutional Email</label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-300 absolute left-3 top-3" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="e.g. your_email@gmail.com"
-                  className="w-full pl-9 pr-3 py-2.5 bg-black/35 hover:bg-black/45 focus:bg-black/55 border border-white/15 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                  placeholder="name@institution.edu"
+                  className="w-full pl-9 pr-3 py-2 bg-slate-800/80 border border-slate-600 rounded-xl text-xs text-white placeholder-slate-400 focus:ring-2 focus:ring-[#B95BD5] focus:outline-none transition"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-bold text-slate-200 drop-shadow-sm">Password</label>
-                <Link to="/forgot-password" className="text-xs text-sky-300 hover:text-sky-200 hover:underline drop-shadow-sm">
+                <label className="text-xs font-bold text-slate-200">Password</label>
+                <Link to="/forgot-password" className="text-[11px] text-[#D8B8E8] hover:underline">
                   Forgot password?
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-300 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-3 py-2.5 bg-black/35 hover:bg-black/45 focus:bg-black/55 border border-white/15 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+                  className="w-full pl-9 pr-3 py-2 bg-slate-800/80 border border-slate-600 rounded-xl text-xs text-white placeholder-slate-400 focus:ring-2 focus:ring-[#B95BD5] focus:outline-none transition"
                 />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-200 mb-1 drop-shadow-sm">Log In As Role</label>
-              <select
-                value={selectedRole}
-                onChange={(e) => setSelectedRole(e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-950/90 border border-white/20 rounded-xl text-xs font-semibold text-white focus:ring-2 focus:ring-sky-400 focus:outline-none"
-              >
-                <option value="STUDENT" className="bg-slate-900 text-white">Student Dashboard</option>
-                <option value="MENTOR" className="bg-slate-900 text-white">Academic Mentor Dashboard</option>
-                <option value="FACULTY" className="bg-slate-900 text-white">Faculty Coordinator Dashboard</option>
-                <option value="HOD" className="bg-slate-900 text-white">Head of Department (HOD) Portal</option>
-                <option value="ADMIN" className="bg-slate-900 text-white">System Administrator Hub</option>
-              </select>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-xl text-sm shadow-xl shadow-black/50 transition disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+              className="w-full py-3 px-4 bg-[#B95BD5] hover:bg-[#8E32A8] text-white font-bold rounded-full text-xs shadow-md transition flex items-center justify-center gap-2 mt-2 cursor-pointer disabled:opacity-50"
             >
-              {loading ? 'Authenticating...' : 'Sign In Now'}
-              <ArrowRight className="w-4 h-4" />
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <span>Verifying Credentials...</span>
+                </>
+              ) : (
+                <>
+                  <span>Sign In to Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </form>
 
-          <div className="text-center text-xs text-slate-200 pt-2 border-t border-white/15">
-            Need a student account?{' '}
-            <Link to="/register" className="font-bold text-sky-400 hover:text-sky-300 hover:underline drop-shadow-sm">
-              Register here
+          <div className="text-center text-xs text-slate-400 pt-2 border-t border-white/10">
+            Student without an account?{' '}
+            <Link to="/register" className="font-bold text-[#D8B8E8] hover:underline">
+              Register as Student
             </Link>
           </div>
         </div>
       </div>
+
+      {/* Mandatory First-Login Password Change Modal */}
+      {showPasswordChangeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 space-y-5 text-[#261B50] shadow-2xl border border-[#EAE0E8]">
+            <div className="flex items-start gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-[#FEF6EB] text-[#E58B24] border border-[#FCE1C2] flex items-center justify-center shrink-0">
+                <KeyRound className="w-6 h-6" />
+              </div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#FEF6EB] text-[#E58B24]">
+                  First Login Security Requirement
+                </span>
+                <h3 className="text-xl font-black text-[#261B50] mt-1">Update Temporary Password</h3>
+                <p className="text-xs text-[#7C7390] mt-0.5">
+                  Your administrator provided a temporary password. You must set a personal secure password before accessing your dashboard.
+                </p>
+              </div>
+            </div>
+
+            {passwordChangeError && (
+              <div className="p-3 bg-[#FDEEF1] border border-[#F9CAD3] rounded-xl text-xs font-bold text-[#E04F69]">
+                {passwordChangeError}
+              </div>
+            )}
+
+            <form onSubmit={handlePasswordChangeSubmit} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-bold text-[#261B50] mb-1">New Secure Password</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  placeholder="Minimum 8 characters"
+                  className="w-full px-3.5 py-2.5 bg-[#FAF5F7] border border-[#EAE0E8] rounded-xl text-xs text-[#261B50] focus:ring-2 focus:ring-[#B95BD5] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#261B50] mb-1">Confirm New Password</label>
+                <input
+                  type="password"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  required
+                  placeholder="Re-enter new password"
+                  className="w-full px-3.5 py-2.5 bg-[#FAF5F7] border border-[#EAE0E8] rounded-xl text-xs text-[#261B50] focus:ring-2 focus:ring-[#B95BD5] focus:outline-none"
+                />
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordChangeModal(false)}
+                  className="saas-pill-btn-outline text-xs px-4 py-2 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={changingPassword}
+                  className="saas-pill-btn-primary text-xs px-5 py-2 cursor-pointer flex items-center gap-1.5"
+                >
+                  {changingPassword ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Lock className="w-3.5 h-3.5" />}
+                  <span>Save Password & Continue</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -24,56 +24,48 @@ import {
   Phone
 } from 'lucide-react';
 
-const INITIAL_HOD_QUEUE = [
-  {
-    request_id: 1,
-    request_code: 'REQ-842104',
-    student_name: 'Anees Shaik',
-    registration_number: 'REG2024CSE001',
-    section: 'A',
-    request_type: 'OD',
-    reason: 'Selected for National Smart India Hackathon Grand Finale in Bangalore. Need 3 days On-Duty permission to travel and compete.',
-    start_date: '2026-11-08',
-    end_date: '2026-11-10',
-    is_urgent: 1,
-    mentor_remarks: 'Verified by Prof. Suresh Reddy: Attendance 88%. Highly recommended.',
-    faculty_remarks: 'Approved by Prof. Anitha Sharma: Internal lab exams rescheduled. Sanction recommended.',
-    overall_status: 'UNDER_REVIEW',
-    current_step_order: 3
-  }
-];
-
 const HODDashboard = () => {
   const { user } = useContext(AuthContext);
   const { fetchNotifications } = useContext(NotificationContext);
 
   const [stats, setStats] = useState({
-    total_requests: 18,
-    approved_count: 14,
-    rejected_count: 1,
-    pending_count: 3
+    total_requests: 0,
+    approved_count: 0,
+    rejected_count: 0,
+    pending_count: 0
   });
 
-  const [queue, setQueue] = useState(INITIAL_HOD_QUEUE);
+  const [queue, setQueue] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedReq, setSelectedReq] = useState(null);
   const [actionType, setActionType] = useState('APPROVED');
   const [remarks, setRemarks] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Fetch live stats from GET /api/admin/stats
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await api.get('/admin/stats');
-        if (res.data?.success && res.data?.data) {
-          setStats(res.data.data);
-        }
-      } catch (err) {
-        console.warn('[HODDashboard] Stats fetch:', err.message);
+  const fetchHODData = async () => {
+    try {
+      setLoading(true);
+      const [statsRes, queueRes] = await Promise.allSettled([
+        api.get('/admin/stats'),
+        api.get('/requests/pending')
+      ]);
+
+      if (statsRes.status === 'fulfilled' && statsRes.value.data?.success && statsRes.value.data.data) {
+        setStats(statsRes.value.data.data);
       }
-    };
-    fetchStats();
+      if (queueRes.status === 'fulfilled' && queueRes.value.data?.success && Array.isArray(queueRes.value.data.data)) {
+        setQueue(queueRes.value.data.data);
+      }
+    } catch (err) {
+      console.warn('[HODDashboard] Data fetch error:', err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHODData();
   }, []);
 
   const handleOpenModal = (req, type) => {
@@ -101,33 +93,15 @@ const HODDashboard = () => {
         remarks: remarks
       });
 
-      setQueue((prev) =>
-        prev.map((r) =>
-          r.request_id === selectedReq.request_id
-            ? { ...r, overall_status: actionType, pdf_letter_url: `/uploads/permission_letter_${r.request_code}.pdf` }
-            : r
-        )
-      );
-
       setSuccessMsg(`Request successfully ${actionType === 'APPROVED' ? 'sanctioned and Gate Pass generated' : 'rejected'}.`);
       fetchNotifications();
       setTimeout(() => {
         setSelectedReq(null);
         setSuccessMsg('');
+        fetchHODData();
       }, 1500);
     } catch (err) {
-      setQueue((prev) =>
-        prev.map((r) =>
-          r.request_id === selectedReq.request_id
-            ? { ...r, overall_status: actionType }
-            : r
-        )
-      );
-      setSuccessMsg(`Action recorded as ${actionType}.`);
-      setTimeout(() => {
-        setSelectedReq(null);
-        setSuccessMsg('');
-      }, 1500);
+      setSuccessMsg(`Action failed: ${err.response?.data?.message || err.message}`);
     } finally {
       setSubmitting(false);
     }
@@ -178,19 +152,19 @@ const HODDashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
             <div className="saas-card rounded-3xl p-5">
               <p className="text-xs font-bold text-saas-textMuted uppercase tracking-wider">Total Department Requests</p>
-              <h3 className="text-3xl font-black text-saas-textDark mt-1">{stats.total_requests || 18}</h3>
+              <h3 className="text-3xl font-black text-saas-textDark mt-1">{stats.total_requests ?? 0}</h3>
             </div>
             <div className="saas-card rounded-3xl p-5">
               <p className="text-xs font-bold text-amber-600 uppercase tracking-wider">Awaiting HOD Sanction</p>
-              <h3 className="text-3xl font-black text-amber-600 mt-1">{stats.pending_count || 3}</h3>
+              <h3 className="text-3xl font-black text-amber-600 mt-1">{stats.pending_count ?? 0}</h3>
             </div>
             <div className="saas-card rounded-3xl p-5">
               <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Sanctioned & Generated</p>
-              <h3 className="text-3xl font-black text-emerald-600 mt-1">{stats.approved_count || 14}</h3>
+              <h3 className="text-3xl font-black text-emerald-600 mt-1">{stats.approved_count ?? 0}</h3>
             </div>
             <div className="saas-card rounded-3xl p-5">
               <p className="text-xs font-bold text-rose-600 uppercase tracking-wider">Rejected</p>
-              <h3 className="text-3xl font-black text-rose-600 mt-1">{stats.rejected_count || 1}</h3>
+              <h3 className="text-3xl font-black text-rose-600 mt-1">{stats.rejected_count ?? 0}</h3>
             </div>
           </div>
 
@@ -303,23 +277,23 @@ const HODDashboard = () => {
             <StatsPieChartCard
               title="Department Sanctions & Clearance Ratios"
               subtitle="Live breakdown of applications submitted to Computer Science Department"
-              total={stats.total_requests || 82}
+              total={stats.total_requests ?? 0}
               totalLabel="Total"
               badge="Department Live"
               items={[
                 {
                   label: 'Sanctioned & Generated',
-                  count: stats.approved_count || 19,
+                  count: stats.approved_count ?? 0,
                   color: '#238B62'
                 },
                 {
                   label: 'Awaiting HOD Sanction',
-                  count: stats.pending_count || 63,
+                  count: stats.pending_count ?? 0,
                   color: '#D69B35'
                 },
                 {
                   label: 'Rejected',
-                  count: stats.rejected_count || 1,
+                  count: stats.rejected_count ?? 0,
                   color: '#D65B70'
                 }
               ]}
@@ -329,23 +303,23 @@ const HODDashboard = () => {
             <StatsPieChartCard
               title="Requests by Academic Category"
               subtitle="Distribution across institutional permission categories for AY 2025-26"
-              total={18}
+              total={stats.total_requests ?? 0}
               totalLabel="Categories"
               badge="AY 2025-26"
               items={[
                 {
                   label: 'On-Duty (OD) Requests',
-                  count: 10,
+                  count: queue.filter(r => r.request_type === 'OD').length,
                   color: '#B95BD5'
                 },
                 {
                   label: 'Student Leave Requests',
-                  count: 5,
+                  count: queue.filter(r => r.request_type === 'LEAVE' || r.request_type === 'MEDICAL').length,
                   color: '#261B50'
                 },
                 {
                   label: 'Event Participation',
-                  count: 3,
+                  count: queue.filter(r => r.request_type !== 'OD' && r.request_type !== 'LEAVE' && r.request_type !== 'MEDICAL').length,
                   color: '#D8B8E8'
                 }
               ]}

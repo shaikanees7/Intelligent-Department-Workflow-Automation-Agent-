@@ -55,10 +55,10 @@ const StudentDashboard = () => {
           const rejected = list.filter((r) => r.overall_status === 'REJECTED').length;
 
           setStats({
-            total: Math.max(108, list.length),
-            pending: Math.max(91, pending),
-            approved: Math.max(17, approved),
-            rejected: Math.max(0, rejected)
+            total: list.length,
+            pending: pending,
+            approved: approved,
+            rejected: rejected
           });
         }
       } catch (err) {
@@ -71,9 +71,9 @@ const StudentDashboard = () => {
     fetchStudentData();
   }, []);
 
-  const displayTotal = stats.total || 108;
-  const displayPending = stats.pending || 91;
-  const displayApproved = stats.approved || 17;
+  const displayTotal = stats.total || 0;
+  const displayPending = stats.pending || 0;
+  const displayApproved = stats.approved || 0;
   const displayRejected = stats.rejected || 0;
 
   return (

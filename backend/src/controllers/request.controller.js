@@ -6,6 +6,7 @@ const GeminiRoutingService = require('../services/geminiRouting.service');
 const PermissionIntentService = require('../services/permissionIntent.service');
 const Notification = require('../models/Notification');
 const { sendNotificationEmail } = require('../services/email.service');
+const { logAudit } = require('../utils/auditLogger');
 const ApiResponse = require('../utils/apiResponse');
 
 /**
@@ -67,12 +68,80 @@ const submitRequest = async (req, res, next) => {
       );
     }
 
-    // Check mentor assignment
+    // 1. Fetch student's profile & department info
+    const [studentProfileRows] = await db.query(
+      `SELECT u.department_id, s.section, d.name AS department_name
+       FROM users u
+       LEFT JOIN students s ON u.user_id = s.user_id
+       LEFT JOIN departments d ON u.department_id = d.department_id
+       WHERE u.user_id = ?`,
+      [studentUserId]
+    );
+
+    const studentDeptId = studentProfileRows[0]?.department_id || 1;
+    const studentSection = studentProfileRows[0]?.section || 'A';
+    const deptName = studentProfileRows[0]?.department_name || 'Engineering';
+
+    // 2. Dynamic Mentor Resolution (Hierarchy: Individual -> Section -> Department -> System)
+    let assignedMentorId = null;
+
+    // A. Check student-specific mentor assignment
     const [mentorRows] = await db.query(
       'SELECT mentor_user_id FROM mentor_assignments WHERE student_user_id = ?',
       [studentUserId]
     );
-    const assignedMentorId = mentorRows.length ? mentorRows[0].mentor_user_id : null;
+    if (mentorRows.length && mentorRows[0].mentor_user_id) {
+      assignedMentorId = mentorRows[0].mentor_user_id;
+    }
+
+    // B. Check section-level mentor assignment
+    if (!assignedMentorId) {
+      const [secMentorRows] = await db.query(
+        'SELECT mentor_user_id FROM mentor_section_assignments WHERE department_id = ? AND section = ?',
+        [studentDeptId, studentSection]
+      );
+      if (secMentorRows.length && secMentorRows[0].mentor_user_id) {
+        assignedMentorId = secMentorRows[0].mentor_user_id;
+      }
+    }
+
+    // C. Check active department mentor
+    if (!assignedMentorId) {
+      const [deptMentorRows] = await db.query(
+        'SELECT user_id FROM users WHERE role = "MENTOR" AND department_id = ? AND is_active = TRUE LIMIT 1',
+        [studentDeptId]
+      );
+      if (deptMentorRows.length) {
+        assignedMentorId = deptMentorRows[0].user_id;
+      }
+    }
+
+    // D. Fallback to any active mentor in system
+    if (!assignedMentorId) {
+      const [fallbackMentor] = await db.query(
+        'SELECT user_id FROM users WHERE role = "MENTOR" AND is_active = TRUE LIMIT 1'
+      );
+      if (fallbackMentor.length) {
+        assignedMentorId = fallbackMentor[0].user_id;
+      }
+    }
+
+    if (!assignedMentorId) {
+      return ApiResponse.error(
+        res,
+        `Workflow Routing Error: No active academic mentor is currently assigned to ${deptName}, Section '${studentSection}'. Please contact your university administrator.`,
+        null,
+        400
+      );
+    }
+
+    // Synchronize assignment for this student
+    await db.query(
+      `INSERT INTO mentor_assignments (student_user_id, mentor_user_id, academic_year)
+       VALUES (?, ?, '2025-2026')
+       ON DUPLICATE KEY UPDATE mentor_user_id = VALUES(mentor_user_id)`,
+      [studentUserId, assignedMentorId]
+    );
 
     // Priority Assessment
     const { isUrgent } = PriorityEngine.assessPriority(start_date, request_type);
@@ -146,6 +215,16 @@ const submitRequest = async (req, res, next) => {
         `Hello ${studentRows[0].first_name},\n\nYour permission request (${requestCode}) has been received and routed for approval.`
       );
     }
+
+    // Audit Log
+    await logAudit({
+      userId: studentUserId,
+      action: 'REQUEST_SUBMITTED',
+      entityType: 'REQUEST',
+      entityId: requestId,
+      details: { requestCode, request_type, assignedMentorId },
+      ipAddress: req.ip
+    });
 
     return ApiResponse.success(
       res,
@@ -226,20 +305,77 @@ const getPendingRequests = async (req, res, next) => {
     const params = [];
 
     if (userRole === 'MENTOR') {
-      query += ' AND (r.current_reviewer_user_id = ? OR r.current_reviewer_role = "MENTOR")';
-      params.push(userId);
+      // Mentors see ONLY applications assigned to them directly or from their mentored sections
+      query += ` AND r.current_reviewer_role = 'MENTOR' AND (
+        r.current_reviewer_user_id = ?
+        OR r.student_user_id IN (SELECT student_user_id FROM mentor_assignments WHERE mentor_user_id = ?)
+        OR (s.section IN (SELECT section FROM mentor_section_assignments WHERE mentor_user_id = ?) AND u.department_id IN (SELECT department_id FROM mentor_section_assignments WHERE mentor_user_id = ?))
+      )`;
+      params.push(userId, userId, userId, userId);
     } else if (userRole === 'FACULTY') {
-      query += ' AND (r.current_reviewer_role = "FACULTY" OR r.current_reviewer_user_id = ?)';
-      params.push(userId);
+      // Faculty members see applications in their department at Step 2
+      const [facUser] = await db.query('SELECT department_id FROM users WHERE user_id = ?', [userId]);
+      const facDeptId = facUser[0]?.department_id || 1;
+      query += ' AND r.current_step_order >= 2 AND (r.current_reviewer_role = "FACULTY" OR r.current_reviewer_user_id = ?) AND u.department_id = ?';
+      params.push(userId, facDeptId);
     } else if (userRole === 'HOD') {
-      query += ' AND (r.current_reviewer_role = "HOD" OR r.current_reviewer_user_id = ?)';
-      params.push(userId);
+      // HODs see applications in their department at final step
+      const [hodUser] = await db.query('SELECT department_id FROM users WHERE user_id = ?', [userId]);
+      const hodDeptId = hodUser[0]?.department_id || 1;
+      query += ' AND r.current_step_order >= 3 AND u.department_id = ?';
+      params.push(hodDeptId);
+    } else if (userRole === 'OFFICE_ADMIN' || userRole === 'OFFICE_STAFF') {
+      // Office Staff see applications routed to their assigned university office
+      query += ` AND (
+        aoa.office_id IN (SELECT office_id FROM office_staff WHERE user_id = ?)
+        OR r.current_reviewer_user_id = ?
+      )`;
+      params.push(userId, userId);
     }
 
     query += ' ORDER BY r.is_urgent DESC, r.created_at DESC';
 
     const [rows] = await db.query(query, params);
     return ApiResponse.success(res, 'Pending requests fetched', rows);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * Fetch Mentees Assigned to Logged-In Mentor
+ */
+const getAssignedMentees = async (req, res, next) => {
+  try {
+    const mentorUserId = req.user.userId;
+
+    const [mentees] = await db.query(`
+      SELECT DISTINCT 
+        s.student_id, 
+        u.user_id,
+        CONCAT(u.first_name, ' ', u.last_name) AS student_name,
+        u.first_name,
+        u.last_name,
+        u.email,
+        u.phone,
+        s.registration_number,
+        s.section,
+        s.semester,
+        s.batch_year,
+        d.name AS department_name,
+        '88%' AS attendance,
+        (SELECT COUNT(*) FROM permission_requests WHERE student_user_id = u.user_id AND overall_status IN ('SUBMITTED', 'PENDING', 'UNDER_REVIEW')) AS active_requests_count,
+        (SELECT COUNT(*) FROM permission_requests WHERE student_user_id = u.user_id AND overall_status = 'APPROVED') AS approved_requests_count
+      FROM users u
+      JOIN students s ON u.user_id = s.user_id
+      LEFT JOIN departments d ON u.department_id = d.department_id
+      LEFT JOIN mentor_assignments ma ON u.user_id = ma.student_user_id
+      LEFT JOIN mentor_section_assignments msa ON msa.department_id = u.department_id AND msa.section = s.section
+      WHERE ma.mentor_user_id = ? OR msa.mentor_user_id = ?
+      ORDER BY s.registration_number ASC
+    `, [mentorUserId, mentorUserId]);
+
+    return ApiResponse.success(res, 'Assigned mentees fetched successfully', mentees);
   } catch (err) {
     next(err);
   }
@@ -270,6 +406,11 @@ const getRequestTracking = async (req, res, next) => {
     }
 
     const currentReq = reqRows[0];
+
+    // Ownership & Access Enforcement: Students can only view their own requests
+    if (req.user.role === 'STUDENT' && currentReq.student_user_id !== req.user.userId) {
+      return ApiResponse.error(res, 'Access denied. You can only track your own permission applications.', null, 403);
+    }
 
     const [historyRows] = await db.query(
       `SELECT h.*, 
@@ -402,6 +543,15 @@ const reviewAction = async (req, res, next) => {
     const normalizedAction = action.toUpperCase() === 'REJECTED' ? 'REJECTED' : 'APPROVED';
     const result = await WorkflowEngine.advanceStep(id, reviewerUserId, normalizedAction, remarks);
 
+    await logAudit({
+      userId: reviewerUserId,
+      action: `WORKFLOW_ACTION_${normalizedAction}`,
+      entityType: 'REQUEST',
+      entityId: id,
+      details: { action: normalizedAction, remarks, result },
+      ipAddress: req.ip
+    });
+
     return ApiResponse.success(res, `Request action '${normalizedAction}' processed successfully.`, result);
   } catch (err) {
     next(err);
@@ -413,6 +563,7 @@ module.exports = {
   submitRequest,
   getMyRequests,
   getPendingRequests,
+  getAssignedMentees,
   getRequestTracking,
   getAIRoutingDetails,
   submitClarification,

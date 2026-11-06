@@ -26,6 +26,12 @@ class User {
       designation: row.designation || (row.role === 'HOD' ? 'Head of Department' : row.role === 'MENTOR' ? 'Senior Assistant Professor' : row.role === 'FACULTY' ? 'Assistant Professor' : undefined),
       cabinLocation: row.cabin_location || undefined,
       cabin_location: row.cabin_location || undefined,
+      employeeId: row.employee_id || undefined,
+      employee_id: row.employee_id || undefined,
+      assignedResponsibilities: row.assigned_responsibilities || undefined,
+      assigned_responsibilities: row.assigned_responsibilities || undefined,
+      mustChangePassword: Boolean(row.must_change_password),
+      must_change_password: Boolean(row.must_change_password),
       officeId: row.office_id || (row.role === 'OFFICE_ADMIN' ? 1 : undefined),
       office_id: row.office_id || (row.role === 'OFFICE_ADMIN' ? 1 : undefined),
       officeName: row.office_name || (row.role === 'OFFICE_ADMIN' ? 'Examination Cell' : undefined),
@@ -38,12 +44,27 @@ class User {
   }
 
   static async findByEmail(email) {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    let altEmail = cleanEmail;
+    if (cleanEmail.endsWith('@univ.edu')) {
+      const prefix = cleanEmail.replace('@univ.edu', '');
+      altEmail = `${prefix}@institution.edu`;
+      if (prefix === 'admin') altEmail = 'admin@institution.edu';
+      if (prefix === 'hod' || prefix === 'hod.cse') altEmail = 'hod.cse@institution.edu';
+      if (prefix === 'faculty' || prefix === 'faculty.cse') altEmail = 'faculty.cse@institution.edu';
+      if (prefix === 'mentor' || prefix === 'mentor.cse') altEmail = 'mentor.cse@institution.edu';
+    } else if (cleanEmail.endsWith('@institution.edu')) {
+      const prefix = cleanEmail.replace('@institution.edu', '');
+      altEmail = `${prefix}@univ.edu`;
+    }
+
     const [rows] = await db.query(
       `SELECT u.*, 
               d.name AS department_name, d.code AS department_code,
               s.registration_number, s.section, s.semester, s.batch_year,
               COALESCE(f.designation, os.designation) AS designation,
-              f.employee_id, f.cabin_location,
+              COALESCE(u.employee_id, f.employee_id) AS employee_id,
+              f.cabin_location,
               os.office_id, uo.name AS office_name, uo.code AS office_code
        FROM users u
        LEFT JOIN departments d ON u.department_id = d.department_id
@@ -51,8 +72,9 @@ class User {
        LEFT JOIN faculty f ON u.user_id = f.user_id
        LEFT JOIN office_staff os ON u.user_id = os.user_id
        LEFT JOIN university_offices uo ON os.office_id = uo.office_id
-       WHERE LOWER(u.email) = LOWER(?)`,
-      [email]
+       WHERE LOWER(u.email) = ? OR LOWER(u.email) = ?
+       LIMIT 1`,
+      [cleanEmail, altEmail]
     );
     return rows[0] || null;
   }
@@ -63,7 +85,8 @@ class User {
               d.name AS department_name, d.code AS department_code,
               s.registration_number, s.section, s.semester, s.batch_year,
               COALESCE(f.designation, os.designation) AS designation,
-              f.employee_id, f.cabin_location,
+              COALESCE(u.employee_id, f.employee_id) AS employee_id,
+              f.cabin_location,
               os.office_id, uo.name AS office_name, uo.code AS office_code
        FROM users u
        LEFT JOIN departments d ON u.department_id = d.department_id

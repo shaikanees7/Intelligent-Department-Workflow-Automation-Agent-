@@ -6,6 +6,7 @@ const {
   submitRequest,
   getMyRequests,
   getPendingRequests,
+  getAssignedMentees,
   getRequestTracking,
   getAIRoutingDetails,
   submitClarification,
@@ -24,11 +25,13 @@ router.post('/', verifyToken, requireRole('STUDENT'), upload.single('supporting_
 router.get('/my', verifyToken, requireRole('STUDENT'), getMyRequests);
 
 // Reviewer pending queue (Mentor, Faculty, HOD, Admin, Office Admin)
-router.get('/pending', verifyToken, requireRole('MENTOR', 'FACULTY', 'HOD', 'ADMIN', 'OFFICE_ADMIN'), getPendingRequests);
+router.get('/pending', verifyToken, requireRole('MENTOR', 'FACULTY', 'HOD', 'ADMIN', 'OFFICE_ADMIN', 'OFFICE_STAFF'), getPendingRequests);
+router.get('/mentees', verifyToken, requireRole('MENTOR', 'ADMIN'), getAssignedMentees);
 
 // Tracking and review action
 router.get('/:id/track', verifyToken, getRequestTracking);
-router.post('/:id/action', verifyToken, requireRole('MENTOR', 'FACULTY', 'HOD', 'ADMIN', 'OFFICE_ADMIN'), reviewAction);
+router.get('/track/:id', verifyToken, getRequestTracking);
+router.post('/:id/action', verifyToken, requireRole('MENTOR', 'FACULTY', 'HOD', 'ADMIN', 'OFFICE_ADMIN', 'OFFICE_STAFF'), reviewAction);
 
 // AI Routing, Clarification & Manual Override Endpoints
 router.get('/:id/ai-routing', verifyToken, getAIRoutingDetails);

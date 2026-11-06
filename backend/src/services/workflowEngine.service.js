@@ -165,34 +165,12 @@ class WorkflowEngine {
         );
         if (facRows.length) nextReviewerId = facRows[0].user_id;
       } else if (nextRole === 'HOD') {
-        // Check if an AI or administrator assigned a specific university office to this request
-        const [officeRows] = await connection.query(
-          `SELECT aoa.office_id, uo.name AS office_name, uo.code AS office_code, os.user_id AS office_staff_id
-           FROM application_office_assignments aoa
-           JOIN university_offices uo ON aoa.office_id = uo.office_id
-           LEFT JOIN office_staff os ON uo.office_id = os.office_id
-           WHERE aoa.request_id = ?
-           LIMIT 1`,
-          [requestId]
+        const [hodRows] = await connection.query(
+          'SELECT user_id FROM users WHERE role = "HOD" AND department_id = ? AND is_active = TRUE LIMIT 1',
+          [reqData.student_dept_id || 1]
         );
-
-        if (officeRows.length && officeRows[0].office_code !== 'DEPT_OFFICE') {
-          effectiveRole = officeRows[0].office_code || 'OFFICE_ADMIN';
-          if (officeRows[0].office_staff_id) {
-            nextReviewerId = officeRows[0].office_staff_id;
-          } else {
-            const [offUser] = await connection.query(
-              'SELECT user_id FROM users WHERE role = "OFFICE_ADMIN" AND is_active = TRUE LIMIT 1'
-            );
-            if (offUser.length) nextReviewerId = offUser[0].user_id;
-          }
-        } else {
-          const [hodRows] = await connection.query(
-            'SELECT user_id FROM users WHERE role = "HOD" AND department_id = ? AND is_active = TRUE LIMIT 1',
-            [reqData.student_dept_id || 1]
-          );
-          if (hodRows.length) nextReviewerId = hodRows[0].user_id;
-        }
+        if (hodRows.length) nextReviewerId = hodRows[0].user_id;
+        effectiveRole = 'HOD';
       } else if (nextRole === 'ADMIN') {
         const [adminRows] = await connection.query(
           'SELECT user_id FROM users WHERE role = "ADMIN" AND is_active = TRUE LIMIT 1'
