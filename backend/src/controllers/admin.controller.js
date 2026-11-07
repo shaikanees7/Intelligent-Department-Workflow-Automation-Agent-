@@ -162,7 +162,7 @@ const listUsers = async (req, res, next) => {
              u.is_active, u.must_change_password, u.assigned_responsibilities,
              COALESCE(u.employee_id, f.employee_id) AS employee_id,
              d.name AS department_name, d.code AS department_code,
-             s.registration_number, s.section, s.semester, s.batch_year,
+             s.registration_number, s.section, s.semester, s.batch_year, s.photo_url, s.photo_updated_at,
              COALESCE(f.designation, os.designation) AS designation,
              f.cabin_location,
              os.office_id, uo.name AS office_name, uo.code AS office_code,

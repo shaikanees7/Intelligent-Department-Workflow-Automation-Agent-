@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import api from '../../services/api';
@@ -15,7 +15,13 @@ import {
   AlertCircle,
   ArrowRight,
   Loader2,
-  ShieldAlert
+  ShieldAlert,
+  Camera,
+  Upload,
+  RefreshCw,
+  Check,
+  X,
+  Image as ImageIcon
 } from 'lucide-react';
 
 const Register = () => {
@@ -38,8 +44,96 @@ const Register = () => {
   const [error, setError] = useState('');
   const [successData, setSuccessData] = useState(null);
 
+  // Photograph state
+  const [photoData, setPhotoData] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoMode, setPhotoMode] = useState('upload'); // 'upload' | 'camera'
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [cameraError, setCameraError] = useState('');
+  const [photoConsent, setPhotoConsent] = useState(false);
+
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const canvasRef = useRef(null);
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
+  const startCamera = async () => {
+    setCameraError('');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 480 }, height: { ideal: 480 } }
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setIsCameraActive(true);
+    } catch (err) {
+      console.error('Camera access error:', err);
+      setCameraError('Unable to access device camera. Please allow camera permissions or upload an image file.');
+      setIsCameraActive(false);
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    setIsCameraActive(false);
+  };
+
+  const capturePhoto = () => {
+    if (!videoRef.current || !canvasRef.current) return;
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    canvas.width = video.videoWidth || 480;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    setPhotoData(dataUrl);
+    setPhotoPreview(dataUrl);
+    stopCamera();
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+    if (!allowed.includes(file.type)) {
+      setError('Invalid photograph format. Please upload JPG, PNG, or WEBP.');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Photograph file size exceeds the 5MB limit.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPhotoData(reader.result);
+      setPhotoPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const resetPhoto = () => {
+    stopCamera();
+    setPhotoData(null);
+    setPhotoPreview(null);
+    setCameraError('');
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -64,6 +158,16 @@ const Register = () => {
       return;
     }
 
+    if (!photoData) {
+      setError('Student photograph is mandatory. Please capture or upload a clear, front-facing photograph.');
+      return;
+    }
+
+    if (!photoConsent) {
+      setError('Please check the verification declaration consent checkbox before submitting.');
+      return;
+    }
+
     try {
       setSubmitting(true);
       // Strictly submits role: 'STUDENT'
@@ -78,6 +182,7 @@ const Register = () => {
         section: formData.section.trim().toUpperCase(),
         semester: parseInt(formData.semester),
         batchYear: formData.batchYear.trim(),
+        photo: photoData,
         role: 'STUDENT' // Public registration strictly student
       };
 

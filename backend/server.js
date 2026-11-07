@@ -45,6 +45,18 @@ app.use('/api', routes);
 // Central Error Handler
 app.use(errorHandler);
 
+// Serve frontend React production build if available
+const frontendBuildPath = path.join(__dirname, '../frontend/build');
+if (fs.existsSync(frontendBuildPath)) {
+  app.use(express.static(frontendBuildPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads') || req.path.startsWith('/temp')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendBuildPath, 'index.html'));
+  });
+}
+
 // Initialize automated background cron jobs for pending reminders
 try {
   initReminderCron();

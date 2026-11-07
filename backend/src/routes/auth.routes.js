@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../config/multer.config');
 const {
   login,
   register,
@@ -11,7 +12,7 @@ const {
 const { verifyToken } = require('../middleware/auth.middleware');
 
 router.post('/login', login);
-router.post('/register', register);
+router.post('/register', upload.single('photo'), register);
 router.post('/logout', logout);
 router.get('/profile', verifyToken, getProfile);
 router.post('/change-password', verifyToken, changePassword);

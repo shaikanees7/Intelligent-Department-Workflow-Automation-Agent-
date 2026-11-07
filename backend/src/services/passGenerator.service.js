@@ -147,6 +147,8 @@ class PassGeneratorService {
         u.last_name,
         s.registration_number,
         s.section,
+        s.photo_url,
+        s.photo_updated_at,
         d.name AS department_name,
         d.code AS department_code,
         p.pass_id,
@@ -222,6 +224,8 @@ class PassGeneratorService {
         s.section,
         s.semester,
         s.batch_year,
+        s.photo_url,
+        s.photo_updated_at,
         d.name AS department_name,
         d.code AS department_code,
         rev.first_name AS revoker_first_name,
@@ -282,7 +286,7 @@ class PassGeneratorService {
       const [rows] = await db.query(`
         SELECT p.*, r.request_code, r.request_type, r.reason, r.start_date, r.end_date, r.overall_status,
                u.user_id AS student_user_id, CONCAT(u.first_name, ' ', u.last_name) AS student_name,
-               s.registration_number, s.section, d.name AS department_name
+               s.registration_number, s.section, s.photo_url, d.name AS department_name
         FROM permission_passes p
         JOIN permission_requests r ON p.request_id = r.request_id
         JOIN users u ON r.student_user_id = u.user_id
@@ -354,6 +358,8 @@ class PassGeneratorService {
         message: resultMessage,
         student_name: pass.student_name,
         registration_number: pass.registration_number,
+        student_photo_url: pass.photo_url || null,
+        photo_url: pass.photo_url || null,
         department: pass.department_name,
         section: pass.section,
         permission_type: pass.request_type,
@@ -537,6 +543,7 @@ class PassGeneratorService {
         u.email AS student_email,
         s.registration_number,
         s.section,
+        s.photo_url,
         d.name AS department_name,
         d.code AS department_code,
         rev.first_name AS revoker_name,

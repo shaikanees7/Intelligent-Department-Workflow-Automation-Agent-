@@ -5,6 +5,7 @@ const User = require('../models/User');
 const jwtConfig = require('../config/jwt.config');
 const ApiResponse = require('../utils/apiResponse');
 const { logAudit } = require('../utils/auditLogger');
+const { saveStudentPhoto } = require('../utils/photoStorage');
 
 /**
  * Institutional User Login
@@ -145,7 +146,25 @@ const register = async (req, res, next) => {
       return ApiResponse.error(res, 'Password must be at least 6 characters long', null, 400);
     }
 
-    // 2. Reject duplicate email
+    // 2. Enforce Mandatory Student Photograph
+    const photoInput = req.file || req.body.photo || req.body.student_photo || req.body.photo_url;
+    if (!photoInput) {
+      return ApiResponse.error(
+        res,
+        'Student photograph is mandatory. Please capture or upload a clear, front-facing photograph.',
+        null,
+        400
+      );
+    }
+
+    let studentPhotoUrl = null;
+    try {
+      studentPhotoUrl = await saveStudentPhoto(photoInput, regNo);
+    } catch (photoErr) {
+      return ApiResponse.error(res, photoErr.message, null, 400);
+    }
+
+    // 3. Reject duplicate email
     const [existingEmail] = await connection.query(
       'SELECT user_id FROM users WHERE LOWER(email) = LOWER(?)',
       [userEmail]
@@ -154,7 +173,7 @@ const register = async (req, res, next) => {
       return ApiResponse.error(res, 'An account with this institutional email address already exists.', null, 409);
     }
 
-    // 3. Reject duplicate registration number
+    // 4. Reject duplicate registration number
     const [existingReg] = await connection.query(
       'SELECT student_id FROM students WHERE UPPER(registration_number) = UPPER(?)',
       [regNo]
@@ -166,7 +185,7 @@ const register = async (req, res, next) => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // 4. Insert into users with enforced role = 'STUDENT'
+    // 5. Insert into users with enforced role = 'STUDENT'
     const [userResult] = await connection.query(
       `INSERT INTO users (email, password_hash, first_name, last_name, phone, role, department_id, is_active, must_change_password)
        VALUES (?, ?, ?, ?, ?, 'STUDENT', ?, TRUE, FALSE)`,
@@ -175,11 +194,11 @@ const register = async (req, res, next) => {
 
     const newUserId = userResult.insertId;
 
-    // 5. Insert into students profile
+    // 6. Insert into students profile with verified photograph
     await connection.query(
-      `INSERT INTO students (user_id, registration_number, section, semester, batch_year)
-       VALUES (?, ?, ?, ?, ?)`,
-      [newUserId, regNo, sec, sem, batch]
+      `INSERT INTO students (user_id, registration_number, section, semester, batch_year, photo_url, photo_updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, NOW())`,
+      [newUserId, regNo, sec, sem, batch, studentPhotoUrl]
     );
 
     // 6. Dynamic Mentor Mapping: Find mentor assigned to this department and section

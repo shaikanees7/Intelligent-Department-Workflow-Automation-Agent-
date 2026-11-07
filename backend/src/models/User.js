@@ -19,6 +19,10 @@ class User {
       department_name: row.department_name || (row.role === 'ADMIN' ? 'Central Administration' : 'Computer Science and Engineering'),
       registrationNumber: row.registration_number || (row.role === 'STUDENT' ? '241FA18363' : undefined),
       registration_number: row.registration_number || (row.role === 'STUDENT' ? '241FA18363' : undefined),
+      photoUrl: row.photo_url || null,
+      photo_url: row.photo_url || null,
+      photoUpdatedAt: row.photo_updated_at || null,
+      photo_updated_at: row.photo_updated_at || null,
       section: row.section || (row.role === 'STUDENT' ? 'A' : undefined),
       semester: row.semester || (row.role === 'STUDENT' ? 6 : undefined),
       batchYear: row.batch_year || (row.role === 'STUDENT' ? '2022-2026' : undefined),
@@ -61,7 +65,7 @@ class User {
     const [rows] = await db.query(
       `SELECT u.*, 
               d.name AS department_name, d.code AS department_code,
-              s.registration_number, s.section, s.semester, s.batch_year,
+              s.registration_number, s.section, s.semester, s.batch_year, s.photo_url, s.photo_updated_at,
               COALESCE(f.designation, os.designation) AS designation,
               COALESCE(u.employee_id, f.employee_id) AS employee_id,
               f.cabin_location,
@@ -83,7 +87,7 @@ class User {
     const [rows] = await db.query(
       `SELECT u.*, 
               d.name AS department_name, d.code AS department_code,
-              s.registration_number, s.section, s.semester, s.batch_year,
+              s.registration_number, s.section, s.semester, s.batch_year, s.photo_url, s.photo_updated_at,
               COALESCE(f.designation, os.designation) AS designation,
               COALESCE(u.employee_id, f.employee_id) AS employee_id,
               f.cabin_location,
