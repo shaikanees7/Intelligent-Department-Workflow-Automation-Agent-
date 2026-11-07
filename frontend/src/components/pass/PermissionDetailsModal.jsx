@@ -133,36 +133,68 @@ const PermissionDetailsModal = ({ isOpen, onClose, permission, onViewPass }) => 
             </div>
           </div>
 
-          {/* 2. Student Information */}
+          {/* 2. Student Information & Verified Photograph */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#261B50]">
-              <User className="w-4 h-4 text-[#B95BD5]" />
-              Student Information
+            <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-[#261B50]">
+              <span className="flex items-center gap-2">
+                <User className="w-4 h-4 text-[#B95BD5]" />
+                Student Information & Verified Photograph
+              </span>
+              {(permission.photo_url || permission.student_photo_url) && (
+                <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  Photo Registered
+                </span>
+              )}
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-              <div className="p-3 rounded-2xl bg-[#FAF5F7] border border-[#EDE2EB]">
-                <span className="text-[#837B96] block text-[10px] uppercase font-bold">Student Name</span>
-                <span className="font-bold text-[#261B50] mt-0.5 block truncate">
-                  {permission.first_name ? `${permission.first_name} ${permission.last_name || ''}` : 'Self (Authenticated)'}
-                </span>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              {/* Photo Box */}
+              <div className="w-16 h-20 sm:w-20 sm:h-24 rounded-2xl overflow-hidden border border-[#EDE2EB] shadow-xs bg-[#FAF5F7] shrink-0 flex items-center justify-center">
+                {permission.photo_url || permission.student_photo_url ? (
+                  <img
+                    src={
+                      (permission.photo_url || permission.student_photo_url).startsWith('http') || (permission.photo_url || permission.student_photo_url).startsWith('data:')
+                        ? (permission.photo_url || permission.student_photo_url)
+                        : `http://localhost:5000${permission.photo_url || permission.student_photo_url}`
+                    }
+                    alt={permission.first_name || 'Student'}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/campus-bg.jpg';
+                    }}
+                  />
+                ) : (
+                  <User className="w-7 h-7 text-[#837B96]" />
+                )}
               </div>
-              <div className="p-3 rounded-2xl bg-[#FAF5F7] border border-[#EDE2EB]">
-                <span className="text-[#837B96] block text-[10px] uppercase font-bold">Reg. Number</span>
-                <span className="font-bold font-mono text-[#261B50] mt-0.5 block truncate">
-                  {permission.registration_number || 'REG2024CSE001'}
-                </span>
-              </div>
-              <div className="p-3 rounded-2xl bg-[#FAF5F7] border border-[#EDE2EB]">
-                <span className="text-[#837B96] block text-[10px] uppercase font-bold">Department</span>
-                <span className="font-bold text-[#261B50] mt-0.5 block truncate">
-                  {permission.department_name || permission.department_code || 'CSE'}
-                </span>
-              </div>
-              <div className="p-3 rounded-2xl bg-[#FAF5F7] border border-[#EDE2EB]">
-                <span className="text-[#837B96] block text-[10px] uppercase font-bold">Section</span>
-                <span className="font-bold text-[#261B50] mt-0.5 block">
-                  Sec {permission.section || 'A'}
-                </span>
+
+              {/* Data Grid */}
+              <div className="flex-1 w-full grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                <div className="p-2.5 rounded-2xl bg-[#FAF5F7] border border-[#EDE2EB]">
+                  <span className="text-[#837B96] block text-[10px] uppercase font-bold">Student Name</span>
+                  <span className="font-bold text-[#261B50] mt-0.5 block truncate">
+                    {permission.first_name ? `${permission.first_name} ${permission.last_name || ''}` : 'Self (Authenticated)'}
+                  </span>
+                </div>
+                <div className="p-2.5 rounded-2xl bg-[#FAF5F7] border border-[#EDE2EB]">
+                  <span className="text-[#837B96] block text-[10px] uppercase font-bold">Reg. Number</span>
+                  <span className="font-bold font-mono text-[#261B50] mt-0.5 block truncate">
+                    {permission.registration_number || 'REG2024CSE001'}
+                  </span>
+                </div>
+                <div className="p-2.5 rounded-2xl bg-[#FAF5F7] border border-[#EDE2EB]">
+                  <span className="text-[#837B96] block text-[10px] uppercase font-bold">Department</span>
+                  <span className="font-bold text-[#261B50] mt-0.5 block truncate">
+                    {permission.department_name || permission.department_code || 'CSE'}
+                  </span>
+                </div>
+                <div className="p-2.5 rounded-2xl bg-[#FAF5F7] border border-[#EDE2EB]">
+                  <span className="text-[#837B96] block text-[10px] uppercase font-bold">Section</span>
+                  <span className="font-bold text-[#261B50] mt-0.5 block">
+                    Sec {permission.section || 'A'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

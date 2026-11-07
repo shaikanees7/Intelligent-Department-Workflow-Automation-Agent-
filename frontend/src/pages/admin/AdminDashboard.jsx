@@ -668,12 +668,33 @@ const AdminDashboard = () => {
                     {filteredUsers.length > 0 ? (
                       filteredUsers.map((u) => (
                         <tr key={u.user_id} className="hover:bg-[#FAF5F8]/60 transition">
-                          <td className="py-4 px-6">
-                            <div className="font-bold text-[#261B50]">
-                              {u.first_name} {u.last_name}
+                          <td className="py-4 px-3.5 lg:px-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-9 h-10 rounded-xl overflow-hidden border border-[#EAE0E8] bg-[#FAF5F8] shrink-0 flex items-center justify-center shadow-2xs">
+                                {u.photo_url ? (
+                                  <img
+                                    src={u.photo_url.startsWith('http') || u.photo_url.startsWith('data:') ? u.photo_url : `http://localhost:5000${u.photo_url}`}
+                                    alt={u.first_name}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      e.target.onerror = null;
+                                      e.target.src = '/campus-bg.jpg';
+                                    }}
+                                  />
+                                ) : (
+                                  <span className="font-black text-xs text-[#B95BD5]">
+                                    {u.first_name?.[0] || 'U'}{u.last_name?.[0] || ''}
+                                  </span>
+                                )}
+                              </div>
+                              <div>
+                                <div className="font-bold text-[#261B50]">
+                                  {u.first_name} {u.last_name}
+                                </div>
+                                <div className="text-[11px] font-mono text-[#837B96]">{u.email}</div>
+                                {u.phone && <div className="text-[10px] text-[#837B96]">{u.phone}</div>}
+                              </div>
                             </div>
-                            <div className="text-[11px] font-mono text-[#837B96]">{u.email}</div>
-                            {u.phone && <div className="text-[10px] text-[#837B96]">{u.phone}</div>}
                           </td>
 
                           <td className="py-4 px-6">

@@ -135,35 +135,67 @@ const DigitalPassModal = ({ isOpen, onClose, pass }) => {
             {/* Left 2 Cols: Student & Permission Details */}
             <div className="md:col-span-2 space-y-4">
               {/* Student Details Card */}
-              <div className="p-4 rounded-2xl bg-[#FAF5F7] border border-[#EAE0E8] space-y-2.5">
-                <div className="text-[11px] font-black uppercase tracking-wider text-[#837B96] flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-[#B95BD5]" />
-                  Student Identification
+              <div className="p-4 rounded-2xl bg-[#FAF5F7] border border-[#EAE0E8] space-y-3">
+                <div className="text-[11px] font-black uppercase tracking-wider text-[#837B96] flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-[#B95BD5]" />
+                    Student Identification & Verified Portrait
+                  </span>
+                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    ID Verified
+                  </span>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div>
-                    <span className="text-[#837B96] text-[10px] uppercase font-bold block">Full Name</span>
-                    <span className="font-bold text-[#261B50] text-sm block">
-                      {pass.student_name || (pass.first_name ? `${pass.first_name} ${pass.last_name || ''}` : 'Anees Shaik')}
-                    </span>
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  {/* Student Portrait Box */}
+                  <div className="w-20 h-24 sm:w-24 sm:h-28 rounded-2xl overflow-hidden border-2 border-[#EAE0E8] shadow-xs bg-white shrink-0 flex items-center justify-center relative">
+                    {pass.photo_url || pass.student_photo_url ? (
+                      <img
+                        src={
+                          (pass.photo_url || pass.student_photo_url).startsWith('http') || (pass.photo_url || pass.student_photo_url).startsWith('data:')
+                            ? (pass.photo_url || pass.student_photo_url)
+                            : `http://localhost:5000${pass.photo_url || pass.student_photo_url}`
+                        }
+                        alt={pass.student_name || 'Student Portrait'}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/campus-bg.jpg';
+                        }}
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-[#837B96] p-2 text-center">
+                        <User className="w-8 h-8 text-[#837B96] mb-1" />
+                        <span className="text-[9px] uppercase font-bold">Photo ID</span>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <span className="text-[#837B96] text-[10px] uppercase font-bold block">Reg. Number</span>
-                    <span className="font-bold font-mono text-[#261B50] text-sm block">
-                      {pass.registration_number || 'REG2024CSE001'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[#837B96] text-[10px] uppercase font-bold block">Department</span>
-                    <span className="font-bold text-[#261B50] block">
-                      {pass.department_name || pass.department_code || 'Computer Science & Engineering'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[#837B96] text-[10px] uppercase font-bold block">Section & Batch</span>
-                    <span className="font-bold text-[#261B50] block">
-                      Section {pass.section || 'A'} &bull; {pass.batch_year || '2024-2028'}
-                    </span>
+
+                  {/* Student Info Details */}
+                  <div className="flex-1 w-full grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-[#837B96] text-[10px] uppercase font-bold block">Full Name</span>
+                      <span className="font-bold text-[#261B50] text-sm block">
+                        {pass.student_name || (pass.first_name ? `${pass.first_name} ${pass.last_name || ''}` : 'Anees Shaik')}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#837B96] text-[10px] uppercase font-bold block">Reg. Number</span>
+                      <span className="font-bold font-mono text-[#261B50] text-sm block">
+                        {pass.registration_number || 'REG2024CSE001'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#837B96] text-[10px] uppercase font-bold block">Department</span>
+                      <span className="font-bold text-[#261B50] block">
+                        {pass.department_name || pass.department_code || 'Computer Science & Engineering'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#837B96] text-[10px] uppercase font-bold block">Section & Batch</span>
+                      <span className="font-bold text-[#261B50] block">
+                        Section {pass.section || 'A'} &bull; {pass.batch_year || '2024-2028'}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
